@@ -13,7 +13,7 @@ docker --version
 docker compose version
 ```
 
-Make sure ports `8080` and `5432` are not already used by another local process.
+Make sure ports `8080` and `15432` are not already used by another local process.
 
 ## 2. Start The Local Environment
 
@@ -26,7 +26,7 @@ docker compose up --build
 For background mode:
 
 ```bash
-docker compose up --build -d
+docker compose up --build --wait
 ```
 
 Expected result:
@@ -44,10 +44,16 @@ curl http://localhost:8080/actuator/health
 Expected response:
 
 ```json
-{"status":"UP"}
+{"groups":["liveness","readiness"],"status":"UP"}
 ```
 
 ## 4. View Logs
+
+Service status:
+
+```bash
+docker compose ps
+```
 
 Application logs:
 
@@ -100,7 +106,7 @@ Symptom: the application or database cannot bind to its host port.
 Check which process owns the port:
 
 ```bash
-ss -ltnp | rg ':8080|:5432'
+ss -ltnp | rg ':8080|:15432'
 ```
 
 Stop the conflicting process or change the local port mapping in a future planned change.
@@ -110,6 +116,7 @@ Stop the conflicting process or change the local port mapping in a future planne
 Check application and database logs:
 
 ```bash
+docker compose ps
 docker compose logs app
 docker compose logs postgres
 ```

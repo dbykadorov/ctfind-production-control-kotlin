@@ -28,13 +28,13 @@ Expected behavior:
 ### Start In Background
 
 ```bash
-docker compose up --build -d
+docker compose up --build --wait
 ```
 
 Expected behavior:
 
 - Starts the same environment in detached mode.
-- Returns control to the shell after services are scheduled.
+- Returns control to the shell after services are healthy or a service fails readiness.
 
 ### Stop
 
@@ -78,7 +78,7 @@ Expected behavior:
 | Service | Host Port | Purpose |
 |---------|-----------|---------|
 | app | 8080 | Local application HTTP access |
-| postgres | 5432 | Optional local database diagnostics |
+| postgres | 15432 | Optional local database diagnostics mapped to container port 5432 |
 
 ## Readiness Check
 
@@ -89,7 +89,7 @@ curl http://localhost:8080/actuator/health
 Expected healthy result:
 
 ```json
-{"status":"UP"}
+{"groups":["liveness","readiness"],"status":"UP"}
 ```
 
 Failure interpretation:

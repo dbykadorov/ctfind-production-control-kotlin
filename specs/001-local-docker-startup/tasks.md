@@ -17,9 +17,9 @@
 
 **Purpose**: Prepare repository-level files needed by all local runtime work.
 
-- [ ] T001 Create Docker build ignore rules for Gradle outputs, VCS metadata, IDE files, and local runtime artifacts in `.dockerignore`
-- [ ] T002 Add local development Spring configuration placeholders for datasource, profile, actuator health, and safe defaults in `src/main/resources/application-local.properties`
-- [ ] T003 [P] Document local runtime scope and prerequisite summary in `README.md`
+- [X] T001 Create Docker build ignore rules for Gradle outputs, VCS metadata, IDE files, and local runtime artifacts in `.dockerignore`
+- [X] T002 Add local development Spring configuration placeholders for datasource, profile, actuator health, and safe defaults in `src/main/resources/application-local.properties`
+- [X] T003 [P] Document local runtime scope and prerequisite summary in `README.md`
 
 ---
 
@@ -29,12 +29,12 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T004 Create a multi-stage JVM application image build that packages the Spring Boot app via Gradle wrapper in `Dockerfile`
-- [ ] T005 Define base Compose project name, shared network, and named PostgreSQL volume in `docker-compose.yml`
-- [ ] T006 Define the `postgres` service with local-only database name, username, password, port mapping, volume, and healthcheck in `docker-compose.yml`
-- [ ] T007 Define the `app` service build context, environment variables, dependency on `postgres`, and HTTP port mapping in `docker-compose.yml`
-- [ ] T008 Configure the application service to use the local Spring profile and local PostgreSQL datasource values in `docker-compose.yml`
-- [ ] T009 Ensure local database state and host override files remain untracked by updating `.gitignore`
+- [X] T004 Create a multi-stage JVM application image build that packages the Spring Boot app via Gradle wrapper in `Dockerfile`
+- [X] T005 Define base Compose project name, shared network, and named PostgreSQL volume in `docker-compose.yml`
+- [X] T006 Define the `postgres` service with local-only database name, username, password, port mapping, volume, and healthcheck in `docker-compose.yml`
+- [X] T007 Define the `app` service build context, environment variables, dependency on `postgres`, and HTTP port mapping in `docker-compose.yml`
+- [X] T008 Configure the application service to use the local Spring profile and local PostgreSQL datasource values in `docker-compose.yml`
+- [X] T009 Ensure local database state and host override files remain untracked by updating `.gitignore`
 
 **Checkpoint**: Shared local runtime foundation exists and user story implementation can proceed.
 
@@ -48,13 +48,13 @@
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Expose a host-reachable application port and service name consistent with the local runtime contract in `docker-compose.yml`
-- [ ] T011 [US1] Make the application wait for the local database readiness through Compose dependency health conditions in `docker-compose.yml`
-- [ ] T012 [P] [US1] Allow unauthenticated local readiness checks for `/actuator/health` while keeping other routes protected in `src/main/kotlin/com/ctfind/productioncontrol/config/SecurityConfig.kt`
-- [ ] T013 [US1] Configure Actuator health exposure and local readiness details for the local profile in `src/main/resources/application-local.properties`
-- [ ] T014 [US1] Add the one-command startup instructions and expected application URL to `README.md`
-- [ ] T015 [US1] Add the readiness check command and expected healthy response to `README.md`
-- [ ] T016 [US1] Verify the US1 happy path against `specs/001-local-docker-startup/contracts/local-runtime.md`
+- [X] T010 [US1] Expose a host-reachable application port and service name consistent with the local runtime contract in `docker-compose.yml`
+- [X] T011 [US1] Make the application wait for the local database readiness through Compose dependency health conditions in `docker-compose.yml`
+- [X] T012 [P] [US1] Allow unauthenticated local readiness checks for `/actuator/health` while keeping other routes protected in `src/main/kotlin/com/ctfind/productioncontrol/config/SecurityConfig.kt`
+- [X] T013 [US1] Configure Actuator health exposure and local readiness details for the local profile in `src/main/resources/application-local.properties`
+- [X] T014 [US1] Add the one-command startup instructions and expected application URL to `README.md`
+- [X] T015 [US1] Add the readiness check command and expected healthy response to `README.md`
+- [X] T016 [US1] Verify the US1 happy path against `specs/001-local-docker-startup/contracts/local-runtime.md`
 
 **Checkpoint**: User Story 1 is complete when the backend and PostgreSQL start with one command and the health endpoint reports `UP`.
 
@@ -64,15 +64,15 @@
 
 **Goal**: A developer can stop and restart the local environment without manual cleanup.
 
-**Independent Test**: Run `docker compose down`, then `docker compose up --build -d`, and verify the application returns to healthy state without deleting containers or volumes manually.
+**Independent Test**: Run `docker compose down`, then `docker compose up --build --wait`, and verify the application returns to healthy state without deleting containers or volumes manually.
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Confirm the Compose volume preserves PostgreSQL state across ordinary `docker compose down` and restart cycles in `docker-compose.yml`
-- [ ] T018 [US2] Add stop and detached restart commands to `README.md`
-- [ ] T019 [US2] Add explicit local data reset instructions using `docker compose down -v` to `README.md`
-- [ ] T020 [US2] Document the stop, restart, and reset expectations in `specs/001-local-docker-startup/quickstart.md`
-- [ ] T021 [US2] Verify the US2 stop-and-restart flow against `specs/001-local-docker-startup/contracts/local-runtime.md`
+- [X] T017 [US2] Confirm the Compose volume preserves PostgreSQL state across ordinary `docker compose down` and restart cycles in `docker-compose.yml`
+- [X] T018 [US2] Add stop and detached restart commands to `README.md`
+- [X] T019 [US2] Add explicit local data reset instructions using `docker compose down -v` to `README.md`
+- [X] T020 [US2] Document the stop, restart, and reset expectations in `specs/001-local-docker-startup/quickstart.md`
+- [X] T021 [US2] Verify the US2 stop-and-restart flow against `specs/001-local-docker-startup/contracts/local-runtime.md`
 
 **Checkpoint**: User Story 2 is complete when normal stop/start preserves local state and reset is explicit.
 
@@ -86,11 +86,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T022 [US3] Add application and database log commands to `README.md`
-- [ ] T023 [US3] Add troubleshooting steps for missing container runtime, occupied ports, database startup, and failed health checks to `README.md`
-- [ ] T024 [P] [US3] Add service health status inspection commands to `specs/001-local-docker-startup/quickstart.md`
-- [ ] T025 [US3] Ensure PostgreSQL and application service names in documentation match `docker-compose.yml`
-- [ ] T026 [US3] Verify the US3 diagnostic flow against `specs/001-local-docker-startup/contracts/local-runtime.md`
+- [X] T022 [US3] Add application and database log commands to `README.md`
+- [X] T023 [US3] Add troubleshooting steps for missing container runtime, occupied ports, database startup, and failed health checks to `README.md`
+- [X] T024 [P] [US3] Add service health status inspection commands to `specs/001-local-docker-startup/quickstart.md`
+- [X] T025 [US3] Ensure PostgreSQL and application service names in documentation match `docker-compose.yml`
+- [X] T026 [US3] Verify the US3 diagnostic flow against `specs/001-local-docker-startup/contracts/local-runtime.md`
 
 **Checkpoint**: User Story 3 is complete when failed local startup has documented diagnostic paths and log commands.
 
@@ -100,11 +100,11 @@
 
 **Purpose**: Final validation and consistency across implementation and documentation.
 
-- [ ] T027 [P] Align `specs/001-local-docker-startup/quickstart.md` with the implemented commands, service names, and health response
-- [ ] T028 [P] Align `specs/001-local-docker-startup/contracts/local-runtime.md` with the implemented commands, ports, service names, and environment variables
-- [ ] T029 Run `docker compose config` and record any required documentation adjustments in `README.md`
-- [ ] T030 Run the full local quickstart flow and update `README.md` if observed behavior differs from documented behavior
-- [ ] T031 Run `git status --short` and ensure generated build outputs, local database files, and logs are not tracked in `.gitignore`
+- [X] T027 [P] Align `specs/001-local-docker-startup/quickstart.md` with the implemented commands, service names, and health response
+- [X] T028 [P] Align `specs/001-local-docker-startup/contracts/local-runtime.md` with the implemented commands, ports, service names, and environment variables
+- [X] T029 Run `docker compose config` and record any required documentation adjustments in `README.md`
+- [X] T030 Run the full local quickstart flow and update `README.md` if observed behavior differs from documented behavior
+- [X] T031 Run `git status --short` and ensure generated build outputs, local database files, and logs are not tracked in `.gitignore`
 
 ---
 

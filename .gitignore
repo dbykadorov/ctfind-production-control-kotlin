@@ -38,3 +38,13 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+### Local runtime ###
+.env
+.env.*
+!.env.example
+docker-data/
+*.log
+*.log.*
+tmp/
+*.tmp
