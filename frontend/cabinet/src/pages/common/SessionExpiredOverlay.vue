@@ -7,10 +7,8 @@ import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
-import { frappeCall } from '@/api/frappe-client'
 import { Button, Dialog, Input, Label } from '@/components/ui'
 import { useAuthStore } from '@/stores/auth'
-import { toApiError } from '@/utils/errors'
 
 const { t } = useI18n()
 const auth = useAuthStore()
@@ -25,14 +23,15 @@ async function relogin(): Promise<void> {
     return
   submitting.value = true
   try {
-    await frappeCall('login', { usr: username.value, pwd: password.value }, { withoutCsrf: true })
-    await auth.refreshBoot()
-    auth.clearSessionExpired()
-    password.value = ''
+    const target = `${window.location.pathname}${window.location.search}`
+    const outcome = await auth.login(username.value, password.value, target)
+    if (outcome.kind !== 'success') {
+      toast.error(t(`login.error.${outcome.kind === 'two-fa-required' ? 'twoFa' : outcome.messageKey}`))
+      return
+    }
   }
-  catch (err) {
-    const apiErr = toApiError(err)
-    toast.error(apiErr.message || t('auth.login.failed'))
+  catch {
+    toast.error(t('login.error.network'))
   }
   finally {
     submitting.value = false

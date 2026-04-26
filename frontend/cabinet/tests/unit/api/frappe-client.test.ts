@@ -10,7 +10,8 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import { serializeForFrappe } from '@/api/frappe-client'
+import { AUTH_TOKEN_STORAGE_KEY } from '@/api/auth-service'
+import { applyBearerToken, serializeForFrappe } from '@/api/frappe-client'
 
 function asObject(p: URLSearchParams): Record<string, string[]> {
   const out: Record<string, string[]> = {}
@@ -76,5 +77,16 @@ describe('serializeForFrappe', () => {
       disabled: false,
     }))
     expect(result).toEqual({ enabled: ['true'], disabled: ['false'] })
+  })
+})
+
+describe('applyBearerToken', () => {
+  it('добавляет Authorization из localStorage', () => {
+    window.localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, 'jwt-admin')
+    const headers = new Headers()
+
+    applyBearerToken(headers)
+
+    expect(headers.get('Authorization')).toBe('Bearer jwt-admin')
   })
 })

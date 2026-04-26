@@ -50,6 +50,20 @@ docker --version
 docker compose version
 ```
 
+### Local Authentication
+
+This local runtime seeds one development administrator when the database is
+empty:
+
+```text
+login: admin
+password: admin
+```
+
+The cabinet uses `/api/auth/login`, stores the local MVP Bearer JWT in browser
+`localStorage`, and sends it to protected backend APIs as `Authorization:
+Bearer <token>`.
+
 ### Start
 
 From the repository root:
@@ -71,6 +85,9 @@ The migrated cabinet frontend is available at:
 ```text
 http://localhost:5173/cabinet/login
 ```
+
+These credentials are for local development only and are not a production
+security setup.
 
 The old Frappe cabinet source was used only as a migration reference. Runtime
 startup must not read from or require the old Frappe project.

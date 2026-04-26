@@ -17,6 +17,7 @@ class SecurityConfig {
 			.authorizeHttpRequests { requests ->
 				requests
 					.requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
+					.requestMatchers("/api/auth/login").permitAll()
 					.anyRequest().authenticated()
 			}
 			.exceptionHandling { exceptions ->
@@ -27,6 +28,9 @@ class SecurityConfig {
 			}
 			.csrf { csrf ->
 				csrf.disable()
+			}
+			.oauth2ResourceServer { oauth2 ->
+				oauth2.jwt { }
 			}
 
 		return http.build()

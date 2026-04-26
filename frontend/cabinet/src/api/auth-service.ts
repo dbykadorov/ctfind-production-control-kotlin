@@ -6,7 +6,10 @@
  * Frappe login endpoint и всегда возвращает понятный placeholder outcome.
  */
 
-import { frappeCall } from './frappe-client'
+import { httpClient } from './frappe-client'
+
+export const AUTH_API_BASE_URL = '/api/auth'
+export const AUTH_TOKEN_STORAGE_KEY = 'ctfind.cabinet.authToken'
 
 /**
  * Текстовые ключи для i18n-вывода ошибок на форме. Каждый ключ соответствует
@@ -19,7 +22,7 @@ export type LoginErrorKey =
   | 'twoFa' // user has 2FA enabled — направляем в Frappe Desk (см. spec Q3=C)
   | 'network' // 5xx или сетевая ошибка
   | 'empty' // пустые поля (validation на клиенте)
-  | 'unavailable' // новая platform auth-интеграция пока не подключена
+  | 'unavailable' // auth API временно недоступен
 
 /**
  * Дискриминированное объединение результата вызова `loginViaCabinet`.
@@ -32,9 +35,26 @@ export type LoginErrorKey =
  *   показать сообщение `login.error.twoFa` со ссылкой на стандартную Frappe-форму.
  */
 export type LoginOutcome =
-  | { kind: 'success' }
+  | ({ kind: 'success' } & LoginSuccessPayload)
   | { kind: 'error', messageKey: LoginErrorKey }
   | { kind: 'two-fa-required' }
+
+export interface AuthenticatedUserPayload {
+  login: string
+  displayName: string
+  roles: string[]
+}
+
+export interface LoginSuccessPayload {
+  tokenType: 'Bearer'
+  accessToken: string
+  expiresAt: string
+  user: AuthenticatedUserPayload
+}
+
+export interface AuthenticatedUserSession extends AuthenticatedUserPayload {
+  expiresAt: string
+}
 
 /**
  * Выполнить логин через форму Кабинета.
@@ -46,7 +66,36 @@ export async function loginViaCabinet(usr: string, pwd: string): Promise<LoginOu
   if (!usr || !pwd)
     return { kind: 'error', messageKey: 'empty' }
 
-  return { kind: 'error', messageKey: 'unavailable' }
+  try {
+    const response = await httpClient.post<LoginSuccessPayload>(`${AUTH_API_BASE_URL}/login`, {
+      login: usr,
+      password: pwd,
+    })
+
+    return {
+      kind: 'success',
+      ...response.data,
+    }
+  }
+  catch (error) {
+    const status = (error as { response?: { status?: number } }).response?.status
+    if (status === 401)
+      return { kind: 'error', messageKey: 'invalid' }
+    if (status === 429)
+      return { kind: 'error', messageKey: 'rateLimit' }
+    if (status === 400)
+      return { kind: 'error', messageKey: 'empty' }
+    return { kind: 'error', messageKey: 'network' }
+  }
+}
+
+export async function fetchAuthenticatedUser(token: string): Promise<AuthenticatedUserSession> {
+  const response = await httpClient.get<AuthenticatedUserSession>(`${AUTH_API_BASE_URL}/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  return response.data
 }
 
 /**
@@ -56,7 +105,7 @@ export async function loginViaCabinet(usr: string, pwd: string): Promise<LoginOu
  */
 export async function logoutFromCabinet(): Promise<void> {
   try {
-    await frappeCall('logout', {}, { method: 'POST' })
+    await httpClient.post(`${AUTH_API_BASE_URL}/logout`, {})
   }
   catch {
     // logout всё равно должен выполниться — даже при сетевой ошибке мы

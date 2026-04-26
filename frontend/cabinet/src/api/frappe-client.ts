@@ -19,6 +19,7 @@ import { sanitizeFrom } from '@/utils/url'
 import { readCsrfToken } from './boot'
 
 type SessionExpiredHandler = (err: ApiError) => void
+const AUTH_TOKEN_STORAGE_KEY = 'ctfind.cabinet.authToken'
 
 let sessionExpiredHandler: SessionExpiredHandler | null = null
 
@@ -72,6 +73,8 @@ function createClient(): AxiosInstance {
       config.headers = config.headers ?? {}
       config.headers.set?.('X-Frappe-CSRF-Token', csrf)
     }
+    config.headers = config.headers ?? {}
+    applyBearerToken(config.headers)
     return config
   })
 
@@ -124,6 +127,19 @@ function triggerSessionExpiredRedirect(): void {
 }
 
 export const httpClient: AxiosInstance = createClient()
+
+export function applyBearerToken(headers: { set?: (key: string, value: string) => unknown, Authorization?: unknown }): void {
+  if (typeof window === 'undefined')
+    return
+  const token = window.localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)
+  if (!token)
+    return
+  if (typeof headers.set === 'function') {
+    headers.set('Authorization', `Bearer ${token}`)
+    return
+  }
+  headers.Authorization = `Bearer ${token}`
+}
 
 interface FrappeMethodResponse<T> {
   message: T

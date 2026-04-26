@@ -16,6 +16,7 @@ const ROLE_WAREHOUSE = 'Warehouse'
 const ROLE_ORDER_CORRECTOR = 'Order Corrector'
 const ROLE_SYSTEM_MANAGER = 'System Manager'
 const ROLE_ADMINISTRATOR = 'Administrator'
+const ROLE_BACKEND_ADMIN = 'ADMIN'
 const ADMIN_USER = 'Administrator'
 
 export function usePermissions(): ComputedRef<PermissionFlags> {
@@ -25,7 +26,10 @@ export function usePermissions(): ComputedRef<PermissionFlags> {
 
 export function buildPermissions(user: string | null, roles: readonly string[]): PermissionFlags {
   const set = new Set(roles)
-  const isAdmin = user === ADMIN_USER || set.has(ROLE_SYSTEM_MANAGER) || set.has(ROLE_ADMINISTRATOR)
+  const isAdmin = user === ADMIN_USER
+    || set.has(ROLE_SYSTEM_MANAGER)
+    || set.has(ROLE_ADMINISTRATOR)
+    || set.has(ROLE_BACKEND_ADMIN)
   const isOrderManager = set.has(ROLE_ORDER_MANAGER)
   const isShopSupervisor = set.has(ROLE_SHOP_SUPERVISOR)
   const isExecutor = set.has(ROLE_EXECUTOR)

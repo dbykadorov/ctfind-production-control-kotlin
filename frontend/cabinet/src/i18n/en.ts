@@ -30,7 +30,7 @@ export const en = {
       twoFa: 'Your account requires two-factor authentication. Please sign in via Frappe Desk',
       network: 'Could not reach the server. Check your connection and try again',
       empty: 'This field is required',
-      unavailable: 'Authorization is not connected in the new platform yet',
+      unavailable: 'Authorization is temporarily unavailable. Please try again later',
     },
     notice: {
       sessionExpired: 'Your session has expired. Please sign in again',

@@ -167,7 +167,7 @@ const guard: NavigationGuardWithThis<undefined> = (to) => {
 
   const required = to.meta.roles
   if (required && required.length > 0) {
-    const allowed = [...required, 'Administrator', 'System Manager']
+    const allowed = [...required, 'Administrator', 'System Manager', 'ADMIN']
     const hasAccess = auth.permissions.isAdmin
       || allowed.some(role => auth.roles.includes(role))
     if (!hasAccess)

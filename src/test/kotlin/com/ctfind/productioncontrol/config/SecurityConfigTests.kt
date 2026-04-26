@@ -15,4 +15,15 @@ class SecurityConfigTests {
 		assertFalse(securityConfig.contains(".httpBasic("), "API backend must not enable HTTP Basic auth")
 		assertFalse(securityConfig.contains(".formLogin("), "API backend must not enable browser form login")
 	}
+
+	@Test
+	fun `API security enables bearer JWT resource server`() {
+		val securityConfig = Path("src/main/kotlin/com/ctfind/productioncontrol/config/SecurityConfig.kt")
+			.readText()
+
+		kotlin.test.assertTrue(
+			securityConfig.contains("oauth2ResourceServer"),
+			"Protected APIs must authenticate Bearer JWT tokens through Spring Security",
+		)
+	}
 }

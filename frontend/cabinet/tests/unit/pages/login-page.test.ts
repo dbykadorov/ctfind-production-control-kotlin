@@ -103,16 +103,26 @@ describe('loginPage.vue', () => {
     expect(loginMock).toHaveBeenCalledWith('user@example.com', 'secret', '/cabinet/orders')
   })
 
-  it('placeholder outcome → показывает сообщение о неподключенной авторизации', async () => {
+  it('success outcome → не показывает ошибку на форме', async () => {
     const wrapper = await mountPage()
-    loginMock.mockResolvedValueOnce({ kind: 'error', messageKey: 'unavailable' })
+    loginMock.mockResolvedValueOnce({
+      kind: 'success',
+      tokenType: 'Bearer',
+      accessToken: 'jwt-admin',
+      expiresAt: '2026-04-27T00:00:00Z',
+      user: {
+        login: 'admin',
+        displayName: 'Local Administrator',
+        roles: ['ADMIN'],
+      },
+    })
 
-    await wrapper.find('#login-username').setValue('user@example.com')
-    await wrapper.find('#login-password').setValue('secret')
+    await wrapper.find('#login-username').setValue('admin')
+    await wrapper.find('#login-password').setValue('admin')
     await wrapper.find('form').trigger('submit')
     await flushPromises()
 
-    expect(wrapper.find('[data-testid="login-error"]').text()).toBe(ru.login.error.unavailable)
+    expect(wrapper.find('[data-testid="login-error"]').text()).toBe('')
   })
 
   it('outcome.kind="error" → отображается локализованное сообщение', async () => {

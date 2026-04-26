@@ -155,3 +155,14 @@ Reset the local database and seeded admin:
 ```bash
 docker compose down -v
 ```
+
+## Verification Record
+
+Last verified: 2026-04-26
+
+- Backend tests: `docker run --rm -v ctfind-contlin-gradle-home:/root/.gradle -v "$PWD":/workspace -w /workspace eclipse-temurin:21-jdk ./gradlew --project-cache-dir /tmp/ctfind-contlin-gradle-cache test` passed.
+- Frontend tests: `pnpm test` passed with 202 tests.
+- Frontend build: `pnpm build` passed.
+- Docker runtime: `docker compose up --build --wait` passed; `app`, `frontend`, and `postgres` were healthy.
+- API smoke: `/actuator/health` returned `UP`, `admin` / `admin` login returned `200`, `/api/auth/me` returned `admin` with `ADMIN`, wrong password returned `401`, repeated wrong password returned `429`, and logout returned `204`.
+- Frontend smoke: `http://localhost:5173/cabinet/login` returned successfully.

@@ -8,11 +8,14 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import { i18n } from './i18n'
 import { router } from './router'
+import { useAuthStore } from './stores/auth'
 import './styles/globals.css'
 
-function bootstrap(): void {
+async function bootstrap(): Promise<void> {
   const app = createApp(App)
-  app.use(createPinia())
+  const pinia = createPinia()
+  app.use(pinia)
+  await useAuthStore().bootstrapFromStoredToken()
   app.use(router)
   app.use(i18n)
 
@@ -24,4 +27,4 @@ function bootstrap(): void {
   app.mount('#app')
 }
 
-bootstrap()
+void bootstrap()

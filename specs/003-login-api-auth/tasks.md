@@ -19,10 +19,10 @@
 
 **Purpose**: Add shared dependencies and configuration required before auth implementation.
 
-- [ ] T001 Add Spring Security OAuth2 Resource Server and JOSE dependencies in `build.gradle.kts`
-- [ ] T002 Add local JWT issuer, signing secret, and 8-hour expiration properties in `src/main/resources/application-local.properties`
-- [ ] T003 [P] Add auth API base URL and localStorage key constants in `frontend/cabinet/src/api/auth-service.ts`
-- [ ] T004 [P] Add authentication quickstart references to local runtime docs in `README.md`
+- [X] T001 Add Spring Security OAuth2 Resource Server and JOSE dependencies in `build.gradle.kts`
+- [X] T002 Add local JWT issuer, signing secret, and 8-hour expiration properties in `src/main/resources/application-local.properties`
+- [X] T003 [P] Add auth API base URL and localStorage key constants in `frontend/cabinet/src/api/auth-service.ts`
+- [X] T004 [P] Add authentication quickstart references to local runtime docs in `README.md`
 
 ---
 
@@ -32,21 +32,21 @@
 
 **Critical**: No user story work should begin until this phase is complete.
 
-- [ ] T005 Create Flyway migration for `app_user`, `app_role`, `app_user_role`, and `auth_audit_event` tables in `src/main/resources/db/migration/V2__create_auth_tables.sql`
-- [ ] T006 [P] Create `UserAccount` domain model and login normalization in `src/main/kotlin/com/ctfind/productioncontrol/auth/domain/UserAccount.kt`
-- [ ] T007 [P] Create `Role` domain model and `ADMIN` role code in `src/main/kotlin/com/ctfind/productioncontrol/auth/domain/Role.kt`
-- [ ] T008 [P] Create `AuthenticationAuditEvent` domain model and event/outcome enums in `src/main/kotlin/com/ctfind/productioncontrol/auth/domain/AuthenticationAuditEvent.kt`
-- [ ] T009 [P] Create `LoginThrottlePolicy` domain model for runtime failure buckets in `src/main/kotlin/com/ctfind/productioncontrol/auth/domain/LoginThrottlePolicy.kt`
-- [ ] T010 [P] Define auth application ports in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticationPorts.kt`
-- [ ] T011 [P] Define auth application result and command types in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticationModels.kt`
-- [ ] T012 [P] Create JPA auth entities and mappings in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/AuthJpaEntities.kt`
-- [ ] T013 [P] Create JPA auth repositories in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/AuthJpaRepositories.kt`
-- [ ] T014 Create persistence adapters for user, role, and audit ports in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/AuthPersistenceAdapters.kt`
-- [ ] T015 Create JWT issuer and decoder configuration in `src/main/kotlin/com/ctfind/productioncontrol/infrastructure/security/JwtSecurityConfig.kt`
-- [ ] T016 Update API-only stateless Bearer security rules in `src/main/kotlin/com/ctfind/productioncontrol/config/SecurityConfig.kt`
-- [ ] T017 [P] Create shared JSON error response DTO in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthErrorResponse.kt`
-- [ ] T018 [P] Add backend security regression tests for no form login or Basic Auth challenge in `src/test/kotlin/com/ctfind/productioncontrol/config/SecurityConfigTests.kt`
-- [ ] T019 [P] Add migration smoke test for auth tables in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/AuthMigrationTests.kt`
+- [X] T005 Create Flyway migration for `app_user`, `app_role`, `app_user_role`, and `auth_audit_event` tables in `src/main/resources/db/migration/V2__create_auth_tables.sql`
+- [X] T006 [P] Create `UserAccount` domain model and login normalization in `src/main/kotlin/com/ctfind/productioncontrol/auth/domain/UserAccount.kt`
+- [X] T007 [P] Create `Role` domain model and `ADMIN` role code in `src/main/kotlin/com/ctfind/productioncontrol/auth/domain/Role.kt`
+- [X] T008 [P] Create `AuthenticationAuditEvent` domain model and event/outcome enums in `src/main/kotlin/com/ctfind/productioncontrol/auth/domain/AuthenticationAuditEvent.kt`
+- [X] T009 [P] Create `LoginThrottlePolicy` domain model for runtime failure buckets in `src/main/kotlin/com/ctfind/productioncontrol/auth/domain/LoginThrottlePolicy.kt`
+- [X] T010 [P] Define auth application ports in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticationPorts.kt`
+- [X] T011 [P] Define auth application result and command types in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticationModels.kt`
+- [X] T012 [P] Create JPA auth entities and mappings in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/AuthJpaEntities.kt`
+- [X] T013 [P] Create JPA auth repositories in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/AuthJpaRepositories.kt`
+- [X] T014 Create persistence adapters for user, role, and audit ports in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/AuthPersistenceAdapters.kt`
+- [X] T015 Create JWT issuer and decoder configuration in `src/main/kotlin/com/ctfind/productioncontrol/infrastructure/security/JwtSecurityConfig.kt`
+- [X] T016 Update API-only stateless Bearer security rules in `src/main/kotlin/com/ctfind/productioncontrol/config/SecurityConfig.kt`
+- [X] T017 [P] Create shared JSON error response DTO in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthErrorResponse.kt`
+- [X] T018 [P] Add backend security regression tests for no form login or Basic Auth challenge in `src/test/kotlin/com/ctfind/productioncontrol/config/SecurityConfigTests.kt`
+- [X] T019 [P] Add migration smoke test for auth tables in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/AuthMigrationTests.kt`
 
 **Checkpoint**: Auth schema, domain/application boundaries, persistence adapters, JWT infrastructure, and API-only security baseline are ready.
 
@@ -60,24 +60,24 @@
 
 ### Tests for User Story 1
 
-- [ ] T020 [P] [US1] Add seed idempotency tests for `admin` and `ADMIN` role in `src/test/kotlin/com/ctfind/productioncontrol/auth/application/LocalAdminSeedUseCaseTests.kt`
-- [ ] T021 [P] [US1] Add successful login API test for `POST /api/auth/login` in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthControllerLoginTests.kt`
-- [ ] T022 [P] [US1] Add frontend auth service success test for `/api/auth/login` in `frontend/cabinet/tests/unit/api/auth-service.test.ts`
-- [ ] T023 [P] [US1] Add frontend login page success routing test in `frontend/cabinet/tests/unit/pages/login-page.test.ts`
+- [X] T020 [P] [US1] Add seed idempotency tests for `admin` and `ADMIN` role in `src/test/kotlin/com/ctfind/productioncontrol/auth/application/LocalAdminSeedUseCaseTests.kt`
+- [X] T021 [P] [US1] Add successful login API test for `POST /api/auth/login` in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthControllerLoginTests.kt`
+- [X] T022 [P] [US1] Add frontend auth service success test for `/api/auth/login` in `frontend/cabinet/tests/unit/api/auth-service.test.ts`
+- [X] T023 [P] [US1] Add frontend login page success routing test in `frontend/cabinet/tests/unit/pages/login-page.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T024 [US1] Implement password hashing configuration in `src/main/kotlin/com/ctfind/productioncontrol/infrastructure/security/PasswordSecurityConfig.kt`
-- [ ] T025 [US1] Implement local admin seed use case in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/LocalAdminSeedUseCase.kt`
-- [ ] T026 [US1] Run local admin seed on local profile startup in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/LocalAdminSeedRunner.kt`
-- [ ] T027 [US1] Implement authenticate user use case for valid credentials and JWT response in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticateUserUseCase.kt`
-- [ ] T028 [US1] Implement auth request and response DTOs in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthDtos.kt`
-- [ ] T029 [US1] Implement `POST /api/auth/login` endpoint in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthController.kt`
-- [ ] T030 [US1] Replace placeholder login call with `/api/auth/login` in `frontend/cabinet/src/api/auth-service.ts`
-- [ ] T031 [US1] Persist successful login token and user state in `frontend/cabinet/src/stores/auth.ts`
-- [ ] T032 [US1] Redirect after successful login to sanitized target or `/cabinet` in `frontend/cabinet/src/stores/auth.ts`
-- [ ] T033 [US1] Update login i18n copy to remove placeholder-only behavior in `frontend/cabinet/src/i18n/ru.ts` and `frontend/cabinet/src/i18n/en.ts`
-- [ ] T034 [US1] Verify seeded login API smoke scenario from `specs/003-login-api-auth/quickstart.md`
+- [X] T024 [US1] Implement password hashing configuration in `src/main/kotlin/com/ctfind/productioncontrol/infrastructure/security/PasswordSecurityConfig.kt`
+- [X] T025 [US1] Implement local admin seed use case in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/LocalAdminSeedUseCase.kt`
+- [X] T026 [US1] Run local admin seed on local profile startup in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/LocalAdminSeedRunner.kt`
+- [X] T027 [US1] Implement authenticate user use case for valid credentials and JWT response in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticateUserUseCase.kt`
+- [X] T028 [US1] Implement auth request and response DTOs in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthDtos.kt`
+- [X] T029 [US1] Implement `POST /api/auth/login` endpoint in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthController.kt`
+- [X] T030 [US1] Replace placeholder login call with `/api/auth/login` in `frontend/cabinet/src/api/auth-service.ts`
+- [X] T031 [US1] Persist successful login token and user state in `frontend/cabinet/src/stores/auth.ts`
+- [X] T032 [US1] Redirect after successful login to sanitized target or `/cabinet` in `frontend/cabinet/src/stores/auth.ts`
+- [X] T033 [US1] Update login i18n copy to remove placeholder-only behavior in `frontend/cabinet/src/i18n/ru.ts` and `frontend/cabinet/src/i18n/en.ts`
+- [X] T034 [US1] Verify seeded login API smoke scenario from `specs/003-login-api-auth/quickstart.md`
 
 **Checkpoint**: User Story 1 works independently: clean local data seeds one admin account, backend login returns a Bearer token, and frontend login reaches a protected cabinet page.
 
@@ -91,20 +91,20 @@
 
 ### Tests for User Story 2
 
-- [ ] T035 [P] [US2] Add backend authenticated `/api/auth/me` and unauthorized tests in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthControllerMeTests.kt`
-- [ ] T036 [P] [US2] Add Bearer token security filter tests for protected API access in `src/test/kotlin/com/ctfind/productioncontrol/config/SecurityConfigBearerTests.kt`
-- [ ] T037 [P] [US2] Add frontend token bootstrap and refresh tests in `frontend/cabinet/tests/unit/stores/auth.test.ts`
-- [ ] T038 [P] [US2] Add router guard return-path tests in `frontend/cabinet/tests/unit/router/auth-guard.test.ts`
+- [X] T035 [P] [US2] Add backend authenticated `/api/auth/me` and unauthorized tests in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthControllerMeTests.kt`
+- [X] T036 [P] [US2] Add Bearer token security filter tests for protected API access in `src/test/kotlin/com/ctfind/productioncontrol/config/SecurityConfigBearerTests.kt`
+- [X] T037 [P] [US2] Add frontend token bootstrap and refresh tests in `frontend/cabinet/tests/unit/stores/auth.test.ts`
+- [X] T038 [P] [US2] Add router guard return-path tests in `frontend/cabinet/tests/unit/router/auth-guard.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T039 [US2] Implement authenticated principal mapping from JWT claims in `src/main/kotlin/com/ctfind/productioncontrol/infrastructure/security/JwtAuthenticationMapper.kt`
-- [ ] T040 [US2] Implement `GET /api/auth/me` endpoint in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthController.kt`
-- [ ] T041 [US2] Attach Bearer token to shared frontend HTTP client requests in `frontend/cabinet/src/api/frappe-client.ts`
-- [ ] T042 [US2] Bootstrap frontend auth state from `localStorage` and `/api/auth/me` in `frontend/cabinet/src/stores/auth.ts`
-- [ ] T043 [US2] Clear invalid or expired stored token on `401` in `frontend/cabinet/src/stores/auth.ts`
-- [ ] T044 [US2] Align cabinet route guard role checks with backend `ADMIN` role code in `frontend/cabinet/src/router/index.ts`
-- [ ] T045 [US2] Verify protected-route return and refresh behavior from `specs/003-login-api-auth/quickstart.md`
+- [X] T039 [US2] Implement authenticated principal mapping from JWT claims in `src/main/kotlin/com/ctfind/productioncontrol/infrastructure/security/JwtAuthenticationMapper.kt`
+- [X] T040 [US2] Implement `GET /api/auth/me` endpoint in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthController.kt`
+- [X] T041 [US2] Attach Bearer token to shared frontend HTTP client requests in `frontend/cabinet/src/api/frappe-client.ts`
+- [X] T042 [US2] Bootstrap frontend auth state from `localStorage` and `/api/auth/me` in `frontend/cabinet/src/stores/auth.ts`
+- [X] T043 [US2] Clear invalid or expired stored token on `401` in `frontend/cabinet/src/stores/auth.ts`
+- [X] T044 [US2] Align cabinet route guard role checks with backend `ADMIN` role code in `frontend/cabinet/src/router/index.ts`
+- [X] T045 [US2] Verify protected-route return and refresh behavior from `specs/003-login-api-auth/quickstart.md`
 
 **Checkpoint**: User Story 2 works independently: protected routes redirect when unauthenticated, return safely after login, and accept valid Bearer tokens without browser login prompts.
 
@@ -118,23 +118,23 @@
 
 ### Tests for User Story 3
 
-- [ ] T046 [P] [US3] Add invalid and blank login API tests in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthControllerFailureTests.kt`
-- [ ] T047 [P] [US3] Add throttle policy tests for repeated login/IP failures in `src/test/kotlin/com/ctfind/productioncontrol/auth/application/LoginThrottlePolicyTests.kt`
-- [ ] T048 [P] [US3] Add authentication audit tests for success, failure, logout, and seed events in `src/test/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticationAuditTests.kt`
-- [ ] T049 [P] [US3] Add frontend invalid and throttled login tests in `frontend/cabinet/tests/unit/api/auth-service.test.ts`
-- [ ] T050 [P] [US3] Add frontend logout token-removal test in `frontend/cabinet/tests/unit/stores/auth.test.ts`
+- [X] T046 [P] [US3] Add invalid and blank login API tests in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthControllerFailureTests.kt`
+- [X] T047 [P] [US3] Add throttle policy tests for repeated login/IP failures in `src/test/kotlin/com/ctfind/productioncontrol/auth/application/LoginThrottlePolicyTests.kt`
+- [X] T048 [P] [US3] Add authentication audit tests for success, failure, logout, and seed events in `src/test/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticationAuditTests.kt`
+- [X] T049 [P] [US3] Add frontend invalid and throttled login tests in `frontend/cabinet/tests/unit/api/auth-service.test.ts`
+- [X] T050 [P] [US3] Add frontend logout token-removal test in `frontend/cabinet/tests/unit/stores/auth.test.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T051 [US3] Implement failure, disabled-account, and validation branches in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticateUserUseCase.kt`
-- [ ] T052 [US3] Implement in-memory login/IP throttle service in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/LoginThrottleService.kt`
-- [ ] T053 [US3] Return `400`, `401`, and `429` auth errors from `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthController.kt`
-- [ ] T054 [US3] Implement audit recording for login success, login failure, logout, and seed in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticationAuditService.kt`
-- [ ] T055 [US3] Implement `POST /api/auth/logout` endpoint in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthController.kt`
-- [ ] T056 [US3] Map backend auth errors to `invalid`, `rateLimit`, and `network` outcomes in `frontend/cabinet/src/api/auth-service.ts`
-- [ ] T057 [US3] Remove stored token and clear auth state on logout in `frontend/cabinet/src/stores/auth.ts`
-- [ ] T058 [US3] Update login error i18n for retry-later and generic failure in `frontend/cabinet/src/i18n/ru.ts` and `frontend/cabinet/src/i18n/en.ts`
-- [ ] T059 [US3] Verify failed login, throttling, and logout smoke scenarios from `specs/003-login-api-auth/quickstart.md`
+- [X] T051 [US3] Implement failure, disabled-account, and validation branches in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticateUserUseCase.kt`
+- [X] T052 [US3] Implement in-memory login/IP throttle service in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/LoginThrottleService.kt`
+- [X] T053 [US3] Return `400`, `401`, and `429` auth errors from `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthController.kt`
+- [X] T054 [US3] Implement audit recording for login success, login failure, logout, and seed in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticationAuditService.kt`
+- [X] T055 [US3] Implement `POST /api/auth/logout` endpoint in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthController.kt`
+- [X] T056 [US3] Map backend auth errors to `invalid`, `rateLimit`, and `network` outcomes in `frontend/cabinet/src/api/auth-service.ts`
+- [X] T057 [US3] Remove stored token and clear auth state on logout in `frontend/cabinet/src/stores/auth.ts`
+- [X] T058 [US3] Update login error i18n for retry-later and generic failure in `frontend/cabinet/src/i18n/ru.ts` and `frontend/cabinet/src/i18n/en.ts`
+- [X] T059 [US3] Verify failed login, throttling, and logout smoke scenarios from `specs/003-login-api-auth/quickstart.md`
 
 **Checkpoint**: User Story 3 works independently: bad credentials and throttled attempts never authenticate, logout clears local state, and auth audit records are present without sensitive data.
 
@@ -144,13 +144,13 @@
 
 **Purpose**: Final verification, documentation, and cleanup across the full feature.
 
-- [ ] T060 [P] Update frontend README authentication notes in `frontend/cabinet/README.md`
-- [ ] T061 [P] Update root local runtime authentication instructions in `README.md`
-- [ ] T062 Run backend test suite and record result for this feature in `specs/003-login-api-auth/quickstart.md`
-- [ ] T063 Run frontend test and build commands and record result for this feature in `specs/003-login-api-auth/quickstart.md`
-- [ ] T064 Run Docker Compose fresh-start smoke check and record result for this feature in `specs/003-login-api-auth/quickstart.md`
-- [ ] T065 Review API-only behavior, audit coverage, and local-MVP security caveats against `specs/003-login-api-auth/plan.md`
-- [ ] T066 Ensure no legacy Frappe login endpoint is used in `frontend/cabinet/src/api/auth-service.ts`
+- [X] T060 [P] Update frontend README authentication notes in `frontend/cabinet/README.md`
+- [X] T061 [P] Update root local runtime authentication instructions in `README.md`
+- [X] T062 Run backend test suite and record result for this feature in `specs/003-login-api-auth/quickstart.md`
+- [X] T063 Run frontend test and build commands and record result for this feature in `specs/003-login-api-auth/quickstart.md`
+- [X] T064 Run Docker Compose fresh-start smoke check and record result for this feature in `specs/003-login-api-auth/quickstart.md`
+- [X] T065 Review API-only behavior, audit coverage, and local-MVP security caveats against `specs/003-login-api-auth/plan.md`
+- [X] T066 Ensure no legacy Frappe login endpoint is used in `frontend/cabinet/src/api/auth-service.ts`
 
 ---
 

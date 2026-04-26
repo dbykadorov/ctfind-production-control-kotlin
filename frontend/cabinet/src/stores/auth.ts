@@ -11,12 +11,13 @@ import type { LoginOutcome } from '@/api/auth-service'
 import type { BootPayload, PermissionFlags } from '@/api/types/domain'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { loginViaCabinet, logoutFromCabinet } from '@/api/auth-service'
+import { AUTH_TOKEN_STORAGE_KEY, fetchAuthenticatedUser, loginViaCabinet, logoutFromCabinet } from '@/api/auth-service'
 import { readBoot } from '@/api/boot'
 import { buildPermissions } from '@/api/composables/use-permissions'
 import { frappeCall, onSessionExpired } from '@/api/frappe-client'
 import { disconnectSocket } from '@/api/socket'
 import { useNavigationStore } from '@/stores/navigation'
+import { sanitizeFrom } from '@/utils/url'
 
 const GUEST = 'Guest'
 
@@ -93,6 +94,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function logout(): Promise<void> {
     await logoutFromCabinet()
+    window.localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY)
     user.value = null
     roles.value = []
     sessionExpired.value = false
@@ -107,9 +109,6 @@ export const useAuthStore = defineStore('auth', () => {
   /**
    * Выполнить логин через Кабинет-форму (009-cabinet-custom-login).
    *
-   * В текущем feature-slice реальный success невозможен: сервис возвращает
-   * placeholder error, а store не создает сессию и не делает redirect.
-   *
    * @param usr Логин (email).
    * @param pwd Пароль.
    * @param targetUrl Куда редиректить после успеха (приходит из `?from=` query).
@@ -120,9 +119,37 @@ export const useAuthStore = defineStore('auth', () => {
     pwd: string,
     targetUrl: string | null | undefined,
   ): Promise<LoginOutcome> {
-    void targetUrl
     const outcome = await loginViaCabinet(usr, pwd)
+    if (outcome.kind === 'success') {
+      window.localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, outcome.accessToken)
+      user.value = outcome.user.login
+      roles.value = [...outcome.user.roles]
+      sessionExpired.value = false
+      const safe = sanitizeFrom(targetUrl) ?? '/cabinet'
+      window.location.assign(safe)
+    }
     return outcome
+  }
+
+  async function bootstrapFromStoredToken(): Promise<boolean> {
+    const token = window.localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)
+    if (!token)
+      return false
+
+    try {
+      const session = await fetchAuthenticatedUser(token)
+      user.value = session.login
+      roles.value = [...session.roles]
+      sessionExpired.value = false
+      return true
+    }
+    catch {
+      window.localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY)
+      user.value = null
+      roles.value = []
+      sessionExpired.value = true
+      return false
+    }
   }
 
   /**
@@ -170,6 +197,7 @@ export const useAuthStore = defineStore('auth', () => {
     clearSessionExpired,
     rememberRedirect,
     login,
+    bootstrapFromStoredToken,
     logout,
     refreshBoot,
   }

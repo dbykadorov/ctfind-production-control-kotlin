@@ -94,4 +94,11 @@ describe('router guard (009)', () => {
     await router.push('/cabinet/orders/new')
     expect(router.currentRoute.value.name).toBe('orders.new')
   })
+
+  it('правило 5: backend ADMIN role обходит RBAC', async () => {
+    authState.roles = ['ADMIN']
+    authState.permissions = { isAdmin: false }
+    await router.push('/cabinet/orders/new')
+    expect(router.currentRoute.value.name).toBe('orders.new')
+  })
 })

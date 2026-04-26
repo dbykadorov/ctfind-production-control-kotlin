@@ -1,0 +1,2 @@
+ALTER TABLE app_user_role
+    ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
