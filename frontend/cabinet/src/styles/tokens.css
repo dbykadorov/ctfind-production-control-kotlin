@@ -1,0 +1,201 @@
+/**
+ * Design tokens — единый источник правды для палитры, типографики, радиусов и motion
+ * Кабинета CTfind. Меняем только здесь; Tailwind мостит через tailwind.config.js.
+ *
+ * История:
+ *   - 007-cabinet-dashboard-theme: dark/light темы, 5 sidebar gradient-пресетов.
+ *   - 010-cabinet-layout-rework: floating-card model (navy bg + amber accent +
+ *     белая card), новые layout-токены (--card-radius, --sidebar-width-*,
+ *     --header-height и т.п.), sidebar-preset 'none' (default), scoped-перебивка
+ *     fg-токенов внутри `.cabinet-card` для контраста на белом фоне.
+ *
+ * См. specs/010-cabinet-layout-rework/research.md §R-004 / §R-008,
+ *     specs/010-cabinet-layout-rework/contracts/design-tokens.contract.md.
+ */
+
+:root,
+[data-theme='dark'] {
+  /* === 010: Brand — amber palette =========================================== */
+  --c-brand-50: #fff8e1;
+  --c-brand-100: #ffecb3;
+  --c-brand-500: #f5c842;
+  --c-brand-600: #c4a035;
+  --c-brand-700: #8c6f26;
+
+  /* === 010: App background (viewport + sidebar) ============================ */
+  --bg-app: #1a2235;
+  /* Legacy alias для обратной совместимости с фичами 006/007 (Tailwind `bg-bg`). */
+  --c-bg: var(--bg-app);
+
+  /* 010 (PAM-rework, post-MVP): viewport-фон рендерится как линейный градиент
+     сверху-вниз (как `--main-bg` в PAM UC: #3e445b → #131723). Сам `--bg-app`
+     остаётся solid-цветом для tooltip/inverse, чтобы не ломать соседние токены.
+     Стопы подобраны под navy-палитру CTfind (а не серый PAM): сверху насыщенный
+     navy, снизу почти чёрный — спад заметный, как на эталоне UC. */
+  --bg-app-grad-top: #313a55;
+  --bg-app-grad-bottom: #0a0d18;
+
+  /* === 010: Surface — белая card в обеих темах ============================== */
+  --c-surface: #ffffff;
+  --c-elevated: #ffffff;
+  --c-overlay: rgb(0 0 0 / 0.6);
+
+  /* === Foreground — по умолчанию для navy-фона sidebar ====================== */
+  --c-fg-strong: #ffffff;
+  --c-fg: #d2d3da;
+  --c-fg-muted: #9a9aaf;
+  --c-fg-inverse: #1a2235;
+
+  --c-border: #34374d;
+  --c-border-strong: #454868;
+
+  --c-status-new: #1d8cf8;
+  --c-status-progress: #ff8d72;
+  --c-status-ready: #00f2c3;
+  --c-status-shipped: #9a9aaf;
+
+  --c-danger: #fd5d93;
+  --c-warning: #ff8d72;
+  --c-success: #00f2c3;
+
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+
+  --font-sans: 'Inter Variable', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration: 180ms;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 1px 3px rgb(0 0 0 / 0.4);
+  --shadow-elevated: 0 8px 24px rgb(0 0 0 / 0.55), 0 2px 6px rgb(0 0 0 / 0.4);
+
+  /* === 010: Layout-токены (floating-card model, contracts/design-tokens) === */
+  --card-radius: 24px;
+  --card-margin: 16px;
+  --card-shadow: -8px 0 10px -7px rgb(0 0 0 / 0.5);
+
+  --sidebar-width-expanded: 280px;
+  --sidebar-width-collapsed: 80px;
+
+  --header-height: 75px;
+  --topbar-icon-size: 45px;
+
+  --transition-base: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Sidebar label fade-out при collapse (US2, contracts/sidebar-tooltip §6).
+     Чуть быстрее, чем width-transition, чтобы текст исчез до полного схлопывания. */
+  --sidebar-label-fade: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Tooltip — floating подсказка справа от иконки в свёрнутом sidebar (US2). */
+  --tooltip-bg: #1a2235;
+  --tooltip-fg: #ffffff;
+
+  /* Sidebar gradient — defaults для пресета 'ocean' (легаси 007). */
+  --sidebar-grad-top: #1d8cf8;
+  --sidebar-grad-bottom: #3358f4;
+}
+
+[data-theme='light'] {
+  /* === 010: Brand — amber palette (та же, что в dark) ====================== */
+  --c-brand-50: #fff8e1;
+  --c-brand-100: #ffecb3;
+  --c-brand-500: #f5c842;
+  --c-brand-600: #c4a035;
+  --c-brand-700: #8c6f26;
+
+  /* === 010: App background (light) ========================================= */
+  --bg-app: #f1f2f8;
+  --c-bg: var(--bg-app);
+
+  /* 010 (PAM-rework, post-MVP): light-тема визуально уравнена с dark на уровне
+     layout — viewport-фон AppShell остаётся тёмным navy-градиентом, чтобы белая
+     card читалась как elevated-поверхность одинаково в обеих темах. Тёмная
+     тема как самостоятельная визуальная схема — следующий шаг (см. backlog).
+     `--bg-app` (solid) оставлен светлым: используется в body/login, но AppShell
+     перекрывает его `.cabinet-shell` градиентом. */
+  --bg-app-grad-top: #313a55;
+  --bg-app-grad-bottom: #0a0d18;
+
+  --c-surface: #ffffff;
+  --c-elevated: #ffffff;
+  --c-overlay: rgb(15 19 36 / 0.4);
+
+  /* === Foreground — text/border/muted сохраняются с фичи 007 =============== */
+  /* (см. clarification Q3 в spec.md: эволюционная стратегия — меняем только */
+  /*  bg/surface/brand, остальные fg/border-токены оставляем для совместимости) */
+  --c-fg-strong: #1a1f36;
+  --c-fg: #3d4257;
+  --c-fg-muted: #707388;
+  --c-fg-inverse: #ffffff;
+
+  --c-border: #e6e8ed;
+  --c-border-strong: #c8ccd6;
+
+  --c-status-new: #2563eb;
+  --c-status-progress: #ea580c;
+  --c-status-ready: #16a34a;
+  --c-status-shipped: #6b7280;
+
+  --c-danger: #dc2626;
+  --c-warning: #d97706;
+  --c-success: #16a34a;
+
+  --shadow-card: 0 1px 2px rgb(15 19 36 / 0.04), 0 1px 3px rgb(15 19 36 / 0.06);
+  --shadow-elevated: 0 8px 24px rgb(15 19 36 / 0.08), 0 2px 6px rgb(15 19 36 / 0.04);
+
+  /* Tooltip в light theme: остаётся тёмным (контраст на любом фоне). */
+  --tooltip-bg: #1a2235;
+  --tooltip-fg: #ffffff;
+}
+
+/* === 010 §R-004: Scoped-перебивка fg внутри белой card в dark theme ======= */
+/* В dark theme дефолтные fg-токены оптимизированы для navy-фона sidebar.    */
+/* Внутри .cabinet-card (белый фон) перебиваем их на тёмные значения, чтобы  */
+/* контент (KPI, заголовки, тексты) оставался читаемым. WCAG AA контраст.   */
+[data-theme='dark'] .cabinet-card {
+  --c-fg-strong: #1a1f36;
+  --c-fg: #3d4257;
+  --c-fg-muted: #707388;
+  --c-fg-inverse: #ffffff;
+  --c-border: #e6e8ed;
+  --c-border-strong: #c8ccd6;
+  color: var(--c-fg);
+}
+
+/* === Sidebar gradient presets (007) ====================================== */
+/* Применяются на <html data-sidebar-preset='...'>; читаются в .cabinet-sidebar-bg. */
+/* 010 §R-008: пресет 'none' = solid var(--bg-app) (sidebar сливается с body); */
+/* остальные пресеты сохранены как user-override поверх solid фона.           */
+
+[data-sidebar-preset='none'] {
+  /* Без gradient — Sidebar.vue не применит .cabinet-sidebar-bg класс при 'none'. */
+  --sidebar-grad-top: var(--bg-app);
+  --sidebar-grad-bottom: var(--bg-app);
+}
+
+[data-sidebar-preset='ocean'] {
+  --sidebar-grad-top: #1d8cf8;
+  --sidebar-grad-bottom: #3358f4;
+}
+
+[data-sidebar-preset='sunset'] {
+  --sidebar-grad-top: #ff8d72;
+  --sidebar-grad-bottom: #ff6491;
+}
+
+[data-sidebar-preset='forest'] {
+  --sidebar-grad-top: #00f2c3;
+  --sidebar-grad-bottom: #0098f0;
+}
+
+[data-sidebar-preset='twilight'] {
+  --sidebar-grad-top: #ba54f5;
+  --sidebar-grad-bottom: #3358f4;
+}
+
+[data-sidebar-preset='graphite'] {
+  --sidebar-grad-top: #344675;
+  --sidebar-grad-bottom: #263148;
+}

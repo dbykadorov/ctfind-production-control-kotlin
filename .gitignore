@@ -48,3 +48,10 @@ docker-data/
 *.log.*
 tmp/
 *.tmp
+
+### Frontend ###
+frontend/**/node_modules/
+frontend/**/dist/
+frontend/**/.vite/
+frontend/**/coverage/
+frontend/**/*.tsbuildinfo

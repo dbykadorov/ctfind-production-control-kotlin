@@ -1,0 +1,13 @@
+/**
+ * Self-hosted шрифты Кабинета.
+ *
+ * Источник — npm-пакеты @fontsource-variable/*, которые Vite сам бандлит
+ * (woff2 кладётся в public/cabinet_app/assets/<hash>.woff2). Никаких ручных
+ * скачиваний и `public/fonts/` не требуется.
+ *
+ * Подключаем weight-axis (`wght`) — самый универсальный variable-вариант.
+ * Если нужен будет italic или optical-size, импорты дополняем здесь же.
+ */
+
+@import '@fontsource-variable/inter/wght.css';
+@import '@fontsource-variable/jetbrains-mono/wght.css';

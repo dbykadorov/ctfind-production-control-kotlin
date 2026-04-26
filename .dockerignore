@@ -19,3 +19,4 @@ tmp/
 *.tmp
 
 specs/
+frontend/

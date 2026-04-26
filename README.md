@@ -14,6 +14,7 @@ New Spring Boot + Kotlin attempt for CTfind Production Control.
 - Spring Data JPA
 - Bean Validation
 - Actuator
+- Vue 3 / Vite / TypeScript frontend cabinet
 
 ## Local Checks
 
@@ -23,15 +24,24 @@ Requires JDK 21 available on `PATH` or via `JAVA_HOME`.
 ./gradlew test
 ```
 
+Frontend checks live in the migrated cabinet app:
+
+```bash
+cd frontend/cabinet
+pnpm test
+pnpm build
+```
+
 ## Local Container Runtime
 
-The primary local startup path is containerized. It starts the backend app and
-its local PostgreSQL dependency without requiring a host JDK.
+The primary local startup path is containerized. It starts the backend app,
+the migrated frontend cabinet, and the local PostgreSQL dependency without
+requiring a host JDK or host Node runtime.
 
 ### Prerequisites
 
 - Docker Compose-compatible container runtime installed and running
-- Host ports `8080` and `15432` available
+- Host ports `8080`, `15432`, and `5173` available
 
 Check runtime availability:
 
@@ -54,7 +64,16 @@ Detached mode:
 docker compose up --build --wait
 ```
 
-The application is available at `http://localhost:8080`.
+The backend API is available at `http://localhost:8080`.
+
+The migrated cabinet frontend is available at:
+
+```text
+http://localhost:5173/cabinet/login
+```
+
+The old Frappe cabinet source was used only as a migration reference. Runtime
+startup must not read from or require the old Frappe project.
 
 ### Readiness Check
 
@@ -74,6 +93,12 @@ Application logs:
 
 ```bash
 docker compose logs -f app
+```
+
+Frontend logs:
+
+```bash
+docker compose logs -f frontend
 ```
 
 Database logs:
@@ -115,18 +140,23 @@ docker info
 If ports are occupied:
 
 ```bash
-ss -ltnp | rg ':8080|:15432'
+ss -ltnp | rg ':8080|:15432|:5173'
 ```
 
 If the health check is not `UP`, inspect both services:
 
 ```bash
 docker compose logs app
+docker compose logs frontend
 docker compose logs postgres
 ```
 
 Common causes are a still-starting database, datasource configuration errors,
 or a port conflict on the host.
+
+If the cabinet login screen is blank, inspect browser console and frontend logs.
+Common causes are missing migrated assets, a stale Vite base path, or a legacy
+Frappe integration running before login render.
 
 ## Product Context
 

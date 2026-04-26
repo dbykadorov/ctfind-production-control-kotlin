@@ -50,7 +50,7 @@ curl http://localhost:8080/actuator/health
 Expected response includes:
 
 ```json
-{"status":"UP"}
+{"groups":["liveness","readiness"],"status":"UP"}
 ```
 
 ## 4. Open Frontend Login

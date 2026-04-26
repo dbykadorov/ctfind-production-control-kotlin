@@ -1,0 +1,148 @@
+/**
+ * Доменные типы Кабинета — поверх `frappe.generated.ts` (auto-generated из DocType JSON).
+ * См. specs/006-spa-cabinet-ui/data-model.md §2.2.
+ *
+ * ВАЖНО: статусы Customer Order ХРАНЯТСЯ В БД как русские строки (см. data-model 005).
+ */
+
+import type { CustomerOrder, CustomerOrderItem, CustomerOrderStatusChange } from './frappe.generated'
+
+export type OrderStatus = 'новый' | 'в работе' | 'готов' | 'отгружен'
+
+/** Сериализованный snapshot для `window.__BOOT__`. */
+export interface BootPayload {
+  user: string
+  roles: string[]
+  language: string
+  csrfToken: string
+  siteName: string
+  deskUrl: string
+  cabinetVersion: string
+}
+
+/** Item в списке заказов: проекция Customer Order + join customer.customer_name. */
+export interface OrderListItem {
+  name: string
+  status: OrderStatus
+  delivery_date: string
+  modified: string
+  creation: string
+  customer: string
+  customer_name?: string
+  created_by_staff?: string
+}
+
+/** Фильтры списка заказов в UI. Сохраняются в `ui` store + URL-query. */
+export interface OrderFilters {
+  status?: OrderStatus
+  customer?: string
+  dateFrom?: string
+  dateTo?: string
+  search?: string
+  /** 007: «Все активные» — статус ≠ отгружен (deeplink из KPI-карточек). */
+  activeOnly?: boolean
+  /** 007: «Только просроченные» — delivery_date < сегодня И статус ≠ отгружен. */
+  overdue?: boolean
+}
+
+/**
+ * Editability state, рассчитываемый на клиенте на основе статуса и ролей.
+ * Серверная инфорсмент-логика — единственный источник истины (см. orders.py
+ * `enforce_status_based_editability`); это лишь UX-зеркало (FR-018, FR-019).
+ */
+export interface OrderEditability {
+  canEdit: boolean
+  readonly: boolean
+  frozen: string[]
+  reason: 'shipped' | 'after-new' | 'admin-correction' | 'none'
+  hint?: string
+}
+
+/** Workflow-переход, доступный текущему пользователю (frappe.model.workflow). */
+export interface OrderTransition {
+  action: string
+  state: string
+  next_state: string
+  allowed: string
+  allow_self_approval?: 0 | 1
+}
+
+/** Запись истории — объединённый Version + Customer Order Status Change. */
+export type TimelineEntryKind = 'edit' | 'status'
+
+export interface TimelineEntry {
+  id: string
+  kind: TimelineEntryKind
+  at: string
+  actor: string
+  actor_label?: string
+  via_admin_correction?: boolean
+  details: ParsedDiff[]
+}
+
+/** Разбор Frappe Version.data (JSON-строка с changed/added/removed). */
+export interface ParsedDiff {
+  fieldname: string
+  field_label?: string
+  from_value?: unknown
+  to_value?: unknown
+}
+
+export type ApiErrorKind =
+  | 'validation'
+  | 'permission'
+  | 'conflict'
+  | 'network'
+  | 'server'
+  | 'session-expired'
+  | 'unknown'
+
+export interface ApiError {
+  kind: ApiErrorKind
+  message: string
+  /** Frappe `exc_type` (например, `TimestampMismatchError`, `PermissionError`). */
+  excType?: string
+  /** HTTP-статус ответа. */
+  status?: number
+  /** Поле формы, к которому относится ошибка валидации. */
+  field?: string
+  /** Полный сырой ответ сервера для логирования. */
+  raw?: unknown
+}
+
+/**
+ * Permission flags, рассчитанные из `auth.roles`. Соответствуют ролям из 003-auth-rbac.
+ * См. specs/006-spa-cabinet-ui/data-model.md §3.1.
+ */
+export interface PermissionFlags {
+  isAdmin: boolean
+  isOrderManager: boolean
+  isShopSupervisor: boolean
+  isExecutor: boolean
+  isWarehouse: boolean
+  isOrderCorrector: boolean
+  /** Имеет ли пользователь хоть одну роль, для которой Кабинет показывает рабочую область. */
+  canSeeCabinetWorkArea: boolean
+  /** Может ли отменить freeze-логику (admin correction). На MVP = isAdmin. */
+  hasOrderCorrection: boolean
+  /** Может ли создавать/редактировать заказы. */
+  canManageOrders: boolean
+  /** Может ли создавать/редактировать клиентов. */
+  canManageCustomers: boolean
+}
+
+/**
+ * Generic UI state machine для экранов с асинхронной загрузкой.
+ * См. data-model.md §4.
+ */
+export type ScreenState =
+  | 'idle'
+  | 'loading'
+  | 'loaded'
+  | 'empty'
+  | 'saving'
+  | 'saved'
+  | 'conflict'
+  | 'error'
+
+export type { CustomerOrder, CustomerOrderItem, CustomerOrderStatusChange }

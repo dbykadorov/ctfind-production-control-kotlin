@@ -46,6 +46,28 @@ services:
     networks:
       - ctfind-local
 
+  frontend:
+    image: ctfind-production-control-cabinet:local
+    container_name: ctfind-contlin-frontend
+    build:
+      context: ./frontend/cabinet
+      dockerfile: Dockerfile
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      CABINET_API_HOST: http://app:8080
+    ports:
+      - "5173:5173"
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:5173/cabinet/login').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    networks:
+      - ctfind-local
+
 networks:
   ctfind-local:
     name: ctfind-contlin-local

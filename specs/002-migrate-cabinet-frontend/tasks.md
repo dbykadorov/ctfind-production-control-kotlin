@@ -17,10 +17,10 @@
 
 **Purpose**: Prepare frontend workspace boundaries and source migration rules.
 
-- [ ] T001 Create migrated frontend root directory structure in `frontend/cabinet/`
-- [ ] T002 Create frontend-specific Docker ignore rules for Node, Vite, coverage, logs, and local env files in `frontend/cabinet/.dockerignore`
-- [ ] T003 [P] Add frontend-generated artifacts and local env files to repository ignore rules in `.gitignore`
-- [ ] T004 [P] Add frontend cabinet section and source reference notes to `README.md`
+- [x] T001 Create migrated frontend root directory structure in `frontend/cabinet/`
+- [x] T002 Create frontend-specific Docker ignore rules for Node, Vite, coverage, logs, and local env files in `frontend/cabinet/.dockerignore`
+- [x] T003 [P] Add frontend-generated artifacts and local env files to repository ignore rules in `.gitignore`
+- [x] T004 [P] Add frontend cabinet section and source reference notes to `README.md`
 
 ---
 
@@ -30,15 +30,15 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T005 Copy legacy `package.json`, `pnpm-lock.yaml`, and package metadata from `/home/dbykadorov/Work/projects/ctfind-production-control/frappe-bench/apps/ctfind_production_control/cabinet_app/` to `frontend/cabinet/`
-- [ ] T006 Copy legacy TypeScript, Vite, Tailwind, PostCSS, ESLint, Vitest, and UI component config files from `/home/dbykadorov/Work/projects/ctfind-production-control/frappe-bench/apps/ctfind_production_control/cabinet_app/` to `frontend/cabinet/`
-- [ ] T007 Copy legacy application source tree from `/home/dbykadorov/Work/projects/ctfind-production-control/frappe-bench/apps/ctfind_production_control/cabinet_app/src/` to `frontend/cabinet/src/`
-- [ ] T008 Copy legacy tests from `/home/dbykadorov/Work/projects/ctfind-production-control/frappe-bench/apps/ctfind_production_control/cabinet_app/tests/` to `frontend/cabinet/tests/`
-- [ ] T009 Copy legacy public assets and scripts from `/home/dbykadorov/Work/projects/ctfind-production-control/frappe-bench/apps/ctfind_production_control/cabinet_app/public/` and `/home/dbykadorov/Work/projects/ctfind-production-control/frappe-bench/apps/ctfind_production_control/cabinet_app/scripts/` to `frontend/cabinet/public/` and `frontend/cabinet/scripts/`
-- [ ] T010 Remove any copied dependency/build artifacts such as `frontend/cabinet/node_modules/`, `frontend/cabinet/dist/`, and `frontend/cabinet/.vite/`
-- [ ] T011 Adapt package name, description, and local scripts for the new platform in `frontend/cabinet/package.json`
-- [ ] T012 Adapt Vite base path, output settings, host binding, and dev server port for standalone local serving in `frontend/cabinet/vite.config.ts`
-- [ ] T013 Ensure frontend TypeScript aliases and include paths still resolve under `frontend/cabinet/tsconfig.json`
+- [x] T005 Copy legacy `package.json`, `pnpm-lock.yaml`, and package metadata from `/home/dbykadorov/Work/projects/ctfind-production-control/frappe-bench/apps/ctfind_production_control/cabinet_app/` to `frontend/cabinet/`
+- [x] T006 Copy legacy TypeScript, Vite, Tailwind, PostCSS, ESLint, Vitest, and UI component config files from `/home/dbykadorov/Work/projects/ctfind-production-control/frappe-bench/apps/ctfind_production_control/cabinet_app/` to `frontend/cabinet/`
+- [x] T007 Copy legacy application source tree from `/home/dbykadorov/Work/projects/ctfind-production-control/frappe-bench/apps/ctfind_production_control/cabinet_app/src/` to `frontend/cabinet/src/`
+- [x] T008 Copy legacy tests from `/home/dbykadorov/Work/projects/ctfind-production-control/frappe-bench/apps/ctfind_production_control/cabinet_app/tests/` to `frontend/cabinet/tests/`
+- [x] T009 Copy legacy public assets and scripts from `/home/dbykadorov/Work/projects/ctfind-production-control/frappe-bench/apps/ctfind_production_control/cabinet_app/public/` and `/home/dbykadorov/Work/projects/ctfind-production-control/frappe-bench/apps/ctfind_production_control/cabinet_app/scripts/` to `frontend/cabinet/public/` and `frontend/cabinet/scripts/`
+- [x] T010 Remove any copied dependency/build artifacts such as `frontend/cabinet/node_modules/`, `frontend/cabinet/dist/`, and `frontend/cabinet/.vite/`
+- [x] T011 Adapt package name, description, and local scripts for the new platform in `frontend/cabinet/package.json`
+- [x] T012 Adapt Vite base path, output settings, host binding, and dev server port for standalone local serving in `frontend/cabinet/vite.config.ts`
+- [x] T013 Ensure frontend TypeScript aliases and include paths still resolve under `frontend/cabinet/tsconfig.json`
 
 **Checkpoint**: Migrated frontend source exists in the new repository and can be configured without reading from the old Frappe directory.
 
@@ -52,13 +52,13 @@
 
 ### Implementation for User Story 1
 
-- [ ] T014 [US1] Create frontend container build/runtime definition in `frontend/cabinet/Dockerfile`
-- [ ] T015 [US1] Add `frontend` service, container name, build context, host port `5173`, and network wiring in `docker-compose.yml`
-- [ ] T016 [US1] Add frontend service healthcheck for `http://localhost:5173/cabinet/login` in `docker-compose.yml`
-- [ ] T017 [US1] Ensure root startup command includes backend, postgres, and frontend readiness in `docker-compose.yml`
-- [ ] T018 [P] [US1] Update frontend runtime URL, service name, and logs documentation in `README.md`
-- [ ] T019 [P] [US1] Align frontend runtime expectations with implementation in `specs/002-migrate-cabinet-frontend/contracts/frontend-runtime.md`
-- [ ] T020 [US1] Verify US1 Docker startup and login URL against `specs/002-migrate-cabinet-frontend/quickstart.md`
+- [x] T014 [US1] Create frontend container build/runtime definition in `frontend/cabinet/Dockerfile`
+- [x] T015 [US1] Add `frontend` service, container name, build context, host port `5173`, and network wiring in `docker-compose.yml`
+- [x] T016 [US1] Add frontend service healthcheck for `http://localhost:5173/cabinet/login` in `docker-compose.yml`
+- [x] T017 [US1] Ensure root startup command includes backend, postgres, and frontend readiness in `docker-compose.yml`
+- [x] T018 [P] [US1] Update frontend runtime URL, service name, and logs documentation in `README.md`
+- [x] T019 [P] [US1] Align frontend runtime expectations with implementation in `specs/002-migrate-cabinet-frontend/contracts/frontend-runtime.md`
+- [x] T020 [US1] Verify US1 Docker startup and login URL against `specs/002-migrate-cabinet-frontend/quickstart.md`
 
 **Checkpoint**: User Story 1 is complete when the migrated frontend service starts with root Docker workflow and displays login.
 
@@ -72,14 +72,14 @@
 
 ### Implementation for User Story 2
 
-- [ ] T021 [US2] Replace legacy Frappe login success path with deterministic unavailable-auth placeholder in `frontend/cabinet/src/api/auth-service.ts`
-- [ ] T022 [US2] Ensure auth store remains unauthenticated after login submit in `frontend/cabinet/src/stores/auth.ts`
-- [ ] T023 [US2] Add or adjust i18n message for authorization-not-connected state in `frontend/cabinet/src/i18n/ru.ts`
-- [ ] T024 [P] [US2] Add or adjust English i18n message for authorization-not-connected state in `frontend/cabinet/src/i18n/en.ts`
-- [ ] T025 [US2] Ensure login page renders the placeholder error message without redirecting to workspace in `frontend/cabinet/src/pages/auth/LoginPage.vue`
-- [ ] T026 [US2] Ensure unauthenticated protected routes still redirect to login in `frontend/cabinet/src/router/index.ts`
-- [ ] T027 [P] [US2] Update login placeholder behavior contract with final message key and route behavior in `specs/002-migrate-cabinet-frontend/contracts/login-placeholder.md`
-- [ ] T028 [US2] Verify US2 login placeholder behavior against `specs/002-migrate-cabinet-frontend/quickstart.md`
+- [x] T021 [US2] Replace legacy Frappe login success path with deterministic unavailable-auth placeholder in `frontend/cabinet/src/api/auth-service.ts`
+- [x] T022 [US2] Ensure auth store remains unauthenticated after login submit in `frontend/cabinet/src/stores/auth.ts`
+- [x] T023 [US2] Add or adjust i18n message for authorization-not-connected state in `frontend/cabinet/src/i18n/ru.ts`
+- [x] T024 [P] [US2] Add or adjust English i18n message for authorization-not-connected state in `frontend/cabinet/src/i18n/en.ts`
+- [x] T025 [US2] Ensure login page renders the placeholder error message without redirecting to workspace in `frontend/cabinet/src/pages/auth/LoginPage.vue`
+- [x] T026 [US2] Ensure unauthenticated protected routes still redirect to login in `frontend/cabinet/src/router/index.ts`
+- [x] T027 [P] [US2] Update login placeholder behavior contract with final message key and route behavior in `specs/002-migrate-cabinet-frontend/contracts/login-placeholder.md`
+- [x] T028 [US2] Verify US2 login placeholder behavior against `specs/002-migrate-cabinet-frontend/quickstart.md`
 
 **Checkpoint**: User Story 2 is complete when login is interactive, never authenticates, and shows the placeholder message.
 
@@ -93,13 +93,13 @@
 
 ### Implementation for User Story 3
 
-- [ ] T029 [US3] Review copied `frontend/cabinet/src/components/`, `frontend/cabinet/src/pages/`, and `frontend/cabinet/src/styles/` trees for missing source files from the legacy cabinet app
-- [ ] T030 [US3] Review copied `frontend/cabinet/src/assets/`, `frontend/cabinet/public/`, and font/style references for missing login assets
-- [ ] T031 [US3] Isolate legacy Frappe API client startup side effects in `frontend/cabinet/src/api/frappe-client.ts`
-- [ ] T032 [P] [US3] Isolate legacy Frappe socket startup side effects in `frontend/cabinet/src/api/socket.ts`
-- [ ] T033 [US3] Isolate legacy boot/session assumptions so login render does not require Frappe boot payload in `frontend/cabinet/src/api/boot.ts`
-- [ ] T034 [P] [US3] Update migrated frontend README or migration notes in `frontend/cabinet/README.md`
-- [ ] T035 [US3] Verify preserved UI content and legacy integration boundaries against `specs/002-migrate-cabinet-frontend/data-model.md`
+- [x] T029 [US3] Review copied `frontend/cabinet/src/components/`, `frontend/cabinet/src/pages/`, and `frontend/cabinet/src/styles/` trees for missing source files from the legacy cabinet app
+- [x] T030 [US3] Review copied `frontend/cabinet/src/assets/`, `frontend/cabinet/public/`, and font/style references for missing login assets
+- [x] T031 [US3] Isolate legacy Frappe API client startup side effects in `frontend/cabinet/src/api/frappe-client.ts`
+- [x] T032 [P] [US3] Isolate legacy Frappe socket startup side effects in `frontend/cabinet/src/api/socket.ts`
+- [x] T033 [US3] Isolate legacy boot/session assumptions so login render does not require Frappe boot payload in `frontend/cabinet/src/api/boot.ts`
+- [x] T034 [P] [US3] Update migrated frontend README or migration notes in `frontend/cabinet/README.md`
+- [x] T035 [US3] Verify preserved UI content and legacy integration boundaries against `specs/002-migrate-cabinet-frontend/data-model.md`
 
 **Checkpoint**: User Story 3 is complete when the copied UI source is preserved and Frappe-specific integrations do not block initial login rendering.
 
@@ -109,12 +109,12 @@
 
 **Purpose**: Final consistency checks across Docker, docs, and migrated source.
 
-- [ ] T036 [P] Align `specs/002-migrate-cabinet-frontend/quickstart.md` with implemented frontend URL, service names, and verification commands
-- [ ] T037 [P] Align `specs/002-migrate-cabinet-frontend/contracts/frontend-runtime.md` with implemented Compose service, healthcheck, and browser URL
-- [ ] T038 Run frontend package install/build or equivalent container build verification and document any intentional skipped legacy tests in `frontend/cabinet/package.json`
-- [ ] T039 Run `docker compose config` and record any required documentation adjustments in `README.md`
-- [ ] T040 Run full local quickstart flow and update `README.md` if observed frontend behavior differs from documented behavior
-- [ ] T041 Run `git status --short` and ensure `frontend/cabinet/node_modules/`, build output, coverage, and logs are not tracked in `.gitignore`
+- [x] T036 [P] Align `specs/002-migrate-cabinet-frontend/quickstart.md` with implemented frontend URL, service names, and verification commands
+- [x] T037 [P] Align `specs/002-migrate-cabinet-frontend/contracts/frontend-runtime.md` with implemented Compose service, healthcheck, and browser URL
+- [x] T038 Run frontend package install/build or equivalent container build verification and document any intentional skipped legacy tests in `frontend/cabinet/package.json`
+- [x] T039 Run `docker compose config` and record any required documentation adjustments in `README.md`
+- [x] T040 Run full local quickstart flow and update `README.md` if observed frontend behavior differs from documented behavior
+- [x] T041 Run `git status --short` and ensure `frontend/cabinet/node_modules/`, build output, coverage, and logs are not tracked in `.gitignore`
 
 ---
 

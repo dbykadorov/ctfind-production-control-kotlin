@@ -42,7 +42,7 @@ Expected result:
 - no successful authentication is recorded;
 - user remains on the login screen;
 - protected cabinet routes remain unavailable;
-- UI shows a clear message equivalent to: "Authorization is not connected yet";
+- UI shows message key `login.error.unavailable`, equivalent to: "Authorization is not connected yet";
 - no old Frappe `/api/method/login` request is made.
 
 ## Empty Form Behavior
