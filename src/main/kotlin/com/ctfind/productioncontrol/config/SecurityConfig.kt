@@ -2,8 +2,10 @@ package com.ctfind.productioncontrol.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.Customizer.withDefaults
+import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
@@ -17,8 +19,15 @@ class SecurityConfig {
 					.requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
 					.anyRequest().authenticated()
 			}
-			.httpBasic(withDefaults())
-			.formLogin(withDefaults())
+			.exceptionHandling { exceptions ->
+				exceptions.authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+			}
+			.sessionManagement { sessions ->
+				sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			}
+			.csrf { csrf ->
+				csrf.disable()
+			}
 
 		return http.build()
 	}
