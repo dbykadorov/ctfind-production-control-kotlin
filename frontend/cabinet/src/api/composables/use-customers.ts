@@ -1,15 +1,13 @@
 import type { ApiError } from '@/api/types/domain'
-import type { Customer } from '@/api/types/frappe.generated'
+import type { Customer } from '@/api/types/legacy.generated'
 /**
  * Composable для подбора клиентов (Customer DocType).
- * MVP: один search-call, страничная пагинация на стороне Frappe (limit_page_length).
+ * Spring endpoint для клиентов ещё не реализован, поэтому поиск пока возвращает
+ * пустой список без сетевого запроса.
  * См. data-model.md §2.1 (Customer), spec 005.
  */
 import { onScopeDispose, ref, type Ref, shallowRef, type ShallowRef } from 'vue'
-import { frappeCall } from '@/api/frappe-client'
-import { toApiError } from '@/utils/errors'
 
-const CUSTOMER_DOCTYPE = 'Customer'
 const SEARCH_FIELDS = ['name', 'customer_name', 'status', 'phone', 'contact_person']
 
 interface UseCustomersSearchResult {
@@ -41,30 +39,9 @@ export function useCustomersSearch(options: { onlyActive?: boolean } = {}): UseC
           ['customer_name', 'like', `%${trimmed}%`],
         ]
       : undefined
-    try {
-      const rows = await frappeCall<Customer[]>(
-        'frappe.client.get_list',
-        {
-          doctype: CUSTOMER_DOCTYPE,
-          fields: SEARCH_FIELDS,
-          filters,
-          ...(orFilters ? { or_filters: orFilters } : {}),
-          order_by: 'customer_name asc',
-          limit_page_length: 25,
-        },
-        { signal: abortController.signal },
-      )
-      data.value = rows
-    }
-    catch (e) {
-      if ((e as { name?: string }).name === 'CanceledError')
-        return
-      error.value = toApiError(e)
-      data.value = []
-    }
-    finally {
-      loading.value = false
-    }
+    void { fields: SEARCH_FIELDS, filters, orFilters }
+    data.value = []
+    loading.value = false
   }
 
   onScopeDispose(() => abortController?.abort())
@@ -74,5 +51,6 @@ export function useCustomersSearch(options: { onlyActive?: boolean } = {}): UseC
 
 /** Получить одного клиента по name. */
 export async function getCustomer(name: string): Promise<Customer> {
-  return frappeCall<Customer>('frappe.client.get', { doctype: CUSTOMER_DOCTYPE, name }, { method: 'GET' })
+  void name
+  throw new Error('Customer API is not implemented yet')
 }

@@ -33,7 +33,7 @@ describe('useNavigationStore (010 US3)', () => {
 
   it('push игнорирует пути вне /cabinet/* (NS-G3)', () => {
     const nav = useNavigationStore()
-    nav.push('/api/method/test')
+    nav.push('/api/legacy/test')
     nav.push('/desk')
     nav.push('/assets/foo.svg')
     expect(nav.stack).toEqual([])

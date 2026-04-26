@@ -1,12 +1,12 @@
 /**
- * Маппинг сырых HTTP-ошибок Frappe в типизированные `ApiError`-варианты.
+ * Маппинг сырых HTTP-ошибок backend в типизированные `ApiError`-варианты.
  * См. specs/006-spa-cabinet-ui/contracts/http-endpoints.md §Error Shape.
  */
 
 import type { AxiosError } from 'axios'
 import type { ApiError, ApiErrorKind } from '@/api/types/domain'
 
-interface FrappeErrorPayload {
+interface BackendErrorPayload {
   exc_type?: string
   exception?: string
   exc?: string
@@ -50,7 +50,7 @@ function safeParseServerMessages(raw: string | undefined): string[] {
   }
 }
 
-function detectKind(status: number | undefined, payload: FrappeErrorPayload): ApiErrorKind {
+function detectKind(status: number | undefined, payload: BackendErrorPayload): ApiErrorKind {
   if (payload.exc_type && EXC_TYPE_TO_KIND[payload.exc_type]) {
     return EXC_TYPE_TO_KIND[payload.exc_type]!
   }
@@ -66,7 +66,7 @@ function detectKind(status: number | undefined, payload: FrappeErrorPayload): Ap
   return 'unknown'
 }
 
-function pickMessage(payload: FrappeErrorPayload): string {
+function pickMessage(payload: BackendErrorPayload): string {
   if (payload.message && typeof payload.message === 'string')
     return payload.message
   const fromServer = safeParseServerMessages(payload._server_messages)
@@ -79,7 +79,7 @@ function pickMessage(payload: FrappeErrorPayload): string {
 
 /** Преобразовать AxiosError в типизированную `ApiError`. */
 export function toApiError(error: unknown): ApiError {
-  const axiosErr = error as AxiosError<FrappeErrorPayload>
+  const axiosErr = error as AxiosError<BackendErrorPayload>
   if (axiosErr?.isAxiosError) {
     if (!axiosErr.response) {
       return {
@@ -88,7 +88,7 @@ export function toApiError(error: unknown): ApiError {
         raw: axiosErr.message,
       }
     }
-    const payload: FrappeErrorPayload = (axiosErr.response.data ?? {}) as FrappeErrorPayload
+    const payload: BackendErrorPayload = (axiosErr.response.data ?? {}) as BackendErrorPayload
     const kind = detectKind(axiosErr.response.status, payload)
     return {
       kind,

@@ -3,7 +3,7 @@
  * Запуск: pnpm gen:types
  *
  * Источник: ../ctfind_production_control/production_control/doctype/<dt>/<dt>.json
- * Цель:     src/api/types/frappe.generated.ts
+ * Цель:     src/api/types/legacy.generated.ts
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
@@ -14,7 +14,7 @@ const DOCTYPE_ROOT = resolve(
   __dirname,
   '../../ctfind_production_control/production_control/doctype',
 )
-const OUT_FILE = resolve(__dirname, '../src/api/types/frappe.generated.ts')
+const OUT_FILE = resolve(__dirname, '../src/api/types/legacy.generated.ts')
 
 interface DocTypeField {
   fieldname: string
@@ -158,7 +158,7 @@ function emit(doctypes: ParsedDoctype[]): string {
   lines.push(' * Источник: production_control/doctype/<dt>/<dt>.json')
   lines.push(' */')
   lines.push('')
-  lines.push('export interface FrappeBaseDoc {')
+  lines.push('export interface BaseDoc {')
   lines.push('  name: string')
   lines.push('  owner: string')
   lines.push('  creation: string')
@@ -174,7 +174,7 @@ function emit(doctypes: ParsedDoctype[]): string {
 
   for (const dt of doctypes) {
     lines.push(`/** DocType: ${dt.rawName}${dt.isChildTable ? ' (child table)' : ''} */`)
-    lines.push(`export interface ${dt.pyClassName} extends FrappeBaseDoc {`)
+    lines.push(`export interface ${dt.pyClassName} extends BaseDoc {`)
     for (const f of dt.fields) {
       const tsType = fieldTypeToTs(f, childTableLookup)
       const opt = isFieldOptional(f) ? '?' : ''
@@ -185,8 +185,8 @@ function emit(doctypes: ParsedDoctype[]): string {
     lines.push('')
   }
 
-  lines.push('/** Frappe core: Version */')
-  lines.push('export interface FrappeVersion {')
+  lines.push('/** Core audit/version row */')
+  lines.push('export interface VersionRow {')
   lines.push('  name: string')
   lines.push('  ref_doctype: string')
   lines.push('  docname: string')

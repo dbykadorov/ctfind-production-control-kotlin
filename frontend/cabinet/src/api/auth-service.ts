@@ -1,15 +1,11 @@
 /**
  * Auth-сервис Кабинета.
- *
- * В feature-slice `002-migrate-cabinet-frontend` новая backend-авторизация ещё
- * не подключена. Форма входа остается интерактивной, но не вызывает старый
- * Frappe login endpoint и всегда возвращает понятный placeholder outcome.
  */
 
-import { httpClient } from './frappe-client'
+import { httpClient } from './api-client'
 
 export const AUTH_API_BASE_URL = '/api/auth'
-export const AUTH_TOKEN_STORAGE_KEY = 'ctfind.cabinet.authToken'
+export { AUTH_TOKEN_STORAGE_KEY } from './api-client'
 
 /**
  * Текстовые ключи для i18n-вывода ошибок на форме. Каждый ключ соответствует
@@ -18,8 +14,8 @@ export const AUTH_TOKEN_STORAGE_KEY = 'ctfind.cabinet.authToken'
 export type LoginErrorKey =
   | 'invalid' // неверный логин ИЛИ неверный пароль (одно сообщение, see SC-004)
   | 'disabled' // user.enabled = 0
-  | 'rateLimit' // 429 / 417 от Frappe
-  | 'twoFa' // user has 2FA enabled — направляем в Frappe Desk (см. spec Q3=C)
+  | 'rateLimit' // 429
+  | 'twoFa' // reserved for future auth policies
   | 'network' // 5xx или сетевая ошибка
   | 'empty' // пустые поля (validation на клиенте)
   | 'unavailable' // auth API временно недоступен
@@ -27,12 +23,9 @@ export type LoginErrorKey =
 /**
  * Дискриминированное объединение результата вызова `loginViaCabinet`.
  *
- * - `success` — оставлен в типе для будущей auth-интеграции, но не возвращается
- *   в текущем feature-slice.
  * - `error` — credential / disabled / rate-limit / network. Caller показывает
  *   inline-сообщение `login.error.<messageKey>`.
- * - `two-fa-required` — Frappe вернул `verification` payload. Caller должен
- *   показать сообщение `login.error.twoFa` со ссылкой на стандартную Frappe-форму.
+ * - `two-fa-required` — reserved branch for a future second-factor flow.
  */
 export type LoginOutcome =
   | ({ kind: 'success' } & LoginSuccessPayload)
@@ -59,7 +52,7 @@ export interface AuthenticatedUserSession extends AuthenticatedUserPayload {
 /**
  * Выполнить логин через форму Кабинета.
  *
- * @param usr Login (email или username, как требует Frappe).
+ * @param usr Login (email или username).
  * @param pwd Plaintext пароль.
  */
 export async function loginViaCabinet(usr: string, pwd: string): Promise<LoginOutcome> {
@@ -99,7 +92,7 @@ export async function fetchAuthenticatedUser(token: string): Promise<Authenticat
 }
 
 /**
- * Выполнить logout через стандартный Frappe endpoint. Не делает редирект —
+ * Выполнить logout. Не делает редирект —
  * caller (TopBar.vue) сам вызовет `window.location.assign('/cabinet/login')`
  * (см. research.md §R-008).
  */

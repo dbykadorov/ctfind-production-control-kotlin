@@ -3,7 +3,6 @@ import { onErrorCaptured } from 'vue'
 import { RouterView } from 'vue-router'
 import { Toaster } from 'vue-sonner'
 import { useTheme } from '@/api/composables/use-theme'
-import SessionExpiredOverlay from '@/pages/common/SessionExpiredOverlay.vue'
 import { useAuthStore } from '@/stores/auth'
 
 useAuthStore()
@@ -20,7 +19,6 @@ onErrorCaptured((err) => {
 
 <template>
   <RouterView />
-  <SessionExpiredOverlay />
   <Toaster
     position="top-right"
     rich-colors

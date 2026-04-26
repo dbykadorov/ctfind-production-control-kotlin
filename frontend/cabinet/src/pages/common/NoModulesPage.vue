@@ -7,8 +7,7 @@ const { t } = useI18n()
 const auth = useAuthStore()
 
 /**
- * 009-cabinet-custom-login: после logout всегда возвращаем пользователя
- * на /cabinet/login (а не на стандартный Frappe /login). См. T030.
+ * После logout всегда возвращаем пользователя на /cabinet/login.
  */
 async function logoutAndReturnToLogin(): Promise<void> {
   try {

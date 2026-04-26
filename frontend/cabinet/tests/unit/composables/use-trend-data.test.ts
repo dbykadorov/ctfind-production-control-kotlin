@@ -4,8 +4,7 @@
  *  - computeDeltaPct: корректное вычисление дельты и null при делении на 0;
  *  - константы периодов соответствуют контракту dashboard-stats.contract.md §3.
  *
- * Сетевые вызовы (frappeCall) и socket намеренно НЕ мокаются здесь —
- * тестируем только чистые helper-функции.
+ * Тестируем только чистые helper-функции.
  */
 
 import { describe, expect, it } from 'vitest'

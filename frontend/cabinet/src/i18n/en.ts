@@ -27,7 +27,7 @@ export const en = {
       invalid: 'Invalid login or password',
       disabled: 'This account is disabled. Please contact your administrator',
       rateLimit: 'Too many attempts. Please try again in a few minutes',
-      twoFa: 'Your account requires two-factor authentication. Please sign in via Frappe Desk',
+      twoFa: 'Your account requires two-factor authentication. Please contact an administrator',
       network: 'Could not reach the server. Check your connection and try again',
       empty: 'This field is required',
       unavailable: 'Authorization is temporarily unavailable. Please try again later',
@@ -36,7 +36,7 @@ export const en = {
       sessionExpired: 'Your session has expired. Please sign in again',
       capsLock: 'Caps Lock is on',
     },
-    noscript: 'Cabinet requires JavaScript. Please use the standard Frappe sign-in form',
+    noscript: 'Cabinet requires JavaScript. Please enable JavaScript and reload the page',
   },
   // 010-cabinet-layout-rework: page titles for TopBar (route.meta.title → i18n key).
   meta: {

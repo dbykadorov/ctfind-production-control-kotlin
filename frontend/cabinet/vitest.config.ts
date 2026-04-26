@@ -23,7 +23,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html'],
       include: ['src/**/*.{ts,vue}'],
-      exclude: ['src/api/types/frappe.generated.ts', 'src/components/ui/**'],
+      exclude: ['src/api/types/legacy.generated.ts', 'src/components/ui/**'],
     },
   },
 })

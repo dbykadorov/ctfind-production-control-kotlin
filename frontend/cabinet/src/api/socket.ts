@@ -1,73 +1,25 @@
 /**
- * Socket.IO singleton: подключение к Frappe realtime.
- * См. specs/006-spa-cabinet-ui/contracts/socket-events.md.
+ * Realtime boundary placeholder.
  *
- * Migration note (002-migrate-cabinet-frontend): socket не создается при import.
- * До новой realtime-интеграции login screen не должен вызывать getSocket().
+ * The Spring/Kotlin backend does not expose realtime events yet, so subscriptions
+ * are intentionally no-ops. Keeping this module preserves composable contracts
+ * without opening a websocket to an unavailable legacy service.
  */
-
-import type { Socket } from 'socket.io-client'
-import { io } from 'socket.io-client'
-import { readBoot } from './boot'
-
-let socketInstance: Socket | null = null
-
-function buildSocketUrl(): string {
-  if (typeof window === 'undefined')
-    return '/'
-  const { protocol, hostname, port } = window.location
-  if (import.meta.env.DEV) {
-    return `${protocol}//${hostname}:${port}`
-  }
-  return `${protocol}//${hostname}${port ? `:${port}` : ''}`
-}
-
-export function getSocket(): Socket {
-  if (socketInstance)
-    return socketInstance
-  const boot = readBoot()
-  socketInstance = io(buildSocketUrl(), {
-    path: '/socket.io',
-    withCredentials: true,
-    transports: ['websocket', 'polling'],
-    reconnection: true,
-    reconnectionAttempts: 10,
-    reconnectionDelay: 500,
-    reconnectionDelayMax: 5_000,
-    auth: {
-      sid: typeof document !== 'undefined' ? document.cookie : '',
-      user: boot.user,
-    },
-  })
-  return socketInstance
-}
 
 export type DocUpdateHandler = () => void
 
-/** Подписаться на изменения конкретного документа: `doc_update:<DocType>:<name>`. */
 export function subscribeDocUpdate(
-  doctype: string,
-  name: string,
-  handler: DocUpdateHandler,
+  _doctype: string,
+  _name: string,
+  _handler: DocUpdateHandler,
 ): () => void {
-  const socket = getSocket()
-  const event = `doc_update:${doctype}:${name}`
-  socket.on(event, handler)
-  return () => socket.off(event, handler)
+  return () => {}
 }
 
-/** Подписаться на изменения списка: `list_update:<DocType>`. */
-export function subscribeListUpdate(doctype: string, handler: DocUpdateHandler): () => void {
-  const socket = getSocket()
-  const event = `list_update:${doctype}`
-  socket.on(event, handler)
-  return () => socket.off(event, handler)
+export function subscribeListUpdate(_doctype: string, _handler: DocUpdateHandler): () => void {
+  return () => {}
 }
 
-/** Полное закрытие сокета (для logout). */
 export function disconnectSocket(): void {
-  if (!socketInstance)
-    return
-  socketInstance.disconnect()
-  socketInstance = null
+  // No active realtime connection in the current Spring-only runtime.
 }

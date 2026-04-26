@@ -5,7 +5,7 @@
  * Источник: production_control/doctype/<dt>/<dt>.json
  */
 
-export interface FrappeBaseDoc {
+export interface BaseDoc {
   name: string
   owner: string
   creation: string
@@ -19,7 +19,7 @@ export interface FrappeBaseDoc {
 }
 
 /** DocType: Access Audit Event */
-export interface AccessAuditEvent extends FrappeBaseDoc {
+export interface AccessAuditEvent extends BaseDoc {
   event_type: "login-success" | "login-failed" | "user-created" | "user-disabled" | "roles-changed" | "access-ended" // Event Type
   event_at: string // Event At
   source_surface?: "login-form" | "user-admin" | "role-admin" | "session-management" // Source Surface
@@ -30,7 +30,7 @@ export interface AccessAuditEvent extends FrappeBaseDoc {
 }
 
 /** DocType: Customer */
-export interface Customer extends FrappeBaseDoc {
+export interface Customer extends BaseDoc {
   customer_name: string // Наименование клиента
   status: "active" | "inactive" // Статус
   contact_person?: string // Контактное лицо
@@ -39,7 +39,7 @@ export interface Customer extends FrappeBaseDoc {
 }
 
 /** DocType: Customer Order */
-export interface CustomerOrder extends FrappeBaseDoc {
+export interface CustomerOrder extends BaseDoc {
   customer: string // Клиент
   delivery_date: string // Срок исполнения
   status: "новый" | "в работе" | "готов" | "отгружен" // Статус
@@ -50,14 +50,14 @@ export interface CustomerOrder extends FrappeBaseDoc {
 }
 
 /** DocType: Customer Order Item (child table) */
-export interface CustomerOrderItem extends FrappeBaseDoc {
+export interface CustomerOrderItem extends BaseDoc {
   item_name: string // Наименование
   quantity: number // Количество
   uom: string // Ед. измерения
 }
 
 /** DocType: Customer Order Status Change */
-export interface CustomerOrderStatusChange extends FrappeBaseDoc {
+export interface CustomerOrderStatusChange extends BaseDoc {
   order: string // Заказ
   from_status?: string // Из статуса
   to_status: string // В статус
@@ -68,7 +68,7 @@ export interface CustomerOrderStatusChange extends FrappeBaseDoc {
 }
 
 /** DocType: Staff Member */
-export interface StaffMember extends FrappeBaseDoc {
+export interface StaffMember extends BaseDoc {
   staff_code: string // Staff Code
   full_name: string // Full Name
   business_role_label?: string // Business Role Label
@@ -80,8 +80,8 @@ export interface StaffMember extends FrappeBaseDoc {
   linked_user?: string // Linked User
 }
 
-/** Frappe core: Version */
-export interface FrappeVersion {
+/** Core audit/version row */
+export interface VersionRow {
   name: string
   ref_doctype: string
   docname: string

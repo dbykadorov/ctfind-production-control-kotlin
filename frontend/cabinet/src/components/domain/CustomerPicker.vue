@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Customer } from '@/api/types/frappe.generated'
+import type { Customer } from '@/api/types/legacy.generated'
 import { Check, ChevronsUpDown, Loader2, Search, X } from 'lucide-vue-next'
 /**
  * Comboboxen для выбора клиента (Customer).

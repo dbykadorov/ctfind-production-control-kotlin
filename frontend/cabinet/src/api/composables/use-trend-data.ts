@@ -1,17 +1,13 @@
 /**
  * 007-cabinet-dashboard-theme: «Динамика заказов за 30 дней» (главный график).
- *
- * Запрашивает все Customer Order за последние 60 дней одним вызовом
- * frappe.client.get_list, делает дневной bucketing на клиенте и считает
- * delta30vsPrev30Pct (см. dashboard-stats.contract.md §3).
+ * Пока Spring endpoints для заказов не реализованы, строит пустую серию без
+ * сетевых запросов.
  */
 
 import type { OrderTrendPoint, OrderTrendSeries } from '@/api/types/dashboard'
 import type { ApiError } from '@/api/types/domain'
 import { onScopeDispose, ref, type Ref } from 'vue'
-import { frappeCall } from '@/api/frappe-client'
 import { subscribeListUpdate } from '@/api/socket'
-import { toApiError } from '@/utils/errors'
 
 const ORDER_DOCTYPE = 'Customer Order'
 const TREND_DAYS = 30
@@ -50,7 +46,7 @@ export function bucketByDay(rows: Array<{ creation: string }>, fromDate: Date, d
   for (const row of rows) {
     if (!row.creation)
       continue
-    // creation формат Frappe: "YYYY-MM-DD HH:MM:SS" — берём первые 10 символов.
+    // creation формат: "YYYY-MM-DD HH:MM:SS" — берём первые 10 символов.
     const day = row.creation.slice(0, 10)
     buckets.set(day, (buckets.get(day) ?? 0) + 1)
   }
@@ -76,7 +72,6 @@ export function useTrendData(): UseTrendDataResult {
   async function refetch(): Promise<void> {
     abortController?.abort()
     abortController = new AbortController()
-    const signal = abortController.signal
     loading.value = true
     error.value = null
 
@@ -85,39 +80,18 @@ export function useTrendData(): UseTrendDataResult {
     const fetchFrom = new Date(today)
     fetchFrom.setDate(fetchFrom.getDate() - (TREND_FETCH_DAYS - 1))
 
-    try {
-      const rows = await frappeCall<Array<{ creation: string }>>('frappe.client.get_list', {
-        doctype: ORDER_DOCTYPE,
-        fields: ['creation'],
-        filters: [['creation', '>=', dayKey(fetchFrom)]],
-        order_by: 'creation asc',
-        limit_page_length: TREND_PAGE_LIMIT,
-      }, { signal, method: 'GET' })
-
-      if (rows.length >= TREND_PAGE_LIMIT) {
-        console.warn('[use-trend-data] hit page limit; trend may be incomplete')
-      }
-
-      const series60 = bucketByDay(rows, fetchFrom, TREND_FETCH_DAYS)
-      const last30 = series60.slice(TREND_DAYS)
-      const prev30 = series60.slice(0, TREND_DAYS)
-      const totalLast30 = last30.reduce((acc, p) => acc + p.count, 0)
-      const totalPrev30 = prev30.reduce((acc, p) => acc + p.count, 0)
-      data.value = {
-        points: last30,
-        totalLast30,
-        totalPrev30,
-        delta30vsPrev30Pct: computeDeltaPct(totalLast30, totalPrev30),
-      }
+    const series60 = bucketByDay([], fetchFrom, TREND_FETCH_DAYS)
+    const last30 = series60.slice(TREND_DAYS)
+    const prev30 = series60.slice(0, TREND_DAYS)
+    const totalLast30 = last30.reduce((acc, p) => acc + p.count, 0)
+    const totalPrev30 = prev30.reduce((acc, p) => acc + p.count, 0)
+    data.value = {
+      points: last30,
+      totalLast30,
+      totalPrev30,
+      delta30vsPrev30Pct: computeDeltaPct(totalLast30, totalPrev30),
     }
-    catch (e) {
-      if ((e as { name?: string }).name === 'CanceledError')
-        return
-      error.value = toApiError(e)
-    }
-    finally {
-      loading.value = false
-    }
+    loading.value = false
   }
 
   void refetch()

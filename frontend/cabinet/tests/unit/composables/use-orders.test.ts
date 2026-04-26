@@ -4,8 +4,7 @@
  *  - построение or_filters для поиска;
  *  - публичные константы (page size, debounce) соответствуют контракту FR-014a.
  *
- * Сетевые вызовы (frappeCall) и realtime (subscribeListUpdate) намеренно мокаются
- * на уровне модулей — тесты проверяют только логику, не axios/socket.
+ * Тесты проверяют только чистую логику фильтров, не HTTP/realtime слой.
  */
 
 import type { OrderFilters } from '@/api/types/domain'
@@ -89,7 +88,7 @@ describe('use-orders / buildOrFilters', () => {
     })
   })
 
-  it('сохраняет регистр поискового запроса (Frappe LIKE регистронезависим в MariaDB)', () => {
+  it('сохраняет регистр поискового запроса', () => {
     expect(buildOrFilters('Заказ')).toEqual({
       or_filters: [
         ['name', 'like', '%Заказ%'],

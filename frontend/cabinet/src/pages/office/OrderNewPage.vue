@@ -5,7 +5,7 @@ import { ArrowLeft, Save } from 'lucide-vue-next'
 import { useForm } from 'vee-validate'
 /**
  * Создание нового заказа (US1, FR-016).
- * Vee-Validate + Zod (OrderCreateSchema). После успешного `frappe.client.insert`
+ * Vee-Validate + Zod (OrderCreateSchema). После успешного создания заказа
  * редирект на /cabinet/orders/<name>. Серверные ошибки `validation` маппятся
  * на `setErrors`; `permission` — toast и блокировка формы; прочие — toast.
  */

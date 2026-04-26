@@ -16,7 +16,7 @@ interface ItemRow {
   item_name: string
   quantity: number | null
   uom: string
-  /** Локальный id для v-for (Frappe `name` для существующих, uuid для новых). */
+  /** Локальный id для v-for (`name` для существующих, uuid для новых). */
   _key: string
 }
 

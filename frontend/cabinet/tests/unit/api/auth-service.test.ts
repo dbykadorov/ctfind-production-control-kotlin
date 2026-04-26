@@ -4,42 +4,37 @@
  * В новой Spring/Kotlin платформе:
  *   - valid credentials → POST /api/auth/login → success payload
  *   - empty fields → error.empty
- *   - Frappe `/api/method/login` не вызывается
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { AUTH_TOKEN_STORAGE_KEY } from '@/api/auth-service'
 
 const authClientMocks = vi.hoisted(() => ({
-  frappeCall: vi.fn(),
   post: vi.fn(),
 }))
 
-vi.mock('@/api/frappe-client', () => ({
-  frappeCall: authClientMocks.frappeCall,
+vi.mock('@/api/api-client', () => ({
+  AUTH_TOKEN_STORAGE_KEY: 'ctfind.cabinet.authToken',
   httpClient: {
     post: authClientMocks.post,
   },
-  onSessionExpired: vi.fn(),
 }))
 
-// ВАЖНО: импорт ПОСЛЕ vi.mock, чтобы внутренний `frappeCall` уже был замокан.
+// ВАЖНО: импорт ПОСЛЕ vi.mock, чтобы httpClient уже был замокан.
 const { loginViaCabinet, logoutFromCabinet } = await import('@/api/auth-service')
 
 describe('loginViaCabinet', () => {
   beforeEach(() => {
-    authClientMocks.frappeCall.mockReset()
     authClientMocks.post.mockReset()
   })
 
   it('пустой логин или пароль → error.empty без HTTP-вызова', async () => {
     expect(await loginViaCabinet('', 'pwd')).toEqual({ kind: 'error', messageKey: 'empty' })
     expect(await loginViaCabinet('user@x', '')).toEqual({ kind: 'error', messageKey: 'empty' })
-    expect(authClientMocks.frappeCall).not.toHaveBeenCalled()
     expect(authClientMocks.post).not.toHaveBeenCalled()
   })
 
-  it('valid credentials → success payload без Frappe login HTTP-вызова', async () => {
+  it('valid credentials → success payload', async () => {
     authClientMocks.post.mockResolvedValueOnce({
       data: {
         tokenType: 'Bearer',
@@ -65,7 +60,6 @@ describe('loginViaCabinet', () => {
       },
     })
     expect(authClientMocks.post).toHaveBeenCalledWith('/api/auth/login', { login: 'admin', password: 'admin' })
-    expect(authClientMocks.frappeCall).not.toHaveBeenCalled()
   })
 
   it('invalid credentials → error.invalid без authenticated state', async () => {

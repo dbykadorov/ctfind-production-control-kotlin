@@ -18,7 +18,7 @@ export default antfu(
       'dist',
       'coverage',
       'node_modules',
-      'src/api/types/frappe.generated.ts',
+      'src/api/types/legacy.generated.ts',
       'src/components/ui/**',
     ],
   },

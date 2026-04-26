@@ -2,9 +2,8 @@
  * Pinia store: текущий пользователь и сессия Кабинета.
  * См. specs/006-spa-cabinet-ui/data-model.md §3.1.
  *
- * Источник правды — boot-payload, инжектируемый сервером (см. www/cabinet/index.py).
- * Store также подключает обработчик 401 → переводит UI в состояние "session-expired"
- * без сброса draft'ов (FR-011).
+ * Store подключает обработчик 401 → переводит UI в состояние "session-expired"
+ * перед full-page redirect на страницу логина.
  */
 
 import type { LoginOutcome } from '@/api/auth-service'
@@ -14,7 +13,7 @@ import { computed, ref } from 'vue'
 import { AUTH_TOKEN_STORAGE_KEY, fetchAuthenticatedUser, loginViaCabinet, logoutFromCabinet } from '@/api/auth-service'
 import { readBoot } from '@/api/boot'
 import { buildPermissions } from '@/api/composables/use-permissions'
-import { frappeCall, onSessionExpired } from '@/api/frappe-client'
+import { onSessionExpired } from '@/api/api-client'
 import { disconnectSocket } from '@/api/socket'
 import { useNavigationStore } from '@/stores/navigation'
 import { sanitizeFrom } from '@/utils/url'
@@ -152,30 +151,14 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  /**
-   * Опциональный refresh boot-payload через `cabinet.boot.get_boot_payload`
-   * (см. contracts/http-endpoints.md). Если эндпоинт отсутствует — fallback к
-   * `frappe.client.get_logged_user`.
-   */
   async function refreshBoot(): Promise<void> {
-    try {
-      const payload = await frappeCall<BootPayload>(
-        'ctfind_production_control.production_control.cabinet.boot.get_boot_payload',
-        {},
-        { method: 'GET' },
-      )
-      applyBoot(payload)
-    }
-    catch {
-      const userName = await frappeCall<string>('frappe.auth.get_logged_user', {}, { method: 'GET' })
-      if (userName && userName !== GUEST) {
-        user.value = userName
-        sessionExpired.value = false
-      }
-    }
+    const token = window.localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)
+    if (!token)
+      return
+    await bootstrapFromStoredToken()
   }
 
-  // Регистрируем глобальный обработчик 401 → session-expired (без редиректа)
+  // Регистрируем глобальный обработчик 401: состояние сбрасывается до full-page redirect.
   onSessionExpired(() => markSessionExpired())
 
   return {

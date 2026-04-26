@@ -1,8 +1,7 @@
 /**
- * Composables для работы с заказами через Frappe-API.
- * Намеренно НЕ используем `frappe-ui` UI-компоненты — только идеологически близкий
- * data-layer (см. plan.md §Strategy). Внутри: чистый axios через `frappeCall` +
- * собственный кеш через Vue reactive refs (на MVP — без TanStack Query).
+ * Composables для работы с заказами.
+ * Spring endpoints для заказов ещё не реализованы, поэтому data-layer пока
+ * возвращает пустые состояния без сетевых запросов.
  */
 
 import type {
@@ -13,7 +12,6 @@ import type {
   ScreenState,
 } from '@/api/types/domain'
 import { onScopeDispose, ref, type Ref, shallowRef, type ShallowRef, watch } from 'vue'
-import { frappeCall } from '@/api/frappe-client'
 import { subscribeDocUpdate, subscribeListUpdate } from '@/api/socket'
 import { toApiError } from '@/utils/errors'
 
@@ -86,7 +84,7 @@ function buildOrFilters(search: string | undefined): Record<string, unknown> {
   }
 }
 
-interface FrappeListResponse {
+interface OrderListResponse {
   name: string
   status: OrderListItem['status']
   delivery_date: string
@@ -101,12 +99,11 @@ async function fetchOrdersListPage(
   filters: OrderFilters,
   start: number,
   pageSize: number,
-  signal?: AbortSignal,
+  _signal?: AbortSignal,
   orderBy?: UseOrdersListOptions['orderBy'],
 ): Promise<OrderListItem[]> {
   const orderClause = orderBy ? `${orderBy.field} ${orderBy.order}` : 'delivery_date asc, modified desc'
-  const params = {
-    doctype: ORDER_DOCTYPE,
+  void {
     fields: ORDER_LIST_FIELDS,
     ...buildFilterPayload(filters),
     ...buildOrFilters(filters.search),
@@ -114,7 +111,7 @@ async function fetchOrdersListPage(
     limit_start: start,
     limit_page_length: pageSize,
   }
-  const rows = await frappeCall<FrappeListResponse[]>('frappe.client.get_list', params, { signal })
+  const rows: OrderListResponse[] = []
   return rows.map(row => ({
     name: row.name,
     status: row.status,
@@ -128,20 +125,7 @@ async function fetchOrdersListPage(
 }
 
 async function fetchCustomerNames(rows: OrderListItem[]): Promise<OrderListItem[]> {
-  const uniq = Array.from(new Set(rows.map(r => r.customer).filter(Boolean)))
-  if (uniq.length === 0)
-    return rows
-  const names = await frappeCall<Array<{ name: string, customer_name: string }>>(
-    'frappe.client.get_list',
-    {
-      doctype: 'Customer',
-      fields: ['name', 'customer_name'],
-      filters: [['name', 'in', uniq]],
-      limit_page_length: uniq.length,
-    },
-  )
-  const map = new Map(names.map(n => [n.name, n.customer_name]))
-  return rows.map(r => ({ ...r, customer_name: map.get(r.customer) ?? r.customer_name ?? r.customer }))
+  return rows
 }
 
 export function useOrdersList(filters: Ref<OrderFilters>, options: UseOrdersListOptions = {}): UseOrdersListResult {
@@ -235,13 +219,8 @@ export function useOrder(name: Ref<string>): UseOrderResult {
     state.value = 'loading'
     error.value = null
     try {
-      const doc = await frappeCall<CustomerOrder>(
-        'frappe.client.get',
-        { doctype: ORDER_DOCTYPE, name: name.value },
-        { signal: abortController.signal, method: 'GET' },
-      )
-      data.value = doc
-      state.value = 'loaded'
+      data.value = null
+      state.value = 'empty'
     }
     catch (e) {
       if ((e as { name?: string }).name === 'CanceledError')
@@ -264,10 +243,8 @@ export function useOrder(name: Ref<string>): UseOrderResult {
       name: name.value,
     }
     try {
-      const updated = await frappeCall<CustomerOrder>('frappe.client.save', { doc })
-      data.value = updated
-      state.value = 'saved'
-      return updated
+      void doc
+      throw new Error('Order API is not implemented yet')
     }
     catch (e) {
       const apiErr = toApiError(e)
@@ -297,9 +274,8 @@ export function useOrder(name: Ref<string>): UseOrderResult {
 
 /** Создать новый заказ (insert), возвращает имя созданного документа. */
 export async function createOrder(payload: Partial<CustomerOrder>): Promise<CustomerOrder> {
-  return frappeCall<CustomerOrder>('frappe.client.insert', {
-    doc: { doctype: ORDER_DOCTYPE, ...payload },
-  })
+  void payload
+  throw new Error('Order API is not implemented yet')
 }
 
 export const ordersInternals = { LIST_PAGE_SIZE, buildFilterPayload, buildOrFilters, REALTIME_DEBOUNCE_MS }

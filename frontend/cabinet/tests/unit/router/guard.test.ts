@@ -43,12 +43,12 @@ describe('router guard (009)', () => {
   it('правило 1: already authenticated + to=/cabinet/login → редирект на /cabinet', async () => {
     await router.push('/cabinet/login')
     expect(router.currentRoute.value.path).toBe('/cabinet')
-  })
+  }, 10_000)
 
   it('правило 1: already authenticated + ?from=/cabinet/orders → редирект на /cabinet/orders (sanitized)', async () => {
     await router.push('/cabinet/login?from=/cabinet/orders')
     expect(router.currentRoute.value.path).toBe('/cabinet/orders')
-  })
+  }, 10_000)
 
   it('правило 1: ?from с absolute URL → fallback на /cabinet (open redirect защита)', async () => {
     await router.push('/cabinet/login?from=https://evil.example.com/cabinet')

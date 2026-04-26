@@ -39,7 +39,7 @@ describe('sanitizeFrom', () => {
   it('отвергает не-/cabinet пути', () => {
     expect(sanitizeFrom('/app')).toBeNull()
     expect(sanitizeFrom('/login')).toBeNull()
-    expect(sanitizeFrom('/api/method/login')).toBeNull()
+    expect(sanitizeFrom('/api/legacy/login')).toBeNull()
     expect(sanitizeFrom('/')).toBeNull()
     expect(sanitizeFrom('cabinet')).toBeNull()
   })

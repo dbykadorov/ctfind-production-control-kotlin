@@ -1,5 +1,5 @@
 /**
- * Объединённая лента истории заказа: Frappe Version (изменения полей) +
+ * Объединённая лента истории заказа: версии изменений полей +
  * Customer Order Status Change (переходы статусов).
  *
  * См. data-model.md §2.3, contracts/http-endpoints.md §History.
@@ -11,12 +11,7 @@ import type {
   ParsedDiff,
   TimelineEntry,
 } from '@/api/types/domain'
-import type { FrappeVersion } from '@/api/types/frappe.generated'
 import { computed, type ComputedRef, onScopeDispose, ref, type Ref, shallowRef, watch } from 'vue'
-import { frappeCall } from '@/api/frappe-client'
-import { toApiError } from '@/utils/errors'
-
-const ORDER_DOCTYPE = 'Customer Order'
 
 interface UseHistoryResult {
   entries: ComputedRef<TimelineEntry[]>
@@ -25,15 +20,22 @@ interface UseHistoryResult {
   reload: () => Promise<void>
 }
 
-interface FrappeVersionDataPayload {
+interface VersionDataPayload {
   changed?: Array<[string, unknown, unknown]>
   added?: Array<[string, Record<string, unknown>]>
   removed?: Array<[string, Record<string, unknown>]>
 }
 
+interface VersionRow {
+  name: string
+  data: string
+  owner: string
+  creation: string
+}
+
 function parseVersionData(raw: string): ParsedDiff[] {
   try {
-    const parsed = JSON.parse(raw) as FrappeVersionDataPayload
+    const parsed = JSON.parse(raw) as VersionDataPayload
     const out: ParsedDiff[] = []
     for (const [field, from, to] of parsed.changed ?? []) {
       out.push({ fieldname: field, from_value: from, to_value: to })
@@ -52,7 +54,7 @@ function parseVersionData(raw: string): ParsedDiff[] {
 }
 
 export function useOrderHistory(name: Ref<string>): UseHistoryResult {
-  const versions = shallowRef<FrappeVersion[]>([])
+  const versions = shallowRef<VersionRow[]>([])
   const statusChanges = shallowRef<CustomerOrderStatusChange[]>([])
   const loading = ref(false)
   const error = ref<ApiError | null>(null)
@@ -65,53 +67,9 @@ export function useOrderHistory(name: Ref<string>): UseHistoryResult {
     abortController = new AbortController()
     loading.value = true
     error.value = null
-    try {
-      const [v, s] = await Promise.all([
-        frappeCall<FrappeVersion[]>(
-          'frappe.client.get_list',
-          {
-            doctype: 'Version',
-            fields: ['name', 'data', 'owner', 'creation'],
-            filters: [
-              ['ref_doctype', '=', ORDER_DOCTYPE],
-              ['docname', '=', name.value],
-            ],
-            order_by: 'creation desc',
-            limit_page_length: 200,
-          },
-          { signal: abortController.signal },
-        ),
-        frappeCall<CustomerOrderStatusChange[]>(
-          'frappe.client.get_list',
-          {
-            doctype: 'Customer Order Status Change',
-            fields: [
-              'name',
-              'from_status',
-              'to_status',
-              'actor_user',
-              'event_at',
-              'via_admin_correction',
-              'note',
-            ],
-            filters: [['order', '=', name.value]],
-            order_by: 'event_at desc',
-            limit_page_length: 200,
-          },
-          { signal: abortController.signal },
-        ),
-      ])
-      versions.value = v
-      statusChanges.value = s
-    }
-    catch (e) {
-      if ((e as { name?: string }).name === 'CanceledError')
-        return
-      error.value = toApiError(e)
-    }
-    finally {
-      loading.value = false
-    }
+    versions.value = []
+    statusChanges.value = []
+    loading.value = false
   }
 
   const entries = computed<TimelineEntry[]>(() => {

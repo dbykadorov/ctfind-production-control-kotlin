@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
+import { redirectCabinetBaseWithoutTrailingSlash } from './vite-dev-base-redirect'
 
 const API_HOST = process.env.CABINET_API_HOST ?? 'http://localhost:8080'
 
@@ -28,7 +29,15 @@ const APP_VERSION = readPackageVersion()
 
 export default defineConfig({
   base: '/cabinet/',
-  plugins: [vue()],
+  plugins: [
+    {
+      name: 'ctfind-cabinet-base-redirect',
+      configureServer(server) {
+        server.middlewares.use(redirectCabinetBaseWithoutTrailingSlash())
+      },
+    },
+    vue(),
+  ],
   define: {
     __APP_VERSION__: JSON.stringify(APP_VERSION),
   },

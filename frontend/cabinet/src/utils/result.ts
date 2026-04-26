@@ -1,7 +1,6 @@
 /**
  * Result<T, E> — типобезопасная обёртка для composables, чтобы потребитель различал
- * успех/ошибку через discriminator `ok`. Используется в `frappe-client.ts` и
- * composables, не пробрасывающих исключения наружу.
+ * успех/ошибку через discriminator `ok`.
  */
 
 import type { ApiError } from '@/api/types/domain'

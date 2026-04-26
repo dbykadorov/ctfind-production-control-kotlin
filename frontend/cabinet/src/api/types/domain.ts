@@ -1,11 +1,11 @@
 /**
- * Доменные типы Кабинета — поверх `frappe.generated.ts` (auto-generated из DocType JSON).
+ * Доменные типы Кабинета, перенесённые из первой версии модели данных.
  * См. specs/006-spa-cabinet-ui/data-model.md §2.2.
  *
  * ВАЖНО: статусы Customer Order ХРАНЯТСЯ В БД как русские строки (см. data-model 005).
  */
 
-import type { CustomerOrder, CustomerOrderItem, CustomerOrderStatusChange } from './frappe.generated'
+import type { CustomerOrder, CustomerOrderItem, CustomerOrderStatusChange } from './legacy.generated'
 
 export type OrderStatus = 'новый' | 'в работе' | 'готов' | 'отгружен'
 
@@ -58,7 +58,7 @@ export interface OrderEditability {
   hint?: string
 }
 
-/** Workflow-переход, доступный текущему пользователю (frappe.model.workflow). */
+/** Workflow-переход, доступный текущему пользователю. */
 export interface OrderTransition {
   action: string
   state: string
@@ -80,7 +80,7 @@ export interface TimelineEntry {
   details: ParsedDiff[]
 }
 
-/** Разбор Frappe Version.data (JSON-строка с changed/added/removed). */
+/** Разбор Version.data (JSON-строка с changed/added/removed). */
 export interface ParsedDiff {
   fieldname: string
   field_label?: string
@@ -100,7 +100,7 @@ export type ApiErrorKind =
 export interface ApiError {
   kind: ApiErrorKind
   message: string
-  /** Frappe `exc_type` (например, `TimestampMismatchError`, `PermissionError`). */
+  /** Backend exception code, when provided. */
   excType?: string
   /** HTTP-статус ответа. */
   status?: number
