@@ -5,6 +5,16 @@
 **Status**: Draft  
 **Input**: User description: "Feature 004: Orders API + Frontend Wiring. Минимальный состав: Backend domain: Customer, CustomerOrder, CustomerOrderItem, OrderStatusChange. Flyway migration для таблиц клиентов, заказов, позиций, истории статусов. REST API: GET /api/orders POST /api/orders GET /api/orders/{id} PUT /api/orders/{id} POST /api/orders/{id}/status GET /api/customers. RBAC: ADMIN и менеджер заказов могут создавать/редактировать остальные пока read-only или forbidden. Audit: создание заказа, изменение заказа, изменение статуса. Frontend: заменить текущие пустые placeholders в use-orders, use-customers, dashboard widgets на Spring endpoints."
 
+## Clarifications
+
+### Session 2026-04-26
+
+- Q: Which Phase 1 roles can view orders, and which roles can write? → A: All authenticated Phase 1 roles can view orders read-only; only ADMIN and order managers can create, edit, and change status.
+- Q: How are customers managed in this feature? → A: Customers are prefilled or existing; the UI can search and select active customers but cannot create new customers in this feature.
+- Q: Which order status transitions are allowed? → A: Only direct forward transitions are allowed: "новый" → "в работе" → "готов" → "отгружен"; reverse transitions are forbidden.
+- Q: How is the order number assigned? → A: The system automatically assigns a unique human-readable order number, and users can search by it.
+- Q: What order history detail is required now? → A: History stores key business-field diffs now and must remain extensible to full before/after snapshots later.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - View And Search Orders (Priority: P1)
@@ -19,7 +29,7 @@ As an order manager or administrator, I need to see real customer orders after s
 
 1. **Given** a signed-in order manager and existing orders, **When** the user opens the orders list, **Then** the system shows orders with customer name, delivery date, current status, and last update information.
 2. **Given** a signed-in order manager and multiple orders, **When** the user searches by order number or customer and applies status, customer, active, overdue, or date filters, **Then** the list updates to show only matching orders.
-3. **Given** a signed-in user without order visibility, **When** the user attempts to open the orders area, **Then** the system prevents access with a clear no-access outcome.
+3. **Given** any authenticated Phase 1 role, **When** the user opens the orders area, **Then** the system allows read-only order visibility appropriate for that role.
 
 ---
 
@@ -33,9 +43,9 @@ As an order manager, I need to create a customer order with delivery date, notes
 
 **Acceptance Scenarios**:
 
-1. **Given** a signed-in order manager and an active customer, **When** the user creates an order with required fields and one or more items, **Then** the system saves the order with initial status "новый" and shows it in the orders list.
+1. **Given** a signed-in order manager and an active customer, **When** the user creates an order with required fields and one or more items, **Then** the system saves the order with initial status "новый", automatically assigns a unique human-readable order number, and shows it in the orders list.
 2. **Given** missing required customer, delivery date, or order item information, **When** the user attempts to save, **Then** the system prevents creation and identifies the fields that need correction.
-3. **Given** a signed-in user without order write permission, **When** the user attempts to create an order, **Then** the system denies the action and does not create any order.
+3. **Given** a signed-in user other than an administrator or order manager, **When** the user attempts to create an order, **Then** the system denies the action and does not create any order.
 
 ---
 
@@ -52,6 +62,7 @@ As an order manager, I need to edit an order before it is shipped so that custom
 1. **Given** a non-shipped order, **When** an order manager edits customer, delivery date, notes, or items, **Then** the system saves the changes and shows the updated order.
 2. **Given** an order that has changed since the user opened it, **When** the user attempts to save stale data, **Then** the system prevents overwriting newer changes and asks the user to reload or resolve the conflict.
 3. **Given** a shipped order, **When** a non-admin user attempts to edit regular order fields, **Then** the system keeps the order read-only.
+4. **Given** an order manager changes key business fields, **When** the change is saved, **Then** the order history records which key fields changed and remains suitable for future full before/after snapshot expansion.
 
 ---
 
@@ -93,6 +104,7 @@ As an administrator or order manager, I need the dashboard widgets to use real o
 - A customer is inactive after an order was created: existing orders still display the customer, but new order creation can only choose active customers.
 - A user attempts to edit or change status after another user has already changed the same order: the system prevents silent overwrites.
 - A user attempts to ship an order that is not ready: the system rejects the invalid transition.
+- A user attempts to move an order backward to a previous status: the system rejects the transition and leaves the current status unchanged.
 - An order has no optional notes or contact details: list and detail screens remain readable.
 - A filtered order list has no matches: the system shows an empty result state without treating it as an error.
 - A user loses permission between loading a screen and submitting an action: the system denies the action and preserves existing data.
@@ -102,10 +114,11 @@ As an administrator or order manager, I need the dashboard widgets to use real o
 ### Functional Requirements
 
 - **FR-001**: System MUST maintain customers with display name, active/inactive state, and optional contact information.
-- **FR-002**: Users with order access MUST be able to find active customers while creating or editing orders.
+- **FR-002**: Users with order access MUST be able to find and select active existing customers while creating or editing orders.
 - **FR-003**: System MUST maintain customer orders with order number, customer, delivery date, status, notes, item composition, creator, creation time, and last update information.
 - **FR-004**: System MUST maintain order items with item name, quantity, unit of measure, and display order within the order.
 - **FR-005**: System MUST create new orders in the initial status "новый".
+- **FR-005a**: System MUST automatically assign each new order a unique human-readable order number.
 - **FR-006**: System MUST support the order statuses "новый", "в работе", "готов", and "отгружен".
 - **FR-007**: System MUST allow permitted users to list, search, and filter orders by search text, status, customer, active/non-shipped state, overdue state, and delivery date range.
 - **FR-008**: System MUST allow permitted users to create an order with a customer, delivery date, optional notes, and at least one order item.
@@ -114,17 +127,20 @@ As an administrator or order manager, I need the dashboard widgets to use real o
 - **FR-011**: System MUST allow permitted users to edit non-shipped orders.
 - **FR-012**: System MUST prevent regular editing of shipped orders.
 - **FR-013**: System MUST prevent stale updates from silently overwriting newer order changes.
-- **FR-014**: System MUST allow permitted users to move orders through the lifecycle "новый" → "в работе" → "готов" → "отгружен".
-- **FR-015**: System MUST reject invalid order status transitions and preserve the current status.
+- **FR-014**: System MUST allow permitted users to move orders only through direct forward lifecycle transitions: "новый" → "в работе" → "готов" → "отгружен".
+- **FR-015**: System MUST reject invalid order status transitions, including skipped stages and reverse transitions, and preserve the current status.
 - **FR-016**: System MUST record every order status change with previous status, new status, actor, timestamp, and optional note.
 - **FR-017**: System MUST record audit events for order creation, order updates, and order status changes.
-- **FR-018**: System MUST allow administrators and order managers to create and edit orders.
-- **FR-019**: System MUST deny order write actions for authenticated users without order write permission.
-- **FR-020**: System MUST deny order visibility to users with no order access.
+- **FR-017a**: System MUST record key business-field diffs for order updates, including customer, delivery date, notes, item summary, and status when applicable.
+- **FR-017b**: Order history records MUST remain extensible to store full before/after snapshots in a later feature without replacing the user-visible history model.
+- **FR-018**: System MUST allow all authenticated Phase 1 roles to view orders read-only.
+- **FR-019**: System MUST allow only administrators and order managers to create, edit, and change order status.
+- **FR-020**: System MUST deny order write actions for authenticated users without order write permission.
 - **FR-021**: System MUST keep protected order and customer operations available only to authenticated users.
 - **FR-022**: System MUST seed local development data with several customers and orders so the list and dashboard are meaningful immediately after signing in.
 - **FR-023**: System MUST connect the existing order list, order detail, order creation, customer picker, and dashboard views to the new order/customer data source.
 - **FR-024**: System MUST not use legacy Frappe runtime endpoints, Frappe realtime, or placeholder order/customer data for this feature.
+- **FR-025**: System MUST NOT include customer creation or customer editing in this feature.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -132,6 +148,7 @@ As an administrator or order manager, I need the dashboard widgets to use real o
 - **Customer Order**: A sales/production order tied to one customer. It has an order number, delivery date, status, notes, creator, timestamps, and order items.
 - **Customer Order Item**: A line in a customer order describing what must be produced or delivered, with item name, quantity, unit of measure, and ordering.
 - **Order Status Change**: A trace record of an order lifecycle change, including previous status, new status, actor, timestamp, and optional note.
+- **Order Change Diff**: A trace record of changed key business fields for an order update. It captures field names and before/after values for the fields visible in Phase 1 history and remains compatible with future full snapshot storage.
 - **Audit Event**: A trace record of significant business actions such as creating an order, editing an order, or changing an order status.
 
 ### Constitution Alignment *(mandatory)*
@@ -148,7 +165,8 @@ As an administrator or order manager, I need the dashboard widgets to use real o
 - **SC-001**: A permitted user can create a valid customer order with at least one item in under 1 minute.
 - **SC-002**: A permitted user can find an existing order by order number or customer in under 15 seconds when up to 500 orders exist.
 - **SC-003**: 100% of order creations, order edits, and order status changes leave a traceable business event with actor and timestamp.
-- **SC-004**: 100% of unauthorized order/customer access attempts receive a clear no-access outcome without exposing protected order data.
+- **SC-003a**: 100% of successful order edits record key business-field diffs that can be reviewed in order history.
+- **SC-004**: 100% of unauthenticated order/customer access attempts receive a clear no-access outcome without exposing protected order data.
 - **SC-005**: 100% of forbidden write attempts by read-only users leave existing order data unchanged.
 - **SC-006**: Dashboard order widgets load without legacy placeholder errors and show valid empty states when there are no orders.
 - **SC-007**: Seeded local data allows a reviewer to verify order list, order detail, order creation, status changes, and dashboard counts immediately after signing in.
@@ -159,7 +177,8 @@ As an administrator or order manager, I need the dashboard widgets to use real o
 - Existing authentication and session restoration are reused.
 - The local administrator account remains available for verification.
 - The canonical order write role is treated as "order manager"; if role labels differ between UI and backend, they are mapped to the same business permission.
-- Authenticated users without order write permission may view orders only if their role is intended to participate in order visibility; otherwise they receive a no-access outcome.
-- Customer management UI beyond searchable customer selection is outside this feature.
+- All authenticated Phase 1 roles can view orders read-only; write and status-change permission is limited to administrators and order managers.
+- Customer creation and customer editing are outside this feature; customers are provided by seed data or existing records.
+- Full before/after order snapshots are outside this feature, but the history model must not block adding them later.
 - Production tasks, task board, warehouse, notifications, realtime updates, external integrations, and advanced workflow rules are outside this feature.
 - The feature prioritizes a reliable Phase 1 order foundation over comprehensive reporting.
