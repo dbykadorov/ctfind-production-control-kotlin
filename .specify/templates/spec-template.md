@@ -100,6 +100,14 @@
 - **[Entity 1]**: [What it represents, key attributes without implementation]
 - **[Entity 2]**: [What it represents, relationships to other entities]
 
+### Constitution Alignment *(mandatory)*
+
+- **ERP/domain fit**: [Which operational entity or workflow this strengthens]
+- **TOC readiness**: [Facts preserved for flow history, waiting time, throughput,
+  resource/work-center context, buffer management, or why not applicable]
+- **Traceability/audit**: [Business-state changes that must be traceable, or why not applicable]
+- **Security/API boundary**: [Auth/roles/permissions impact, or explicit no-impact statement]
+
 ## Success Criteria *(mandatory)*
 
 <!--

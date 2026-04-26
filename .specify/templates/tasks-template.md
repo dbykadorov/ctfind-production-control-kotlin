@@ -12,6 +12,10 @@ description: "Task list template for feature implementation"
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
+**Constitution**: Tasks must preserve ERP/domain traceability, future TOC analysis
+facts, domain-centered architecture boundaries, API-only backend behavior, and
+Docker-first verification from the project constitution.
+
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: Can run in parallel (different files, no dependencies)
@@ -68,6 +72,8 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T007 Create base models/entities that all stories depend on
 - [ ] T008 Configure error handling and logging infrastructure
 - [ ] T009 Setup environment configuration management
+- [ ] T010 [P] Define audit/traceability hooks for business-state changes
+- [ ] T011 [P] Define domain/application boundary interfaces before adapters
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -155,6 +161,9 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Performance optimization across all stories
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
 - [ ] TXXX Security hardening
+- [ ] TXXX Verify API-only backend behavior and negative authorization scenarios
+- [ ] TXXX Verify audit/traceability coverage for changed business workflows
+- [ ] TXXX Verify TOC-readiness facts are preserved or explicitly not applicable
 - [ ] TXXX Run quickstart.md validation
 
 ---
@@ -182,6 +191,7 @@ Examples of foundational tasks (adjust based on your project):
 - Models before services
 - Services before endpoints
 - Core implementation before integration
+- Domain/application rules before adapters/controllers/persistence wiring
 - Story complete before moving to next priority
 
 ### Parallel Opportunities
@@ -246,6 +256,8 @@ With multiple developers:
 - [Story] label maps task to specific user story for traceability
 - Each user story should be independently completable and testable
 - Verify tests fail before implementing
+- Preserve domain/application boundaries; controllers and DTOs must not contain business rules
+- Include audit, security, TOC-readiness, and Docker verification tasks when applicable
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
 - Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence

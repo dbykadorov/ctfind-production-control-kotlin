@@ -31,7 +31,20 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Answer these project constitution gates explicitly:
+
+- **ERP domain fit**: What ERP/domain entity or workflow does this feature strengthen?
+- **Constraint-aware operations**: Does this preserve facts needed for lead time,
+  waiting time, throughput, resource/work-center context, or future TOC buffer analysis?
+- **Architecture boundaries**: Are business rules kept in domain/application code,
+  away from controllers, DTOs, persistence adapters, and frontend components?
+- **Traceability/audit**: Are business-state changes auditable where applicable?
+- **API-only/security**: Does the backend remain API-only, and are auth/roles/permissions
+  designed explicitly when touched?
+- **Docker/verifiability**: Does root Docker startup still work, and what fresh
+  tests/build/health/smoke checks will prove completion?
+- **Exception handling**: If any principle is violated, document it in Complexity
+  Tracking with reason, risk, and compensating checks.
 
 ## Project Structure
 
