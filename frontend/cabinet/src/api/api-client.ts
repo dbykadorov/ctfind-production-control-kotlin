@@ -1,7 +1,7 @@
 import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios'
 import type { ApiError } from './types/domain'
 import axios from 'axios'
-import { toApiError } from '@/utils/errors'
+import { isAbortLikeError, toApiError } from '@/utils/errors'
 import { sanitizeFrom } from '@/utils/url'
 
 type SessionExpiredHandler = (err: ApiError) => void
@@ -50,6 +50,8 @@ function createClient(): AxiosInstance {
   instance.interceptors.response.use(
     response => response,
     async (error) => {
+      if (isAbortLikeError(error))
+        return Promise.reject(error)
       const apiErr = toApiError(error)
       const originalConfig = error.config as RetryConfig | undefined
 

@@ -23,7 +23,7 @@ import type {
 import { onScopeDispose, ref, type Ref, shallowRef, type ShallowRef, watch } from 'vue'
 import { httpClient } from '@/api/api-client'
 import { subscribeDocUpdate, subscribeListUpdate } from '@/api/socket'
-import { toApiError } from '@/utils/errors'
+import { isAbortLikeError, toApiError } from '@/utils/errors'
 
 const ORDER_DOCTYPE = 'Customer Order'
 const LIST_PAGE_SIZE = 50
@@ -181,10 +181,7 @@ function mapUpdateOrderPayload(payload: Partial<CustomerOrder>, expectedVersion:
 }
 
 function isCanceledRequest(error: unknown): boolean {
-  const candidate = error as { name?: string, code?: string }
-  return candidate.name === 'CanceledError'
-    || candidate.name === 'AbortError'
-    || candidate.code === 'ERR_CANCELED'
+  return isAbortLikeError(error)
 }
 
 async function fetchOrdersListPage(

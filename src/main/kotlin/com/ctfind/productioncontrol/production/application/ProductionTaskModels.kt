@@ -92,6 +92,19 @@ data class ProductionTaskDetailView(
 	val createdAt: Instant,
 )
 
+data class AuthenticatedProductionActor(
+	val userId: UUID,
+	val login: String,
+	val displayName: String,
+	val roleCodes: Set<String>,
+)
+
+sealed interface ProductionTaskDetailQueryResult {
+	data class Found(val detail: ProductionTaskDetailView) : ProductionTaskDetailQueryResult
+	data object NotFound : ProductionTaskDetailQueryResult
+	data object Forbidden : ProductionTaskDetailQueryResult
+}
+
 data class CreateProductionTaskDraft(
 	val orderItemId: UUID?,
 	val purpose: String,

@@ -34,3 +34,7 @@ interface ProductionExecutorPort {
 	fun findExecutor(id: UUID): ProductionTaskExecutorSummary?
 	fun searchExecutors(search: String?, limit: Int): List<ProductionTaskExecutorSummary>
 }
+
+interface ProductionActorLookupPort {
+	fun displayName(userId: UUID): String?
+}

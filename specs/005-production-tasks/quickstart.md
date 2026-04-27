@@ -277,6 +277,8 @@ Expected:
 
 ## Verification Record
 
+Fill this section after executing [`tasks.md`](./tasks.md) verification tasks (around T087–T093). Until then, entries remain pending by design.
+
 - Backend tests: Pending until implementation.
 - Frontend tests: Pending until implementation.
 - Frontend build: Pending until implementation.

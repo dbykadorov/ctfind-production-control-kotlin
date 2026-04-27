@@ -77,8 +77,25 @@ function pickMessage(payload: BackendErrorPayload): string {
   return 'Произошла ошибка при обращении к серверу.'
 }
 
+/**
+ * Отмена запроса (AbortController, повторный вызов `reload`).
+ * Axios для таких ошибок задаёт `code: 'ERR_CANCELED'` (имя часто остаётся `AxiosError`).
+ */
+export function isAbortLikeError(error: unknown): boolean {
+  const e = error as { name?: string, code?: string }
+  return e.code === 'ERR_CANCELED'
+    || e.name === 'CanceledError'
+    || e.name === 'AbortError'
+}
+
 /** Преобразовать AxiosError в типизированную `ApiError`. */
 export function toApiError(error: unknown): ApiError {
+  if (error !== null && typeof error === 'object' && 'kind' in error && 'message' in error) {
+    const fromInterceptor = error as ApiError & { isAxiosError?: boolean }
+    if (!fromInterceptor.isAxiosError)
+      return error as ApiError
+  }
+
   const axiosErr = error as AxiosError<BackendErrorPayload>
   if (axiosErr?.isAxiosError) {
     if (!axiosErr.response) {

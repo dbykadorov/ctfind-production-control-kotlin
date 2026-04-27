@@ -11,14 +11,13 @@ import com.ctfind.productioncontrol.production.application.ProductionTaskNumberP
 import com.ctfind.productioncontrol.production.application.ProductionTaskOrderItemSummary
 import com.ctfind.productioncontrol.production.application.ProductionTaskOrderSummary
 import com.ctfind.productioncontrol.production.application.ProductionTaskPageResult
+import com.ctfind.productioncontrol.production.application.ProductionActorLookupPort
 import com.ctfind.productioncontrol.production.application.ProductionTaskPort
 import com.ctfind.productioncontrol.production.application.ProductionTaskTracePort
 import com.ctfind.productioncontrol.production.application.PRODUCTION_EXECUTOR_ROLE_CODE
-import com.ctfind.productioncontrol.production.application.canViewAllProductionTasks
 import com.ctfind.productioncontrol.production.domain.ProductionTask
 import com.ctfind.productioncontrol.production.domain.ProductionTaskAuditEvent
 import com.ctfind.productioncontrol.production.domain.ProductionTaskHistoryEvent
-import com.ctfind.productioncontrol.production.domain.ProductionTaskStatus
 import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Component
 import java.util.UUID
@@ -26,6 +25,7 @@ import java.util.UUID
 @Component
 class JpaProductionTaskAdapter(
 	private val taskRepository: ProductionTaskJpaRepository,
+	private val orderSource: ProductionOrderSourcePort,
 ) : ProductionTaskPort {
 	override fun findById(id: UUID): ProductionTask? =
 		taskRepository.findById(id).orElse(null)?.toDomain()
@@ -38,7 +38,13 @@ class JpaProductionTaskAdapter(
 		currentUserId: UUID?,
 		roleCodes: Set<String>,
 	): ProductionTaskPageResult<ProductionTask> {
-		val filtered = filter(taskRepository.findAll(), query, currentUserId, roleCodes)
+		val filtered = filterProductionTaskEntitiesForQuery(
+			taskRepository.findAll(),
+			query,
+			currentUserId,
+			roleCodes,
+			orderSource,
+		)
 			.sortedWith(compareByDescending<ProductionTaskEntity> { it.updatedAt }.thenBy { it.taskNumber })
 		val page = query.page.coerceAtLeast(0)
 		val size = query.size.coerceIn(1, 100)
@@ -54,28 +60,6 @@ class JpaProductionTaskAdapter(
 
 	override fun existsByOrderItemIdAndPurpose(orderItemId: UUID, purpose: String): Boolean =
 		taskRepository.existsByOrderItemIdAndPurposeIgnoreCase(orderItemId, purpose.trim())
-
-	private fun filter(
-		rows: List<ProductionTaskEntity>,
-		query: ProductionTaskListQuery,
-		currentUserId: UUID?,
-		roleCodes: Set<String>,
-	): List<ProductionTaskEntity> {
-		val search = query.search?.trim()?.lowercase().orEmpty()
-		return rows.filter { row ->
-			(canViewAllProductionTasks(roleCodes) || (currentUserId != null && row.executorUserId == currentUserId)) &&
-				(search.isBlank() || row.taskNumber.lowercase().contains(search) || row.purpose.lowercase().contains(search) || row.itemName.lowercase().contains(search)) &&
-				(query.status == null || row.status == query.status) &&
-				(query.orderId == null || row.orderId == query.orderId) &&
-				(query.orderItemId == null || row.orderItemId == query.orderItemId) &&
-				(query.executorUserId == null || row.executorUserId == query.executorUserId) &&
-				(!query.assignedToMe || (currentUserId != null && row.executorUserId == currentUserId)) &&
-				(!query.blockedOnly || row.status == ProductionTaskStatus.BLOCKED) &&
-				(!query.activeOnly || row.status != ProductionTaskStatus.COMPLETED) &&
-				(query.dueDateFrom == null || row.plannedFinishDate == null || !row.plannedFinishDate!!.isBefore(query.dueDateFrom)) &&
-				(query.dueDateTo == null || row.plannedFinishDate == null || !row.plannedFinishDate!!.isAfter(query.dueDateTo))
-		}
-	}
 }
 
 @Component
@@ -137,6 +121,14 @@ class JpaProductionOrderSourceAdapter(
 			)
 		}
 	}
+}
+
+@Component
+class JpaProductionActorLookupAdapter(
+	private val userRepository: UserAccountJpaRepository,
+) : ProductionActorLookupPort {
+	override fun displayName(userId: UUID): String? =
+		userRepository.findById(userId).orElse(null)?.displayName
 }
 
 @Component

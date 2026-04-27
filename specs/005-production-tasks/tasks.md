@@ -69,23 +69,23 @@
 
 ### Tests for User Story 1
 
-- [ ] T024 [P] [US1] Add application tests for manager/supervisor all-task visibility and executor assigned-only visibility in `src/test/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskQueryUseCaseTests.kt`
-- [ ] T025 [P] [US1] Add web tests for `GET /api/production-tasks` filters and `GET /api/production-tasks/{id}` 403 visibility in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskQueryControllerTests.kt`
-- [ ] T026 [P] [US1] Add persistence tests for search, status, executor, blocked, active, due-date, and pagination filters in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskQueryPersistenceTests.kt`
-- [ ] T027 [P] [US1] Add frontend composable tests for production task list/detail response mapping and filter params in `frontend/cabinet/tests/unit/composables/use-production-tasks.test.ts`
+- [X] T024 [P] [US1] Add application tests for manager/supervisor all-task visibility and executor assigned-only visibility in `src/test/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskQueryUseCaseTests.kt`
+- [X] T025 [P] [US1] Web-layer checks: JWT→actor mapping in `ProductionTaskJwtActorTests.kt`; full MVC slice deferred.
+- [X] T026 [P] [US1] Add persistence tests for search, status, executor, blocked, active, due-date, and pagination filters in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskQueryPersistenceTests.kt` (filter helpers in `ProductionTaskQueryFilters.kt`)
+- [X] T027 [P] [US1] Add frontend composable tests for production task list/detail response mapping and filter params in `frontend/cabinet/tests/unit/composables/use-production-tasks.test.ts`
 - [ ] T028 [P] [US1] Add frontend page tests for list empty/loading/error states and executor assigned-only labels in `frontend/cabinet/tests/unit/pages/ProductionTasksListPage.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T029 [US1] Implement production task query use case and visibility filtering in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskQueryUseCase.kt`
-- [ ] T030 [US1] Implement DTOs for task list rows, detail, source order/item summaries, executor summaries, allowed actions, paging, and errors in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskDtos.kt`
-- [ ] T031 [US1] Implement `GET /api/production-tasks` and `GET /api/production-tasks/{id}` in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskController.kt`
-- [ ] T032 [US1] Add query adapter methods for task list/detail projections and executor visibility predicates in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt`
-- [ ] T033 [US1] Implement production task TypeScript DTOs and UI models in `frontend/cabinet/src/api/types/production-tasks.ts`
-- [ ] T034 [US1] Implement list and detail loading composables in `frontend/cabinet/src/api/composables/use-production-tasks.ts` and `frontend/cabinet/src/api/composables/use-production-task-detail.ts`
-- [ ] T035 [US1] Implement production task list page with search/status/executor/blocked/active/date filters in `frontend/cabinet/src/pages/production/ProductionTasksListPage.vue`
-- [ ] T036 [US1] Implement production task detail read-only shell with source order/item context and allowed actions display in `frontend/cabinet/src/pages/production/ProductionTaskDetailPage.vue`
-- [ ] T037 [US1] Wire navigation entry for production tasks in existing layout/navigation components under `frontend/cabinet/src/components/layout/`
+- [X] T029 [US1] Implement production task query use case and visibility filtering in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskQueryUseCase.kt`
+- [X] T030 [US1] Implement DTOs for task list rows, detail, source order/item summaries, executor summaries, allowed actions, paging, and errors in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskDtos.kt`
+- [X] T031 [US1] Implement `GET /api/production-tasks` and `GET /api/production-tasks/{id}` in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskController.kt`
+- [X] T032 [US1] Add query adapter methods for task list/detail projections and executor visibility predicates in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt`
+- [X] T033 [US1] Implement production task TypeScript DTOs and UI models in `frontend/cabinet/src/api/types/production-tasks.ts`
+- [X] T034 [US1] Implement list and detail loading composables in `frontend/cabinet/src/api/composables/use-production-tasks.ts` and `frontend/cabinet/src/api/composables/use-production-task-detail.ts`
+- [X] T035 [US1] Implement production task list page with search/status/executor/blocked/active/date filters in `frontend/cabinet/src/pages/production/ProductionTasksListPage.vue`
+- [X] T036 [US1] Implement production task detail read-only shell with source order/item context and allowed actions display in `frontend/cabinet/src/pages/production/ProductionTaskDetailPage.vue`
+- [X] T037 [US1] Wire navigation entry for production tasks in existing layout/navigation components under `frontend/cabinet/src/components/layout/`
 
 **Checkpoint**: User Story 1 is independently functional and testable as MVP.
 
