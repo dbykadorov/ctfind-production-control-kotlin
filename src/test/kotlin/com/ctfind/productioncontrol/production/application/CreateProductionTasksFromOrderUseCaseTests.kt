@@ -192,7 +192,7 @@ class CreateProductionTasksFromOrderUseCaseTests {
 			},
 			traces = object : ProductionTaskTracePort {
 				override fun saveHistoryEvent(event: ProductionTaskHistoryEvent) = onHistory(event)
-				override fun findHistoryEvents(taskId: UUID) = emptyList()
+				override fun findHistoryEvents(taskId: UUID): List<ProductionTaskHistoryEvent> = emptyList()
 			},
 			audit = ProductionTaskAuditService(auditPort),
 		)

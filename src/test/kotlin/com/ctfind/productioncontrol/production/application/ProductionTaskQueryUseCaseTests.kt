@@ -145,18 +145,20 @@ class ProductionTaskQueryUseCaseTests {
 					ProductionTaskExecutorSummary(id, "Exec", "exec").takeIf { id == executorId }
 				override fun searchExecutors(search: String?, limit: Int): List<ProductionTaskExecutorSummary> = emptyList()
 			},
-			traces = object : ProductionTaskTracePort {
-				override fun saveHistoryEvent(event: ProductionTaskHistoryEvent): ProductionTaskHistoryEvent = event
-				override fun findHistoryEvents(taskId: UUID): List<ProductionTaskHistoryEvent> =
-					history.filter { it.taskId == taskId }
-			},
-			actorLookup = object : ProductionActorLookupPort {
-				override fun displayName(userId: UUID): String? =
-					when (userId) {
-						supervisorId -> "Supervisor"
-						else -> userId.toString()
-					}
-			},
+			history = ProductionTaskHistoryUseCase(
+				traces = object : ProductionTaskTracePort {
+					override fun saveHistoryEvent(event: ProductionTaskHistoryEvent): ProductionTaskHistoryEvent = event
+					override fun findHistoryEvents(taskId: UUID): List<ProductionTaskHistoryEvent> =
+						history.filter { it.taskId == taskId }
+				},
+				actorLookup = object : ProductionActorLookupPort {
+					override fun displayName(userId: UUID): String? =
+						when (userId) {
+							supervisorId -> "Supervisor"
+							else -> userId.toString()
+						}
+				},
+			),
 		)
 	}
 

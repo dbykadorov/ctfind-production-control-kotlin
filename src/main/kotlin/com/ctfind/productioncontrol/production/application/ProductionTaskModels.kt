@@ -82,6 +82,12 @@ data class ProductionTaskHistoryEventView(
 	val eventAt: Instant,
 	val fromStatus: ProductionTaskStatus?,
 	val toStatus: ProductionTaskStatus?,
+	val previousExecutorDisplayName: String?,
+	val newExecutorDisplayName: String?,
+	val plannedStartDateBefore: LocalDate?,
+	val plannedStartDateAfter: LocalDate?,
+	val plannedFinishDateBefore: LocalDate?,
+	val plannedFinishDateAfter: LocalDate?,
 	val note: String?,
 	val reason: String?,
 )

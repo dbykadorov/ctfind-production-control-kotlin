@@ -2,7 +2,6 @@ package com.ctfind.productioncontrol.production.application
 
 import com.ctfind.productioncontrol.orders.domain.OrderStatus
 import com.ctfind.productioncontrol.production.domain.ProductionTask
-import com.ctfind.productioncontrol.production.domain.ProductionTaskHistoryEvent
 import com.ctfind.productioncontrol.production.domain.ProductionTaskStatus
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -13,8 +12,7 @@ class ProductionTaskQueryUseCase(
 	private val tasks: ProductionTaskPort,
 	private val orderSource: ProductionOrderSourcePort,
 	private val executors: ProductionExecutorPort,
-	private val traces: ProductionTaskTracePort,
-	private val actorLookup: ProductionActorLookupPort,
+	private val history: ProductionTaskHistoryUseCase,
 ) {
 
 	fun list(query: ProductionTaskListQuery, actor: AuthenticatedProductionActor): ProductionTaskPageResult<ProductionTaskListRowView> {
@@ -33,12 +31,11 @@ class ProductionTaskQueryUseCase(
 			return ProductionTaskDetailQueryResult.Forbidden
 		}
 		val row = task.toListRowView()
-		val history = traces.findHistoryEvents(taskId).map { it.toHistoryView() }
 		return ProductionTaskDetailQueryResult.Found(
 			ProductionTaskDetailView(
 				row = row,
 				allowedActions = allowedProductionTaskActions(task, actor.roleCodes, actor.userId),
-				history = history,
+				history = history.timeline(taskId),
 				createdAt = task.createdAt,
 			),
 		)
@@ -93,18 +90,6 @@ class ProductionTaskQueryUseCase(
 			)
 	}
 
-	private fun ProductionTaskHistoryEvent.toHistoryView(): ProductionTaskHistoryEventView {
-		val name = actorLookup.displayName(actorUserId) ?: actorUserId.toString()
-		return ProductionTaskHistoryEventView(
-			type = eventType,
-			actorDisplayName = name,
-			eventAt = eventAt,
-			fromStatus = fromStatus,
-			toStatus = toStatus,
-			note = note,
-			reason = reason,
-		)
-	}
 }
 
 fun productionTaskStatusLabelRu(status: ProductionTaskStatus): String =
