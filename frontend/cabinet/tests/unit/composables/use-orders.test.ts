@@ -8,8 +8,29 @@
  */
 
 import type { OrderFilters } from '@/api/types/domain'
-import { describe, expect, it } from 'vitest'
-import { ordersInternals } from '@/api/composables/use-orders'
+import { describe, expect, it, vi } from 'vitest'
+import { effectScope, nextTick, ref } from 'vue'
+import { ordersInternals, useOrder } from '@/api/composables/use-orders'
+
+const mocks = vi.hoisted(() => ({
+  get: vi.fn(),
+  post: vi.fn(),
+  put: vi.fn(),
+}))
+
+vi.mock('@/api/api-client', () => ({
+  httpClient: {
+    get: mocks.get,
+    post: mocks.post,
+    put: mocks.put,
+  },
+}))
+
+async function flushPromises(): Promise<void> {
+  await nextTick()
+  await Promise.resolve()
+  await nextTick()
+}
 
 const {
   LIST_PAGE_SIZE,
@@ -18,6 +39,7 @@ const {
   buildOrFilters,
   buildOrderQueryParams,
   mapCreateOrderPayload,
+  mapUpdateOrderPayload,
   mapOrderListRow,
 } = ordersInternals
 
@@ -186,4 +208,105 @@ describe('use-orders / Spring API mapping', () => {
       ],
     })
   })
+
+  it('maps existing order edit payload to Spring update request with optimistic version', () => {
+    expect(mapUpdateOrderPayload({
+      customer: 'customer-1',
+      delivery_date: '2026-05-20',
+      notes: 'Updated order',
+      items: [
+        {
+          name: 'row-1',
+          owner: 'spring',
+          creation: '2026-04-26T18:00:00Z',
+          modified: '2026-04-26T18:00:00Z',
+          modified_by: 'spring',
+          docstatus: 0,
+          item_name: 'Фасад',
+          quantity: 3,
+          uom: 'шт',
+        },
+      ],
+    }, 2)).toEqual({
+      expectedVersion: 2,
+      customerId: 'customer-1',
+      deliveryDate: '2026-05-20',
+      notes: 'Updated order',
+      items: [
+        {
+          itemName: 'Фасад',
+          quantity: 3,
+          uom: 'шт',
+        },
+      ],
+    })
+  })
 })
+
+describe('useOrder / update API', () => {
+  it('saves order edits through Spring PUT with stored version', async () => {
+    mocks.get.mockResolvedValueOnce({
+      data: orderDetailResponse({ version: 2 }),
+    })
+    mocks.put.mockResolvedValueOnce({
+      data: orderDetailResponse({ version: 3, notes: 'Updated order' }),
+    })
+
+    const scope = effectScope()
+    const result = scope.run(() => useOrder(ref('order-1')))!
+    await flushPromises()
+
+    await result.save({
+      customer: 'customer-1',
+      delivery_date: '2026-05-20',
+      notes: 'Updated order',
+      items: [
+        {
+          name: 'row-1',
+          owner: 'spring',
+          creation: '2026-04-26T18:00:00Z',
+          modified: '2026-04-26T18:00:00Z',
+          modified_by: 'spring',
+          docstatus: 0,
+          item_name: 'Фасад',
+          quantity: 3,
+          uom: 'шт',
+        },
+      ],
+    }, '2026-04-26T18:30:00Z')
+    scope.stop()
+
+    expect(mocks.put).toHaveBeenCalledWith('/api/orders/order-1', {
+      expectedVersion: 2,
+      customerId: 'customer-1',
+      deliveryDate: '2026-05-20',
+      notes: 'Updated order',
+      items: [{ itemName: 'Фасад', quantity: 3, uom: 'шт' }],
+    })
+    expect(result.data.value?.notes).toBe('Updated order')
+  })
+})
+
+function orderDetailResponse(overrides: Partial<Record<string, unknown>> = {}) {
+  return {
+    id: 'order-1',
+    orderNumber: 'ORD-000001',
+    customer: {
+      id: 'customer-1',
+      displayName: 'ООО Ромашка',
+      status: 'ACTIVE',
+    },
+    deliveryDate: '2026-05-15',
+    status: 'NEW',
+    statusLabel: 'новый',
+    notes: 'Test order',
+    items: [],
+    history: [],
+    changeDiffs: [],
+    createdAt: '2026-04-26T18:00:00Z',
+    updatedAt: '2026-04-26T18:30:00Z',
+    version: 2,
+    overdue: false,
+    ...overrides,
+  }
+}

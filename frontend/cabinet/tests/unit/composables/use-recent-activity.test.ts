@@ -2,12 +2,19 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { effectScope, nextTick } from 'vue'
 import { recentActivityInternals, useRecentActivity } from '@/api/composables/use-recent-activity'
 
-const { subscribeListUpdateMock } = vi.hoisted(() => ({
+const { subscribeListUpdateMock, getMock } = vi.hoisted(() => ({
   subscribeListUpdateMock: vi.fn(() => () => {}),
+  getMock: vi.fn(),
 }))
 
 vi.mock('@/api/socket', () => ({
   subscribeListUpdate: (...args: unknown[]) => (subscribeListUpdateMock as (...a: unknown[]) => unknown)(...args),
+}))
+
+vi.mock('@/api/api-client', () => ({
+  httpClient: {
+    get: getMock,
+  },
 }))
 
 async function flushPromises(): Promise<void> {
@@ -28,18 +35,52 @@ describe('use-recent-activity / Spring placeholder', () => {
   beforeEach(() => {
     subscribeListUpdateMock.mockClear()
     subscribeListUpdateMock.mockImplementation(() => () => {})
+    getMock.mockReset()
   })
 
   afterEach(() => {
     vi.useRealTimers()
   })
 
-  it('returns an empty list without network calls', async () => {
+  it('loads recent status changes from Spring dashboard endpoint', async () => {
+    getMock.mockResolvedValueOnce({
+      data: {
+        totalOrders: 0,
+        activeOrders: 0,
+        overdueOrders: 0,
+        statusCounts: {},
+        recentChanges: [
+          {
+            orderId: 'order-1',
+            orderNumber: 'ORD-000001',
+            customerDisplayName: 'ООО Ромашка',
+            fromStatus: 'NEW',
+            toStatus: 'IN_WORK',
+            changedAt: '2026-04-26T19:00:00Z',
+            actorDisplayName: 'Manager',
+          },
+        ],
+        trend: [],
+      },
+    })
+
     const scope = effectScope()
     const result = scope.run(() => useRecentActivity())!
     await flushPromises()
 
-    expect(result.data.value).toEqual([])
+    expect(getMock).toHaveBeenCalledWith('/api/orders/dashboard', {
+      signal: expect.any(AbortSignal),
+    })
+    expect(result.data.value).toEqual([
+      {
+        name: 'status:order-1:2026-04-26T19:00:00Z',
+        order: 'order-1',
+        fromStatus: 'новый',
+        toStatus: 'в работе',
+        actorUser: 'Manager',
+        eventAt: '2026-04-26T19:00:00Z',
+      },
+    ])
     expect(result.error.value).toBeNull()
     expect(result.loading.value).toBe(false)
     scope.stop()

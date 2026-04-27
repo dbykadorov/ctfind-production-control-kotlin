@@ -1,19 +1,27 @@
 /**
  * 007-cabinet-dashboard-theme: KPI-карточки + status distribution для дашборда.
- * Пока Spring endpoints для заказов не реализованы, виджет возвращает пустую
- * статистику без сетевых запросов.
+ * Виджет читает агрегированную статистику из Spring dashboard endpoint.
  */
 
 import type { DashboardKpis, StatusDistributionEntry } from '@/api/types/dashboard'
 import type { ApiError, OrderStatus } from '@/api/types/domain'
+import type { BackendOrderStatus, DashboardSummaryResponse } from '@/api/types/orders'
 import { onScopeDispose, ref, type Ref } from 'vue'
+import { httpClient } from '@/api/api-client'
 import { subscribeListUpdate } from '@/api/socket'
+import { toApiError } from '@/utils/errors'
 
 const ORDER_DOCTYPE = 'Customer Order'
 const REALTIME_DEBOUNCE_MS = 1500
 const FALLBACK_POLL_MS = 30_000
 
 const STATUS_ORDER: OrderStatus[] = ['новый', 'в работе', 'готов', 'отгружен']
+const UI_TO_BACKEND_STATUS: Record<OrderStatus, BackendOrderStatus> = {
+  'новый': 'NEW',
+  'в работе': 'IN_WORK',
+  'готов': 'READY',
+  'отгружен': 'SHIPPED',
+}
 
 interface UseDashboardStatsResult {
   kpis: Ref<DashboardKpis | null>
@@ -35,19 +43,34 @@ export function useDashboardStats(): UseDashboardStatsResult {
     abortController = new AbortController()
     loading.value = true
     error.value = null
-    const counts: Record<OrderStatus, number> = {
-      'новый': 0,
-      'в работе': 0,
-      'готов': 0,
-      'отгружен': 0,
+    try {
+      const response = await httpClient.get<DashboardSummaryResponse>('/api/orders/dashboard', {
+        signal: abortController.signal,
+      })
+      const total = response.data.totalOrders || 0
+      kpis.value = {
+        totalActive: response.data.activeOrders,
+        inProgress: response.data.statusCounts.IN_WORK ?? 0,
+        ready: response.data.statusCounts.READY ?? 0,
+        overdue: response.data.overdueOrders,
+      }
+      distribution.value = STATUS_ORDER.map((status) => {
+        const count = response.data.statusCounts[UI_TO_BACKEND_STATUS[status]] ?? 0
+        return {
+          status,
+          count,
+          percent: total === 0 ? 0 : Math.round((count / total) * 100),
+        }
+      })
     }
-    kpis.value = { totalActive: 0, inProgress: 0, ready: 0, overdue: 0 }
-    distribution.value = STATUS_ORDER.map(status => ({
-      status,
-      count: counts[status],
-      percent: 0,
-    }))
-    loading.value = false
+    catch (e) {
+      if ((e as { name?: string }).name === 'CanceledError')
+        return
+      error.value = toApiError(e)
+    }
+    finally {
+      loading.value = false
+    }
   }
 
   // Initial fetch

@@ -107,19 +107,19 @@
 
 ### Tests for User Story 3
 
-- [ ] T043 [P] [US3] Add update use case tests for editable fields, item replacement, stale version, shipped read-only, audit, and diffs in `src/test/kotlin/com/ctfind/productioncontrol/orders/application/UpdateOrderUseCaseTests.kt`
-- [ ] T044 [P] [US3] Add update controller tests for `PUT /api/orders/{id}`, `403`, `409`, and shipped-order rejection in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderControllerUpdateTests.kt`
-- [ ] T045 [P] [US3] Add frontend update and stale-version tests in `frontend/cabinet/tests/unit/composables/use-orders.test.ts`
-- [ ] T046 [P] [US3] Add order detail read-only/editability tests in `frontend/cabinet/tests/unit/composables/use-order-editability.test.ts`
+- [X] T043 [P] [US3] Add update use case tests for editable fields, item replacement, stale version, shipped read-only, audit, and diffs in `src/test/kotlin/com/ctfind/productioncontrol/orders/application/UpdateOrderUseCaseTests.kt`
+- [X] T044 [P] [US3] Add update controller tests for `PUT /api/orders/{id}`, `403`, `409`, and shipped-order rejection in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderControllerUpdateTests.kt`
+- [X] T045 [P] [US3] Add frontend update and stale-version tests in `frontend/cabinet/tests/unit/composables/use-orders.test.ts`
+- [X] T046 [P] [US3] Add order detail read-only/editability tests in `frontend/cabinet/tests/unit/composables/use-order-editability.test.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T047 [US3] Implement order business-field diff generation in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderDiffService.kt`
-- [ ] T048 [US3] Implement update order use case with optimistic version checks and diff/audit persistence in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/UpdateOrderUseCase.kt`
-- [ ] T049 [US3] Add `PUT /api/orders/{id}` handling and stale-version mapping in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderController.kt`
-- [ ] T050 [US3] Wire update order API call and stale-version error handling in `frontend/cabinet/src/api/composables/use-orders.ts`
-- [ ] T051 [US3] Wire detail edit flow, history diff rendering, and shipped read-only state in `frontend/cabinet/src/pages/office/OrderDetailPage.vue`
-- [ ] T052 [US3] Update order timeline to show key business-field diffs in `frontend/cabinet/src/components/domain/OrderTimeline.vue`
+- [X] T047 [US3] Implement order business-field diff generation in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderDiffService.kt`
+- [X] T048 [US3] Implement update order use case with optimistic version checks and diff/audit persistence in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/UpdateOrderUseCase.kt`
+- [X] T049 [US3] Add `PUT /api/orders/{id}` handling and stale-version mapping in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderController.kt`
+- [X] T050 [US3] Wire update order API call and stale-version error handling in `frontend/cabinet/src/api/composables/use-orders.ts`
+- [X] T051 [US3] Wire detail edit flow, history diff rendering, and shipped read-only state in `frontend/cabinet/src/pages/office/OrderDetailPage.vue`
+- [X] T052 [US3] Update order timeline to show key business-field diffs in `frontend/cabinet/src/components/domain/OrderTimeline.vue`
 
 **Checkpoint**: User Story 3 supports safe edits and reviewable history without silent overwrites.
 
@@ -133,18 +133,18 @@
 
 ### Tests for User Story 4
 
-- [ ] T053 [P] [US4] Add status transition policy tests for direct forward, skipped, reverse, and repeated transitions in `src/test/kotlin/com/ctfind/productioncontrol/orders/domain/OrderPoliciesTests.kt`
-- [ ] T054 [P] [US4] Add status change use case tests for version checks, audit, and history persistence in `src/test/kotlin/com/ctfind/productioncontrol/orders/application/ChangeOrderStatusUseCaseTests.kt`
-- [ ] T055 [P] [US4] Add status endpoint tests for `POST /api/orders/{id}/status`, `403`, `409`, and `422` in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderControllerStatusTests.kt`
-- [ ] T056 [P] [US4] Add frontend workflow transition tests in `frontend/cabinet/tests/unit/composables/use-workflow.test.ts`
+- [X] T053 [P] [US4] Add status transition policy tests for direct forward, skipped, reverse, and repeated transitions in `src/test/kotlin/com/ctfind/productioncontrol/orders/domain/OrderPoliciesTests.kt`
+- [X] T054 [P] [US4] Add status change use case tests for version checks, audit, and history persistence in `src/test/kotlin/com/ctfind/productioncontrol/orders/application/ChangeOrderStatusUseCaseTests.kt`
+- [X] T055 [P] [US4] Add status endpoint tests for `POST /api/orders/{id}/status`, `403`, `409`, and `422` in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderControllerStatusTests.kt`
+- [X] T056 [P] [US4] Add frontend workflow transition tests in `frontend/cabinet/tests/unit/composables/use-workflow.test.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T057 [US4] Implement change status use case with direct-forward validation and status history persistence in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/ChangeOrderStatusUseCase.kt`
-- [ ] T058 [US4] Add `POST /api/orders/{id}/status` handling and invalid-transition error mapping in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderController.kt`
-- [ ] T059 [US4] Wire workflow transition loading and apply calls to Spring API in `frontend/cabinet/src/api/composables/use-workflow.ts`
-- [ ] T060 [US4] Wire status action buttons and transition errors in `frontend/cabinet/src/pages/office/OrderDetailPage.vue`
-- [ ] T061 [US4] Update status badge mapping for backend status codes in `frontend/cabinet/src/components/domain/OrderStatusBadge.vue`
+- [X] T057 [US4] Implement change status use case with direct-forward validation and status history persistence in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/ChangeOrderStatusUseCase.kt`
+- [X] T058 [US4] Add `POST /api/orders/{id}/status` handling and invalid-transition error mapping in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderController.kt`
+- [X] T059 [US4] Wire workflow transition loading and apply calls to Spring API in `frontend/cabinet/src/api/composables/use-workflow.ts`
+- [X] T060 [US4] Wire status action buttons and transition errors in `frontend/cabinet/src/pages/office/OrderDetailPage.vue`
+- [X] T061 [US4] Update status badge mapping for backend status codes in `frontend/cabinet/src/components/domain/OrderStatusBadge.vue`
 
 **Checkpoint**: User Story 4 moves orders through the allowed lifecycle and records every transition.
 
@@ -158,21 +158,21 @@
 
 ### Tests for User Story 5
 
-- [ ] T062 [P] [US5] Add dashboard summary use case tests for totals, active, overdue, status counts, recent changes, and trends in `src/test/kotlin/com/ctfind/productioncontrol/orders/application/OrderDashboardUseCaseTests.kt`
-- [ ] T063 [P] [US5] Add dashboard endpoint tests for `GET /api/orders/dashboard` in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderDashboardControllerTests.kt`
-- [ ] T064 [P] [US5] Add frontend dashboard stats mapping tests in `frontend/cabinet/tests/unit/composables/use-dashboard-stats.test.ts`
-- [ ] T065 [P] [US5] Add frontend trend and recent activity mapping tests in `frontend/cabinet/tests/unit/composables/use-trend-data.test.ts`
-- [ ] T066 [P] [US5] Add frontend recent activity mapping tests in `frontend/cabinet/tests/unit/composables/use-recent-activity.test.ts`
+- [X] T062 [P] [US5] Add dashboard summary use case tests for totals, active, overdue, status counts, recent changes, and trends in `src/test/kotlin/com/ctfind/productioncontrol/orders/application/OrderDashboardUseCaseTests.kt`
+- [X] T063 [P] [US5] Add dashboard endpoint tests for `GET /api/orders/dashboard` in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderDashboardControllerTests.kt`
+- [X] T064 [P] [US5] Add frontend dashboard stats mapping tests in `frontend/cabinet/tests/unit/composables/use-dashboard-stats.test.ts`
+- [X] T065 [P] [US5] Add frontend trend and recent activity mapping tests in `frontend/cabinet/tests/unit/composables/use-trend-data.test.ts`
+- [X] T066 [P] [US5] Add frontend recent activity mapping tests in `frontend/cabinet/tests/unit/composables/use-recent-activity.test.ts`
 
 ### Implementation for User Story 5
 
-- [ ] T067 [US5] Implement dashboard summary query use case in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderDashboardUseCase.kt`
-- [ ] T068 [US5] Implement dashboard endpoint in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderDashboardController.kt`
-- [ ] T069 [US5] Wire dashboard KPI/status distribution API data in `frontend/cabinet/src/api/composables/use-dashboard-stats.ts`
-- [ ] T070 [US5] Wire dashboard trend API data in `frontend/cabinet/src/api/composables/use-trend-data.ts`
-- [ ] T071 [US5] Wire recent activity API data in `frontend/cabinet/src/api/composables/use-recent-activity.ts`
-- [ ] T072 [US5] Update dashboard page loading/empty/error states for real order data in `frontend/cabinet/src/pages/office/DashboardPage.vue`
-- [ ] T073 [US5] Update recent orders widget to display backend order summaries in `frontend/cabinet/src/components/domain/RecentOrdersWidget.vue`
+- [X] T067 [US5] Implement dashboard summary query use case in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderDashboardUseCase.kt`
+- [X] T068 [US5] Implement dashboard endpoint in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderDashboardController.kt`
+- [X] T069 [US5] Wire dashboard KPI/status distribution API data in `frontend/cabinet/src/api/composables/use-dashboard-stats.ts`
+- [X] T070 [US5] Wire dashboard trend API data in `frontend/cabinet/src/api/composables/use-trend-data.ts`
+- [X] T071 [US5] Wire recent activity API data in `frontend/cabinet/src/api/composables/use-recent-activity.ts`
+- [X] T072 [US5] Update dashboard page loading/empty/error states for real order data in `frontend/cabinet/src/pages/office/DashboardPage.vue`
+- [X] T073 [US5] Update recent orders widget to display backend order summaries in `frontend/cabinet/src/components/domain/RecentOrdersWidget.vue`
 
 **Checkpoint**: User Story 5 shows real dashboard signals and no placeholder order/customer/dashboard data remains.
 

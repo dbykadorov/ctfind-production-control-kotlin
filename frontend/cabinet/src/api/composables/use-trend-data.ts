@@ -1,13 +1,15 @@
 /**
  * 007-cabinet-dashboard-theme: «Динамика заказов за 30 дней» (главный график).
- * Пока Spring endpoints для заказов не реализованы, строит пустую серию без
- * сетевых запросов.
+ * Читает агрегированный тренд из Spring dashboard endpoint.
  */
 
 import type { OrderTrendPoint, OrderTrendSeries } from '@/api/types/dashboard'
 import type { ApiError } from '@/api/types/domain'
+import type { DashboardSummaryResponse } from '@/api/types/orders'
 import { onScopeDispose, ref, type Ref } from 'vue'
+import { httpClient } from '@/api/api-client'
 import { subscribeListUpdate } from '@/api/socket'
+import { toApiError } from '@/utils/errors'
 
 const ORDER_DOCTYPE = 'Customer Order'
 const TREND_DAYS = 30
@@ -74,24 +76,30 @@ export function useTrendData(): UseTrendDataResult {
     abortController = new AbortController()
     loading.value = true
     error.value = null
-
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const fetchFrom = new Date(today)
-    fetchFrom.setDate(fetchFrom.getDate() - (TREND_FETCH_DAYS - 1))
-
-    const series60 = bucketByDay([], fetchFrom, TREND_FETCH_DAYS)
-    const last30 = series60.slice(TREND_DAYS)
-    const prev30 = series60.slice(0, TREND_DAYS)
-    const totalLast30 = last30.reduce((acc, p) => acc + p.count, 0)
-    const totalPrev30 = prev30.reduce((acc, p) => acc + p.count, 0)
-    data.value = {
-      points: last30,
-      totalLast30,
-      totalPrev30,
-      delta30vsPrev30Pct: computeDeltaPct(totalLast30, totalPrev30),
+    try {
+      const response = await httpClient.get<DashboardSummaryResponse>('/api/orders/dashboard', {
+        signal: abortController.signal,
+      })
+      const points = response.data.trend.map(point => ({
+        date: point.date,
+        count: point.created,
+      }))
+      const totalLast30 = points.reduce((acc, point) => acc + point.count, 0)
+      data.value = {
+        points,
+        totalLast30,
+        totalPrev30: 0,
+        delta30vsPrev30Pct: computeDeltaPct(totalLast30, 0),
+      }
     }
-    loading.value = false
+    catch (e) {
+      if ((e as { name?: string }).name === 'CanceledError')
+        return
+      error.value = toApiError(e)
+    }
+    finally {
+      loading.value = false
+    }
   }
 
   void refetch()

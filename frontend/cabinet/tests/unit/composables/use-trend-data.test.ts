@@ -7,8 +7,30 @@
  * Тестируем только чистые helper-функции.
  */
 
-import { describe, expect, it } from 'vitest'
-import { bucketByDay, computeDeltaPct, trendDataInternals } from '@/api/composables/use-trend-data'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { effectScope, nextTick } from 'vue'
+import { bucketByDay, computeDeltaPct, trendDataInternals, useTrendData } from '@/api/composables/use-trend-data'
+
+const { subscribeListUpdateMock, getMock } = vi.hoisted(() => ({
+  subscribeListUpdateMock: vi.fn(() => () => {}),
+  getMock: vi.fn(),
+}))
+
+vi.mock('@/api/socket', () => ({
+  subscribeListUpdate: (...args: unknown[]) => (subscribeListUpdateMock as (...a: unknown[]) => unknown)(...args),
+}))
+
+vi.mock('@/api/api-client', () => ({
+  httpClient: {
+    get: getMock,
+  },
+}))
+
+async function flushPromises(): Promise<void> {
+  await nextTick()
+  await Promise.resolve()
+  await nextTick()
+}
 
 describe('use-trend-data / constants', () => {
   it('тренд = 30 дней, fetch — 60 дней (для сравнения с предыдущим периодом)', () => {
@@ -86,5 +108,47 @@ describe('use-trend-data / computeDeltaPct', () => {
 
   it('0% при равенстве', () => {
     expect(computeDeltaPct(100, 100)).toBe(0)
+  })
+})
+
+describe('use-trend-data / Spring dashboard', () => {
+  beforeEach(() => {
+    subscribeListUpdateMock.mockClear()
+    subscribeListUpdateMock.mockImplementation(() => () => {})
+    getMock.mockReset()
+  })
+
+  it('maps dashboard trend created values to chart points and delta', async () => {
+    getMock.mockResolvedValueOnce({
+      data: {
+        totalOrders: 0,
+        activeOrders: 0,
+        overdueOrders: 0,
+        statusCounts: {},
+        recentChanges: [],
+        trend: [
+          { date: '2026-03-01', created: 2, shipped: 0 },
+          { date: '2026-03-02', created: 3, shipped: 0 },
+        ],
+      },
+    })
+
+    const scope = effectScope()
+    const result = scope.run(() => useTrendData())!
+    await flushPromises()
+    scope.stop()
+
+    expect(getMock).toHaveBeenCalledWith('/api/orders/dashboard', {
+      signal: expect.any(AbortSignal),
+    })
+    expect(result.data.value).toEqual({
+      points: [
+        { date: '2026-03-01', count: 2 },
+        { date: '2026-03-02', count: 3 },
+      ],
+      totalLast30: 5,
+      totalPrev30: 0,
+      delta30vsPrev30Pct: null,
+    })
   })
 })

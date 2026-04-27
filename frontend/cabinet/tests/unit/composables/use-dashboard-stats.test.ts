@@ -2,12 +2,19 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { effectScope, nextTick } from 'vue'
 import { dashboardStatsInternals, useDashboardStats } from '@/api/composables/use-dashboard-stats'
 
-const { subscribeListUpdateMock } = vi.hoisted(() => ({
+const { subscribeListUpdateMock, getMock } = vi.hoisted(() => ({
   subscribeListUpdateMock: vi.fn(() => () => {}),
+  getMock: vi.fn(),
 }))
 
 vi.mock('@/api/socket', () => ({
   subscribeListUpdate: (...args: unknown[]) => (subscribeListUpdateMock as (...a: unknown[]) => unknown)(...args),
+}))
+
+vi.mock('@/api/api-client', () => ({
+  httpClient: {
+    get: getMock,
+  },
 }))
 
 async function flushPromises(): Promise<void> {
@@ -28,23 +35,43 @@ describe('use-dashboard-stats / Spring placeholder', () => {
   beforeEach(() => {
     subscribeListUpdateMock.mockClear()
     subscribeListUpdateMock.mockImplementation(() => () => {})
+    getMock.mockReset()
   })
 
   afterEach(() => {
     vi.useRealTimers()
   })
 
-  it('returns zero KPI and distribution without network calls', async () => {
+  it('loads KPI and distribution from Spring dashboard endpoint', async () => {
+    getMock.mockResolvedValueOnce({
+      data: {
+        totalOrders: 7,
+        activeOrders: 5,
+        overdueOrders: 2,
+        statusCounts: {
+          NEW: 2,
+          IN_WORK: 1,
+          READY: 2,
+          SHIPPED: 2,
+        },
+        recentChanges: [],
+        trend: [],
+      },
+    })
+
     const scope = effectScope()
     const result = scope.run(() => useDashboardStats())!
     await flushPromises()
 
-    expect(result.kpis.value).toEqual({ totalActive: 0, inProgress: 0, ready: 0, overdue: 0 })
+    expect(getMock).toHaveBeenCalledWith('/api/orders/dashboard', {
+      signal: expect.any(AbortSignal),
+    })
+    expect(result.kpis.value).toEqual({ totalActive: 5, inProgress: 1, ready: 2, overdue: 2 })
     expect(result.distribution.value).toEqual([
-      { status: 'новый', count: 0, percent: 0 },
-      { status: 'в работе', count: 0, percent: 0 },
-      { status: 'готов', count: 0, percent: 0 },
-      { status: 'отгружен', count: 0, percent: 0 },
+      { status: 'новый', count: 2, percent: 29 },
+      { status: 'в работе', count: 1, percent: 14 },
+      { status: 'готов', count: 2, percent: 29 },
+      { status: 'отгружен', count: 2, percent: 29 },
     ])
     expect(result.error.value).toBeNull()
     expect(result.loading.value).toBe(false)

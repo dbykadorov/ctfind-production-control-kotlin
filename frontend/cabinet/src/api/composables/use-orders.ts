@@ -1,7 +1,7 @@
 /**
  * Composables для работы с заказами.
- * Spring endpoints для заказов ещё не реализованы, поэтому data-layer пока
- * возвращает пустые состояния без сетевых запросов.
+ * Spring endpoints для заказов. UI сохраняет legacy-форму документа,
+ * а этот слой мапит её в backend contracts.
  */
 
 import type {
@@ -18,6 +18,7 @@ import type {
   OrderDetailResponse,
   OrderListRowResponse,
   OrdersPageResponse,
+  UpdateOrderPayload,
 } from '@/api/types/orders'
 import { onScopeDispose, ref, type Ref, shallowRef, type ShallowRef, watch } from 'vue'
 import { httpClient } from '@/api/api-client'
@@ -97,6 +98,8 @@ const BACKEND_TO_UI_STATUS: Record<BackendOrderStatus, OrderStatus> = {
   SHIPPED: 'отгружен',
 }
 
+type VersionedCustomerOrder = CustomerOrder & { version: number }
+
 function buildOrderQueryParams(filters: OrderFilters, start: number, pageSize: number): Record<string, unknown> {
   return {
     ...(filters.search ? { search: filters.search } : {}),
@@ -125,7 +128,7 @@ function mapOrderListRow(row: OrderListRowResponse): OrderListItem {
 }
 
 function mapOrderDetail(row: OrderDetailResponse): CustomerOrder {
-  return {
+  const order: VersionedCustomerOrder = {
     name: row.id,
     owner: 'spring',
     creation: row.createdAt,
@@ -136,6 +139,7 @@ function mapOrderDetail(row: OrderDetailResponse): CustomerOrder {
     delivery_date: row.deliveryDate,
     status: row.statusLabel ?? BACKEND_TO_UI_STATUS[row.status],
     notes: row.notes,
+    version: row.version,
     items: row.items.map(item => ({
       name: item.id,
       owner: 'spring',
@@ -152,6 +156,7 @@ function mapOrderDetail(row: OrderDetailResponse): CustomerOrder {
       uom: item.uom,
     })),
   }
+  return order
 }
 
 function mapCreateOrderPayload(payload: Partial<CustomerOrder>): CreateOrderPayload {
@@ -164,6 +169,13 @@ function mapCreateOrderPayload(payload: Partial<CustomerOrder>): CreateOrderPayl
       quantity: Number(item.quantity),
       uom: item.uom,
     })),
+  }
+}
+
+function mapUpdateOrderPayload(payload: Partial<CustomerOrder>, expectedVersion: number): UpdateOrderPayload {
+  return {
+    expectedVersion,
+    ...mapCreateOrderPayload(payload),
   }
 }
 
@@ -290,21 +302,26 @@ export function useOrder(name: Ref<string>): UseOrderResult {
     }
   }
 
-  async function save(patch: Partial<CustomerOrder>, modified: string): Promise<CustomerOrder> {
+  async function save(patch: Partial<CustomerOrder>, _modified: string): Promise<CustomerOrder> {
     if (!data.value)
       throw new Error('Order not loaded')
     state.value = 'saving'
     error.value = null
-    const doc = {
+    const expectedVersion = (data.value as VersionedCustomerOrder).version
+    const doc: Partial<CustomerOrder> = {
       ...data.value,
       ...patch,
-      modified,
-      doctype: ORDER_DOCTYPE,
       name: name.value,
     }
     try {
-      void doc
-      throw new Error('Order API is not implemented yet')
+      const response = await httpClient.put<OrderDetailResponse>(
+        `/api/orders/${encodeURIComponent(name.value)}`,
+        mapUpdateOrderPayload(doc, expectedVersion),
+      )
+      const saved = mapOrderDetail(response.data)
+      data.value = saved
+      state.value = 'saved'
+      return saved
     }
     catch (e) {
       const apiErr = toApiError(e)
@@ -346,4 +363,5 @@ export const ordersInternals = {
   buildOrderQueryParams,
   mapOrderListRow,
   mapCreateOrderPayload,
+  mapUpdateOrderPayload,
 }
