@@ -167,7 +167,7 @@
 - [X] T068 [US4] Add status request DTOs and error mapping in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskDtos.kt`
 - [X] T069 [US4] Implement `POST /api/production-tasks/{id}/status` in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskController.kt`
 - [X] T070 [US4] Persist previous active status and blocked reason changes in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt`
-- [ ] T071 [US4] Implement production workflow composable in `frontend/cabinet/src/api/composables/use-production-task-workflow.ts`
+- [X] T071 [US4] Implement production workflow composable in `frontend/cabinet/src/api/composables/use-production-task-workflow.ts`
 - [X] T072 [US4] Add workflow buttons and block reason input to task detail page in `frontend/cabinet/src/pages/production/ProductionTaskDetailPage.vue`
 - [X] T073 [US4] Ensure list row badges and filters reflect blocked and completed task state in `frontend/cabinet/src/pages/production/ProductionTasksListPage.vue`
 

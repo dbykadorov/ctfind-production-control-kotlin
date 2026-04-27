@@ -2,8 +2,10 @@
 /**
  * Список производственных задач (Feature 005 US1).
  */
-import type { ProductionTaskListFilters, ProductionTaskStatus } from '@/api/types/production-tasks'
-import { RotateCw, Search } from 'lucide-vue-next'
+import type { ProductionTaskListFilters, ProductionTaskListRowResponse, ProductionTaskStatus } from '@/api/types/production-tasks'
+import { format, parseISO } from 'date-fns'
+import { ru } from 'date-fns/locale'
+import { CalendarDays, RotateCw, Search } from 'lucide-vue-next'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
@@ -63,6 +65,33 @@ const statusOptions: Array<{ value: ProductionTaskStatus | '', label: string }> 
 const showExecutorHint = computed(
   () => permissions.value.canWorkAssignedProductionTasks && !permissions.value.canViewAllProductionTasks,
 )
+
+function safeParse(input?: string | null): Date | null {
+  if (!input)
+    return null
+  try {
+    return parseISO(input)
+  }
+  catch {
+    return null
+  }
+}
+
+function isOverdue(row: ProductionTaskListRowResponse): boolean {
+  if (row.status === 'COMPLETED')
+    return false
+  const due = safeParse(row.plannedFinishDate)
+  if (!due)
+    return false
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return due < today
+}
+
+function formatPlannedFinish(input?: string | null): string | null {
+  const d = safeParse(input)
+  return d ? format(d, 'd MMM yyyy', { locale: ru }) : null
+}
 </script>
 
 <template>
@@ -154,9 +183,21 @@ const showExecutorHint = computed(
               {{ row.purpose }} · {{ row.order.orderNumber }} · {{ row.order.customerDisplayName }}
             </p>
           </div>
-          <div class="shrink-0 text-xs text-slate-500">
-            <span v-if="row.executor">{{ row.executor.displayName }}</span>
-            <span v-else>—</span>
+          <div class="flex shrink-0 flex-col gap-0.5 text-xs sm:items-end">
+            <span
+              v-if="row.plannedFinishDate"
+              class="inline-flex items-center gap-1.5"
+              :class="isOverdue(row) ? 'text-danger font-medium' : 'text-slate-500'"
+              :title="`Срок: ${formatPlannedFinish(row.plannedFinishDate)}`"
+            >
+              <CalendarDays class="size-3.5" aria-hidden="true" />
+              <span>{{ formatPlannedFinish(row.plannedFinishDate) }}</span>
+              <span v-if="isOverdue(row)">просрочено</span>
+            </span>
+            <span class="text-slate-500">
+              <span v-if="row.executor">{{ row.executor.displayName }}</span>
+              <span v-else>—</span>
+            </span>
           </div>
         </RouterLink>
       </li>
