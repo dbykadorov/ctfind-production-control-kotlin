@@ -194,7 +194,7 @@
 - [X] T079 [US5] Add history DTO fields and mapper refinements in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskDtos.kt`
 - [X] T080 [US5] Add history projection query support in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt`
 - [X] T081 [US5] Implement frontend history mapping in `frontend/cabinet/src/api/composables/use-production-task-detail.ts`
-- [ ] T082 [US5] Add reusable production task timeline component in `frontend/cabinet/src/components/domain/ProductionTaskTimeline.vue`
+- [X] T082 [US5] Add reusable production task timeline component in `frontend/cabinet/src/components/domain/ProductionTaskTimeline.vue`
 - [X] T083 [US5] Render task timeline in detail page in `frontend/cabinet/src/pages/production/ProductionTaskDetailPage.vue`
 
 **Checkpoint**: User Story 5 works independently and preserves US1-US4 behavior.

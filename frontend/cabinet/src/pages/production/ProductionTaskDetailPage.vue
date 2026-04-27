@@ -10,6 +10,7 @@ import {
   useProductionTaskDetail,
 } from '@/api/composables/use-production-task-detail'
 import ProductionTaskAssigneePicker from '@/components/domain/ProductionTaskAssigneePicker.vue'
+import ProductionTaskTimeline from '@/components/domain/ProductionTaskTimeline.vue'
 import { Badge, Button, Card, Input, Label, Skeleton, Textarea } from '@/components/ui'
 import { format, parseISO } from 'date-fns'
 import { ru } from 'date-fns/locale'
@@ -370,18 +371,7 @@ async function onUnblock(): Promise<void> {
           <h2 class="mb-3 text-sm font-semibold text-slate-900">
             История
           </h2>
-          <ol class="space-y-3 border-l border-slate-200 pl-4">
-            <li v-for="(ev, idx) in data.history" :key="idx" class="relative text-sm">
-              <span class="absolute -left-[21px] top-1.5 size-2 rounded-full bg-slate-300" />
-              <p class="text-slate-900">
-                <span class="font-medium">{{ ev.type }}</span>
-                · {{ ev.actorDisplayName }}
-              </p>
-              <p class="text-xs text-slate-500">
-                {{ format(parseISO(ev.eventAt), "d MMM yyyy HH:mm", { locale: ru }) }}
-              </p>
-            </li>
-          </ol>
+          <ProductionTaskTimeline :history="data.history" />
         </Card>
       </div>
     </template>

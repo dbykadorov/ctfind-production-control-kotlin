@@ -52,12 +52,27 @@ export interface ProductionTasksPageResponse {
   totalPages: number
 }
 
+export type ProductionTaskHistoryEventType =
+  | 'CREATED'
+  | 'ASSIGNED'
+  | 'PLANNING_UPDATED'
+  | 'STATUS_CHANGED'
+  | 'BLOCKED'
+  | 'UNBLOCKED'
+  | 'COMPLETED'
+
 export interface ProductionTaskHistoryEventResponse {
-  type: string
+  type: ProductionTaskHistoryEventType | string
   actorDisplayName: string
   eventAt: string
   fromStatus?: ProductionTaskStatus | null
   toStatus?: ProductionTaskStatus | null
+  previousExecutorDisplayName?: string | null
+  newExecutorDisplayName?: string | null
+  plannedStartDateBefore?: string | null
+  plannedStartDateAfter?: string | null
+  plannedFinishDateBefore?: string | null
+  plannedFinishDateAfter?: string | null
   note?: string | null
   reason?: string | null
 }
