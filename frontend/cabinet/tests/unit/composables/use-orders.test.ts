@@ -11,7 +11,15 @@ import type { OrderFilters } from '@/api/types/domain'
 import { describe, expect, it } from 'vitest'
 import { ordersInternals } from '@/api/composables/use-orders'
 
-const { LIST_PAGE_SIZE, REALTIME_DEBOUNCE_MS, buildFilterPayload, buildOrFilters } = ordersInternals
+const {
+  LIST_PAGE_SIZE,
+  REALTIME_DEBOUNCE_MS,
+  buildFilterPayload,
+  buildOrFilters,
+  buildOrderQueryParams,
+  mapCreateOrderPayload,
+  mapOrderListRow,
+} = ordersInternals
 
 describe('use-orders / constants', () => {
   it('страница списка по 50 — соответствует FR-014a', () => {
@@ -93,6 +101,88 @@ describe('use-orders / buildOrFilters', () => {
       or_filters: [
         ['name', 'like', '%Заказ%'],
         ['customer', 'like', '%Заказ%'],
+      ],
+    })
+  })
+})
+
+describe('use-orders / Spring API mapping', () => {
+  it('maps UI filters to Spring query params', () => {
+    expect(buildOrderQueryParams({
+      status: 'в работе',
+      customer: 'customer-1',
+      search: 'ORD',
+      activeOnly: true,
+      overdue: true,
+      dateFrom: '2026-04-01',
+      dateTo: '2026-04-30',
+    }, 0, 50)).toEqual({
+      status: 'IN_WORK',
+      customerId: 'customer-1',
+      search: 'ORD',
+      activeOnly: true,
+      overdueOnly: true,
+      deliveryDateFrom: '2026-04-01',
+      deliveryDateTo: '2026-04-30',
+      page: 0,
+      size: 50,
+    })
+  })
+
+  it('maps backend list rows to existing cabinet order rows', () => {
+    expect(mapOrderListRow({
+      id: 'order-1',
+      orderNumber: 'ORD-000001',
+      customer: {
+        id: 'customer-1',
+        displayName: 'ООО Ромашка',
+        status: 'ACTIVE',
+      },
+      deliveryDate: '2026-05-15',
+      status: 'NEW',
+      statusLabel: 'новый',
+      createdAt: '2026-04-26T18:00:00Z',
+      updatedAt: '2026-04-26T18:30:00Z',
+      version: 2,
+      overdue: false,
+    })).toMatchObject({
+      name: 'order-1',
+      customer: 'customer-1',
+      customer_name: 'ООО Ромашка',
+      status: 'новый',
+      delivery_date: '2026-05-15',
+      modified: '2026-04-26T18:30:00Z',
+    })
+  })
+
+  it('maps existing order form payload to Spring create request', () => {
+    expect(mapCreateOrderPayload({
+      customer: 'customer-1',
+      delivery_date: '2026-05-15',
+      notes: 'New order',
+      items: [
+        {
+          name: 'row-1',
+          owner: 'spring',
+          creation: '2026-04-26T18:00:00Z',
+          modified: '2026-04-26T18:00:00Z',
+          modified_by: 'spring',
+          docstatus: 0,
+          item_name: 'Столешница',
+          quantity: 2,
+          uom: 'шт',
+        },
+      ],
+    })).toEqual({
+      customerId: 'customer-1',
+      deliveryDate: '2026-05-15',
+      notes: 'New order',
+      items: [
+        {
+          itemName: 'Столешница',
+          quantity: 2,
+          uom: 'шт',
+        },
       ],
     })
   })

@@ -2,7 +2,8 @@
  * Доменные типы Кабинета, перенесённые из первой версии модели данных.
  * См. specs/006-spa-cabinet-ui/data-model.md §2.2.
  *
- * ВАЖНО: статусы Customer Order ХРАНЯТСЯ В БД как русские строки (см. data-model 005).
+ * ВАЖНО: UI по-прежнему работает с русскими статусами; Spring API использует
+ * стабильные enum-коды, которые мапятся в composables.
  */
 
 import type { CustomerOrder, CustomerOrderItem, CustomerOrderStatusChange } from './legacy.generated'
@@ -146,3 +147,4 @@ export type ScreenState =
   | 'error'
 
 export type { CustomerOrder, CustomerOrderItem, CustomerOrderStatusChange }
+export type { OrderDetailResponse, OrderListRowResponse, OrdersPageResponse } from './orders'

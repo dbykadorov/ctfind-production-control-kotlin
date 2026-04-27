@@ -11,9 +11,9 @@
 
 **Purpose**: Establish shared files and conventions for the orders module before schema/domain work starts.
 
-- [ ] T001 [P] Create frontend order API type definitions in `frontend/cabinet/src/api/types/orders.ts`
-- [ ] T002 [P] Create backend order test fixtures in `src/test/kotlin/com/ctfind/productioncontrol/orders/OrderTestFixtures.kt`
-- [ ] T003 [P] Create order permission constants in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderPermissions.kt`
+- [X] T001 [P] Create frontend order API type definitions in `frontend/cabinet/src/api/types/orders.ts`
+- [X] T002 [P] Create backend order test fixtures in `src/test/kotlin/com/ctfind/productioncontrol/orders/OrderTestFixtures.kt`
+- [X] T003 [P] Create order permission constants in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderPermissions.kt`
 
 ---
 
@@ -23,21 +23,21 @@
 
 **Critical**: No user story work should begin until this phase is complete.
 
-- [ ] T004 Create Flyway schema for customers, order numbers, orders, items, status changes, change diffs, and order audit links in `src/main/resources/db/migration/V4__create_order_tables.sql`
-- [ ] T005 [P] Add migration regression tests for order tables and constraints in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/persistence/OrderMigrationTests.kt`
-- [ ] T006 [P] Implement `Customer` and `CustomerStatus` domain models in `src/main/kotlin/com/ctfind/productioncontrol/orders/domain/Customer.kt`
-- [ ] T007 [P] Implement `OrderStatus` enum and localized label mapping in `src/main/kotlin/com/ctfind/productioncontrol/orders/domain/OrderStatus.kt`
-- [ ] T008 [P] Implement `CustomerOrderItem` domain model and validation in `src/main/kotlin/com/ctfind/productioncontrol/orders/domain/CustomerOrderItem.kt`
-- [ ] T009 Implement `CustomerOrder` aggregate with item validation, shipped edit rules, and version metadata in `src/main/kotlin/com/ctfind/productioncontrol/orders/domain/CustomerOrder.kt`
-- [ ] T010 [P] Implement `OrderStatusChange` and `OrderChangeDiff` domain models in `src/main/kotlin/com/ctfind/productioncontrol/orders/domain/OrderTrace.kt`
-- [ ] T011 Implement direct-forward transition and order editability policies in `src/main/kotlin/com/ctfind/productioncontrol/orders/domain/OrderPolicies.kt`
-- [ ] T012 Define command/query models for list, detail, create, update, status change, and dashboard operations in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderModels.kt`
-- [ ] T013 Define ports for customers, orders, order numbers, trace records, and audit events in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderPorts.kt`
-- [ ] T014 Create JPA entities for customers, orders, items, status changes, and change diffs in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/persistence/OrderJpaEntities.kt`
-- [ ] T015 Create Spring Data repositories for order persistence in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/persistence/OrderJpaRepositories.kt`
-- [ ] T016 Implement persistence adapters for order ports in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/persistence/OrderPersistenceAdapters.kt`
-- [ ] T017 Implement local seed use case and runner for customers, `ORDER_MANAGER`, and sample orders in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/persistence/LocalOrderSeedRunner.kt`
-- [ ] T018 Create shared order web DTOs and error mapping in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderDtos.kt`
+- [X] T004 Create Flyway schema for customers, order numbers, orders, items, status changes, change diffs, and order audit links in `src/main/resources/db/migration/V4__create_order_tables.sql`
+- [X] T005 [P] Add migration regression tests for order tables and constraints in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/persistence/OrderMigrationTests.kt`
+- [X] T006 [P] Implement `Customer` and `CustomerStatus` domain models in `src/main/kotlin/com/ctfind/productioncontrol/orders/domain/Customer.kt`
+- [X] T007 [P] Implement `OrderStatus` enum and localized label mapping in `src/main/kotlin/com/ctfind/productioncontrol/orders/domain/OrderStatus.kt`
+- [X] T008 [P] Implement `CustomerOrderItem` domain model and validation in `src/main/kotlin/com/ctfind/productioncontrol/orders/domain/CustomerOrderItem.kt`
+- [X] T009 Implement `CustomerOrder` aggregate with item validation, shipped edit rules, and version metadata in `src/main/kotlin/com/ctfind/productioncontrol/orders/domain/CustomerOrder.kt`
+- [X] T010 [P] Implement `OrderStatusChange` and `OrderChangeDiff` domain models in `src/main/kotlin/com/ctfind/productioncontrol/orders/domain/OrderTrace.kt`
+- [X] T011 Implement direct-forward transition and order editability policies in `src/main/kotlin/com/ctfind/productioncontrol/orders/domain/OrderPolicies.kt`
+- [X] T012 Define command/query models for list, detail, create, update, status change, and dashboard operations in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderModels.kt`
+- [X] T013 Define ports for customers, orders, order numbers, trace records, and audit events in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderPorts.kt`
+- [X] T014 Create JPA entities for customers, orders, items, status changes, and change diffs in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/persistence/OrderJpaEntities.kt`
+- [X] T015 Create Spring Data repositories for order persistence in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/persistence/OrderJpaRepositories.kt`
+- [X] T016 Implement persistence adapters for order ports in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/persistence/OrderPersistenceAdapters.kt`
+- [X] T017 Implement local seed use case and runner for customers, `ORDER_MANAGER`, and sample orders in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/persistence/LocalOrderSeedRunner.kt`
+- [X] T018 Create shared order web DTOs and error mapping in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderDtos.kt`
 
 **Checkpoint**: Database, domain, ports, persistence adapters, seed data, and DTO scaffolding are ready.
 
@@ -51,22 +51,22 @@
 
 ### Tests for User Story 1
 
-- [ ] T019 [P] [US1] Add customer search controller tests for `GET /api/customers` in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/web/CustomerControllerTests.kt`
-- [ ] T020 [P] [US1] Add order list/detail controller tests for `GET /api/orders` and `GET /api/orders/{id}` in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderControllerQueryTests.kt`
-- [ ] T021 [P] [US1] Add order query application tests for search, status, active, overdue, and delivery-date filters in `src/test/kotlin/com/ctfind/productioncontrol/orders/application/OrderQueryUseCaseTests.kt`
-- [ ] T022 [P] [US1] Add frontend customer API mapping tests in `frontend/cabinet/tests/unit/composables/use-customers.test.ts`
-- [ ] T023 [P] [US1] Add frontend order list API mapping tests in `frontend/cabinet/tests/unit/composables/use-orders.test.ts`
+- [X] T019 [P] [US1] Add customer search controller tests for `GET /api/customers` in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/web/CustomerControllerTests.kt`
+- [X] T020 [P] [US1] Add order list/detail controller tests for `GET /api/orders` and `GET /api/orders/{id}` in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderControllerQueryTests.kt`
+- [X] T021 [P] [US1] Add order query application tests for search, status, active, overdue, and delivery-date filters in `src/test/kotlin/com/ctfind/productioncontrol/orders/application/OrderQueryUseCaseTests.kt`
+- [X] T022 [P] [US1] Add frontend customer API mapping tests in `frontend/cabinet/tests/unit/composables/use-customers.test.ts`
+- [X] T023 [P] [US1] Add frontend order list API mapping tests in `frontend/cabinet/tests/unit/composables/use-orders.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T024 [US1] Implement customer search query use case in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/CustomerQueryUseCase.kt`
-- [ ] T025 [US1] Implement order list/detail query use case in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderQueryUseCase.kt`
-- [ ] T026 [US1] Implement customer search endpoint in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/CustomerController.kt`
-- [ ] T027 [US1] Implement order list and detail endpoints in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderController.kt`
-- [ ] T028 [US1] Wire customer search to Spring API in `frontend/cabinet/src/api/composables/use-customers.ts`
-- [ ] T029 [US1] Wire order list/detail loading to Spring API in `frontend/cabinet/src/api/composables/use-orders.ts`
-- [ ] T030 [US1] Update customer/order response types consumed by UI in `frontend/cabinet/src/api/types/domain.ts`
-- [ ] T031 [US1] Update order list empty/loading/error behavior for real API data in `frontend/cabinet/src/pages/office/OrdersListPage.vue`
+- [X] T024 [US1] Implement customer search query use case in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/CustomerQueryUseCase.kt`
+- [X] T025 [US1] Implement order list/detail query use case in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderQueryUseCase.kt`
+- [X] T026 [US1] Implement customer search endpoint in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/CustomerController.kt`
+- [X] T027 [US1] Implement order list and detail endpoints in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderController.kt`
+- [X] T028 [US1] Wire customer search to Spring API in `frontend/cabinet/src/api/composables/use-customers.ts`
+- [X] T029 [US1] Wire order list/detail loading to Spring API in `frontend/cabinet/src/api/composables/use-orders.ts`
+- [X] T030 [US1] Update customer/order response types consumed by UI in `frontend/cabinet/src/api/types/domain.ts`
+- [X] T031 [US1] Update order list empty/loading/error behavior for real API data in `frontend/cabinet/src/pages/office/OrdersListPage.vue`
 
 **Checkpoint**: User Story 1 is independently usable with seeded data and no order/customer placeholders.
 
@@ -80,20 +80,20 @@
 
 ### Tests for User Story 2
 
-- [ ] T032 [P] [US2] Add order creation domain/application tests for validation, generated order number, initial status, and audit event in `src/test/kotlin/com/ctfind/productioncontrol/orders/application/CreateOrderUseCaseTests.kt`
-- [ ] T033 [P] [US2] Add order creation controller tests for `POST /api/orders`, `401`, `403`, and validation errors in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderControllerCreateTests.kt`
-- [ ] T034 [P] [US2] Add frontend order creation mapping and validation error tests in `frontend/cabinet/tests/unit/composables/use-orders.test.ts`
-- [ ] T035 [P] [US2] Add order new page permission and submit-flow tests in `frontend/cabinet/tests/unit/pages/order-new-page.test.ts`
+- [X] T032 [P] [US2] Add order creation domain/application tests for validation, generated order number, initial status, and audit event in `src/test/kotlin/com/ctfind/productioncontrol/orders/application/CreateOrderUseCaseTests.kt`
+- [X] T033 [P] [US2] Add order creation controller tests for `POST /api/orders`, `401`, `403`, and validation errors in `src/test/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderControllerCreateTests.kt`
+- [X] T034 [P] [US2] Add frontend order creation mapping and validation error tests in `frontend/cabinet/tests/unit/composables/use-orders.test.ts`
+- [X] T035 [P] [US2] Add order new page permission and submit-flow tests in `frontend/cabinet/tests/unit/pages/order-new-page.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T036 [US2] Implement database-backed order number allocation in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderNumberService.kt`
-- [ ] T037 [US2] Implement create order use case with validation, item ordering, audit, and trace records in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/CreateOrderUseCase.kt`
-- [ ] T038 [US2] Add `POST /api/orders` handling and write-permission checks in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderController.kt`
-- [ ] T039 [US2] Wire order creation API call in `frontend/cabinet/src/api/composables/use-orders.ts`
-- [ ] T040 [US2] Wire active customer selection and submit flow in `frontend/cabinet/src/pages/office/OrderNewPage.vue`
-- [ ] T041 [US2] Update customer picker to use active Spring customers in `frontend/cabinet/src/components/domain/CustomerPicker.vue`
-- [ ] T042 [US2] Update order item form validation display in `frontend/cabinet/src/components/domain/OrderItemsTable.vue`
+- [X] T036 [US2] Implement database-backed order number allocation in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/OrderNumberService.kt`
+- [X] T037 [US2] Implement create order use case with validation, item ordering, audit, and trace records in `src/main/kotlin/com/ctfind/productioncontrol/orders/application/CreateOrderUseCase.kt`
+- [X] T038 [US2] Add `POST /api/orders` handling and write-permission checks in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderController.kt`
+- [X] T039 [US2] Wire order creation API call in `frontend/cabinet/src/api/composables/use-orders.ts`
+- [X] T040 [US2] Wire active customer selection and submit flow in `frontend/cabinet/src/pages/office/OrderNewPage.vue`
+- [X] T041 [US2] Update customer picker to use active Spring customers in `frontend/cabinet/src/components/domain/CustomerPicker.vue`
+- [X] T042 [US2] Update order item form validation display in `frontend/cabinet/src/components/domain/OrderItemsTable.vue`
 
 **Checkpoint**: User Story 2 creates real orders through the backend and preserves data for US1 list/detail.
 

@@ -1,14 +1,12 @@
 import type { ApiError } from '@/api/types/domain'
+import type { CustomerOption, CustomerSearchResponse } from '@/api/types/orders'
 import type { Customer } from '@/api/types/legacy.generated'
 /**
- * Composable для подбора клиентов (Customer DocType).
- * Spring endpoint для клиентов ещё не реализован, поэтому поиск пока возвращает
- * пустой список без сетевого запроса.
- * См. data-model.md §2.1 (Customer), spec 005.
+ * Composable для подбора существующих клиентов через Spring API.
  */
 import { onScopeDispose, ref, type Ref, shallowRef, type ShallowRef } from 'vue'
-
-const SEARCH_FIELDS = ['name', 'customer_name', 'status', 'phone', 'contact_person']
+import { httpClient } from '@/api/api-client'
+import { toApiError } from '@/utils/errors'
 
 interface UseCustomersSearchResult {
   data: ShallowRef<Customer[]>
@@ -30,18 +28,26 @@ export function useCustomersSearch(options: { onlyActive?: boolean } = {}): UseC
     loading.value = true
     error.value = null
     const trimmed = query.trim()
-    const filters: Array<[string, string, unknown]> = []
-    if (options.onlyActive ?? true)
-      filters.push(['status', '=', 'active'])
-    const orFilters = trimmed
-      ? [
-          ['name', 'like', `%${trimmed}%`],
-          ['customer_name', 'like', `%${trimmed}%`],
-        ]
-      : undefined
-    void { fields: SEARCH_FIELDS, filters, orFilters }
-    data.value = []
-    loading.value = false
+    try {
+      const response = await httpClient.get<CustomerSearchResponse>('/api/customers', {
+        params: {
+          search: trimmed,
+          activeOnly: options.onlyActive ?? true,
+          limit: 20,
+        },
+        signal: abortController.signal,
+      })
+      data.value = response.data.items.map(mapCustomer)
+    }
+    catch (e) {
+      if ((e as { name?: string }).name === 'CanceledError')
+        return
+      error.value = toApiError(e)
+      data.value = []
+    }
+    finally {
+      loading.value = false
+    }
   }
 
   onScopeDispose(() => abortController?.abort())
@@ -51,6 +57,33 @@ export function useCustomersSearch(options: { onlyActive?: boolean } = {}): UseC
 
 /** Получить одного клиента по name. */
 export async function getCustomer(name: string): Promise<Customer> {
-  void name
-  throw new Error('Customer API is not implemented yet')
+  const response = await httpClient.get<CustomerSearchResponse>('/api/customers', {
+    params: {
+      search: name,
+      activeOnly: false,
+      limit: 50,
+    },
+  })
+  const match = response.data.items.find(customer => customer.id === name)
+    ?? response.data.items.find(customer => customer.displayName === name)
+  if (!match)
+    throw new Error('Customer not found')
+  return mapCustomer(match)
+}
+
+function mapCustomer(customer: CustomerOption): Customer {
+  const now = new Date(0).toISOString()
+  return {
+    name: customer.id,
+    owner: 'spring',
+    creation: now,
+    modified: now,
+    modified_by: 'spring',
+    docstatus: 0,
+    customer_name: customer.displayName,
+    status: customer.status === 'ACTIVE' ? 'active' : 'inactive',
+    contact_person: customer.contactPerson,
+    phone: customer.phone,
+    email: customer.email,
+  }
 }

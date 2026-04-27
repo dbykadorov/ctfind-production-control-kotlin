@@ -9,25 +9,24 @@ import type {
   CustomerOrder,
   OrderFilters,
   OrderListItem,
+  OrderStatus,
   ScreenState,
 } from '@/api/types/domain'
+import type {
+  BackendOrderStatus,
+  CreateOrderPayload,
+  OrderDetailResponse,
+  OrderListRowResponse,
+  OrdersPageResponse,
+} from '@/api/types/orders'
 import { onScopeDispose, ref, type Ref, shallowRef, type ShallowRef, watch } from 'vue'
+import { httpClient } from '@/api/api-client'
 import { subscribeDocUpdate, subscribeListUpdate } from '@/api/socket'
 import { toApiError } from '@/utils/errors'
 
 const ORDER_DOCTYPE = 'Customer Order'
 const LIST_PAGE_SIZE = 50
 const REALTIME_DEBOUNCE_MS = 500
-
-const ORDER_LIST_FIELDS = [
-  'name',
-  'status',
-  'delivery_date',
-  'modified',
-  'creation',
-  'customer',
-  'created_by_staff',
-]
 
 interface UseOrdersListResult {
   data: ShallowRef<OrderListItem[]>
@@ -84,15 +83,88 @@ function buildOrFilters(search: string | undefined): Record<string, unknown> {
   }
 }
 
-interface OrderListResponse {
-  name: string
-  status: OrderListItem['status']
-  delivery_date: string
-  modified: string
-  creation: string
-  customer: string
-  created_by_staff?: string
-  customer_name?: string
+const UI_TO_BACKEND_STATUS: Record<OrderStatus, BackendOrderStatus> = {
+  'новый': 'NEW',
+  'в работе': 'IN_WORK',
+  'готов': 'READY',
+  'отгружен': 'SHIPPED',
+}
+
+const BACKEND_TO_UI_STATUS: Record<BackendOrderStatus, OrderStatus> = {
+  NEW: 'новый',
+  IN_WORK: 'в работе',
+  READY: 'готов',
+  SHIPPED: 'отгружен',
+}
+
+function buildOrderQueryParams(filters: OrderFilters, start: number, pageSize: number): Record<string, unknown> {
+  return {
+    ...(filters.search ? { search: filters.search } : {}),
+    ...(filters.status ? { status: UI_TO_BACKEND_STATUS[filters.status] } : {}),
+    ...(filters.customer ? { customerId: filters.customer } : {}),
+    ...(filters.activeOnly ? { activeOnly: true } : {}),
+    ...(filters.overdue ? { overdueOnly: true } : {}),
+    ...(filters.dateFrom ? { deliveryDateFrom: filters.dateFrom } : {}),
+    ...(filters.dateTo ? { deliveryDateTo: filters.dateTo } : {}),
+    page: Math.floor(start / pageSize),
+    size: pageSize,
+  }
+}
+
+function mapOrderListRow(row: OrderListRowResponse): OrderListItem {
+  return {
+    name: row.id,
+    status: row.statusLabel ?? BACKEND_TO_UI_STATUS[row.status],
+    delivery_date: row.deliveryDate,
+    modified: row.updatedAt,
+    creation: row.createdAt ?? row.updatedAt,
+    customer: row.customer.id,
+    customer_name: row.customer.displayName,
+    created_by_staff: undefined,
+  }
+}
+
+function mapOrderDetail(row: OrderDetailResponse): CustomerOrder {
+  return {
+    name: row.id,
+    owner: 'spring',
+    creation: row.createdAt,
+    modified: row.updatedAt,
+    modified_by: 'spring',
+    docstatus: 0,
+    customer: row.customer.id,
+    delivery_date: row.deliveryDate,
+    status: row.statusLabel ?? BACKEND_TO_UI_STATUS[row.status],
+    notes: row.notes,
+    items: row.items.map(item => ({
+      name: item.id,
+      owner: 'spring',
+      creation: row.createdAt,
+      modified: row.updatedAt,
+      modified_by: 'spring',
+      docstatus: 0,
+      parent: row.id,
+      parenttype: ORDER_DOCTYPE,
+      parentfield: 'items',
+      idx: item.lineNo,
+      item_name: item.itemName,
+      quantity: item.quantity,
+      uom: item.uom,
+    })),
+  }
+}
+
+function mapCreateOrderPayload(payload: Partial<CustomerOrder>): CreateOrderPayload {
+  return {
+    customerId: payload.customer ?? '',
+    deliveryDate: payload.delivery_date ?? '',
+    notes: payload.notes,
+    items: (payload.items ?? []).map(item => ({
+      itemName: item.item_name,
+      quantity: Number(item.quantity),
+      uom: item.uom,
+    })),
+  }
 }
 
 async function fetchOrdersListPage(
@@ -100,28 +172,13 @@ async function fetchOrdersListPage(
   start: number,
   pageSize: number,
   _signal?: AbortSignal,
-  orderBy?: UseOrdersListOptions['orderBy'],
-): Promise<OrderListItem[]> {
-  const orderClause = orderBy ? `${orderBy.field} ${orderBy.order}` : 'delivery_date asc, modified desc'
-  void {
-    fields: ORDER_LIST_FIELDS,
-    ...buildFilterPayload(filters),
-    ...buildOrFilters(filters.search),
-    order_by: orderClause,
-    limit_start: start,
-    limit_page_length: pageSize,
-  }
-  const rows: OrderListResponse[] = []
-  return rows.map(row => ({
-    name: row.name,
-    status: row.status,
-    delivery_date: row.delivery_date,
-    modified: row.modified,
-    creation: row.creation,
-    customer: row.customer,
-    customer_name: row.customer_name,
-    created_by_staff: row.created_by_staff,
-  }))
+  _orderBy?: UseOrdersListOptions['orderBy'],
+): Promise<OrdersPageResponse> {
+  const response = await httpClient.get<OrdersPageResponse>('/api/orders', {
+    params: buildOrderQueryParams(filters, start, pageSize),
+    signal: _signal,
+  })
+  return response.data
 }
 
 async function fetchCustomerNames(rows: OrderListItem[]): Promise<OrderListItem[]> {
@@ -143,18 +200,18 @@ export function useOrdersList(filters: Ref<OrderFilters>, options: UseOrdersList
     state.value = append ? 'loading' : 'loading'
     error.value = null
     try {
-      const rows = await fetchOrdersListPage(
+      const response = await fetchOrdersListPage(
         filters.value,
         start,
-        pageSize + 1,
+        pageSize,
         abortController.signal,
         options.orderBy,
       )
-      const more = rows.length > pageSize
-      const page = more ? rows.slice(0, pageSize) : rows
+      const more = response.page + 1 < response.totalPages
+      const page = response.items.map(mapOrderListRow)
       const enriched = await fetchCustomerNames(page)
       data.value = append ? [...data.value, ...enriched] : enriched
-      total.value = data.value.length
+      total.value = response.totalItems
       hasMore.value = more
       state.value = data.value.length === 0 ? 'empty' : 'loaded'
     }
@@ -219,8 +276,11 @@ export function useOrder(name: Ref<string>): UseOrderResult {
     state.value = 'loading'
     error.value = null
     try {
-      data.value = null
-      state.value = 'empty'
+      const response = await httpClient.get<OrderDetailResponse>(`/api/orders/${encodeURIComponent(name.value)}`, {
+        signal: abortController.signal,
+      })
+      data.value = mapOrderDetail(response.data)
+      state.value = 'loaded'
     }
     catch (e) {
       if ((e as { name?: string }).name === 'CanceledError')
@@ -274,8 +334,16 @@ export function useOrder(name: Ref<string>): UseOrderResult {
 
 /** Создать новый заказ (insert), возвращает имя созданного документа. */
 export async function createOrder(payload: Partial<CustomerOrder>): Promise<CustomerOrder> {
-  void payload
-  throw new Error('Order API is not implemented yet')
+  const response = await httpClient.post<OrderDetailResponse>('/api/orders', mapCreateOrderPayload(payload))
+  return mapOrderDetail(response.data)
 }
 
-export const ordersInternals = { LIST_PAGE_SIZE, buildFilterPayload, buildOrFilters, REALTIME_DEBOUNCE_MS }
+export const ordersInternals = {
+  LIST_PAGE_SIZE,
+  buildFilterPayload,
+  buildOrFilters,
+  REALTIME_DEBOUNCE_MS,
+  buildOrderQueryParams,
+  mapOrderListRow,
+  mapCreateOrderPayload,
+}

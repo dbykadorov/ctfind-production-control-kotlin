@@ -77,6 +77,7 @@ private class JwtTokenIssuer(
 			.subject(user.normalizedLogin)
 			.issuedAt(issuedAt)
 			.expiresAt(expiresAt)
+			.claim("userId", user.id.toString())
 			.claim("roles", user.roleCodes.toList().sorted())
 			.claim("displayName", user.displayName)
 			.build()

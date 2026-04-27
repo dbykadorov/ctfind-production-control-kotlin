@@ -3,8 +3,8 @@ import type { OrderFilters, OrderStatus } from '@/api/types/domain'
 import { Plus, RotateCw, Search } from 'lucide-vue-next'
 /**
  * Список заказов для офисных ролей (US1).
- * Фильтры: status, customer, диапазон delivery_date, поиск по name/customer.
- * Серверная пагинация по 50 (FR-014a), сортировка delivery_date asc, modified desc.
+ * Фильтры: status, customer, диапазон delivery_date, поиск по номеру/customer.
+ * Spring API отдаёт серверную пагинацию по 50 и стабильное состояние empty/error.
  * Realtime-обновления через subscribeListUpdate (см. use-orders.ts).
  */
 import { computed, onMounted, ref, watch } from 'vue'
@@ -92,7 +92,7 @@ watch(
 const { data: orders, state, error, hasMore, reload, loadMore } = useOrdersList(filters)
 
 const isInitialLoading = computed(() => state.value === 'loading' && orders.value.length === 0)
-const isEmpty = computed(() => state.value === 'loaded' && orders.value.length === 0)
+const isEmpty = computed(() => (state.value === 'loaded' || state.value === 'empty') && orders.value.length === 0)
 
 const dateRange = computed({
   get: () => ({ from: filters.value.dateFrom, to: filters.value.dateTo }),
