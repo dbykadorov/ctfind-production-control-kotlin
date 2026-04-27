@@ -34,12 +34,26 @@ describe('buildPermissions', () => {
     expect(p.canSeeCabinetWorkArea).toBe(true)
   })
 
-  it('executor / Warehouse без других ролей не видят офисную рабочую область (US2)', () => {
+  it('executor sees cabinet work area for assigned production tasks but cannot manage orders', () => {
     const p = buildPermissions('user@x', ['Executor', 'Warehouse'])
     expect(p.isExecutor).toBe(true)
     expect(p.isWarehouse).toBe(true)
     expect(p.canManageOrders).toBe(false)
-    expect(p.canSeeCabinetWorkArea).toBe(false)
+    expect(p.canSeeCabinetWorkArea).toBe(true)
+    expect(p.canWorkAssignedProductionTasks).toBe(true)
+    expect(p.canViewAllProductionTasks).toBe(false)
+  })
+
+  it('recognizes backend production role codes', () => {
+    const supervisor = buildPermissions('user@x', ['PRODUCTION_SUPERVISOR'])
+    expect(supervisor.isShopSupervisor).toBe(true)
+    expect(supervisor.canAssignProductionTasks).toBe(true)
+    expect(supervisor.canUpdateAnyProductionTaskStatus).toBe(true)
+
+    const executor = buildPermissions('user@x', ['PRODUCTION_EXECUTOR'])
+    expect(executor.isExecutor).toBe(true)
+    expect(executor.canWorkAssignedProductionTasks).toBe(true)
+    expect(executor.canUpdateAnyProductionTaskStatus).toBe(false)
   })
 
   it('order Corrector наследует право admin-correction только если совмещён с Admin', () => {

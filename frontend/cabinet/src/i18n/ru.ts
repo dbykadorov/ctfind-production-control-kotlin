@@ -8,6 +8,7 @@ export const ru: Messages = {
   nav: {
     dashboard: 'Обзор',
     orders: 'Заказы',
+    productionTasks: 'Производство',
     customers: 'Клиенты',
     logout: 'Выйти',
     openInDesk: 'Открыть в Desk',
@@ -217,6 +218,10 @@ export const ru: Messages = {
       },
       customers: {
         list: 'Клиенты',
+      },
+      productionTasks: {
+        list: 'Производственные задачи',
+        detail: 'Производственная задача',
       },
       forbidden: 'Нет доступа',
       notFound: 'Страница не найдена',

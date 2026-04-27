@@ -16,8 +16,10 @@ export default antfu(
     },
     ignores: [
       'dist',
+      'build',
       'coverage',
       'node_modules',
+      '*.min.js',
       'src/api/types/legacy.generated.ts',
       'src/components/ui/**',
     ],

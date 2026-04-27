@@ -130,6 +130,16 @@ export interface PermissionFlags {
   canManageOrders: boolean
   /** Может ли создавать/редактировать клиентов. */
   canManageCustomers: boolean
+  /** Может ли создавать производственные задачи из заказов. */
+  canCreateProductionTasks: boolean
+  /** Может ли назначать исполнителя и плановые даты производственной задачи. */
+  canAssignProductionTasks: boolean
+  /** Может ли видеть все производственные задачи. */
+  canViewAllProductionTasks: boolean
+  /** Может ли менять статус любой производственной задачи. */
+  canUpdateAnyProductionTaskStatus: boolean
+  /** Может ли исполнитель работать со своими назначенными задачами. */
+  canWorkAssignedProductionTasks: boolean
 }
 
 /**

@@ -92,6 +92,27 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'production-tasks',
+        name: 'production-tasks.list',
+        component: () => import('@/pages/production/ProductionTasksListPage.vue'),
+        meta: {
+          roles: ['Order Manager', 'Shop Supervisor', 'Executor', 'ORDER_MANAGER', 'PRODUCTION_SUPERVISOR', 'PRODUCTION_EXECUTOR'],
+          title: 'meta.title.productionTasks.list',
+        },
+      },
+      {
+        path: 'production-tasks/:id',
+        name: 'production-tasks.detail',
+        component: () => import('@/pages/production/ProductionTaskDetailPage.vue'),
+        props: true,
+        meta: {
+          roles: ['Order Manager', 'Shop Supervisor', 'Executor', 'ORDER_MANAGER', 'PRODUCTION_SUPERVISOR', 'PRODUCTION_EXECUTOR'],
+          title: 'meta.title.productionTasks.detail',
+          showBackButton: true,
+          backPath: '/cabinet/production-tasks',
+        },
+      },
+      {
         path: '403',
         name: 'forbidden',
         component: () => import('@/pages/common/ForbiddenPage.vue'),

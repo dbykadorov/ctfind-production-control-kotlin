@@ -50,6 +50,10 @@ export const en = {
       customers: {
         list: 'Customers',
       },
+      productionTasks: {
+        list: 'Production tasks',
+        detail: 'Production task',
+      },
       forbidden: 'Access denied',
       notFound: 'Page not found',
       noModules: 'No modules available',

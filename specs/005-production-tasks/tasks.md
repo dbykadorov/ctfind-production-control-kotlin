@@ -19,10 +19,10 @@
 
 **Purpose**: Create the production module skeleton and shared frontend placeholders needed by all stories.
 
-- [ ] T001 Create backend production package directories in `src/main/kotlin/com/ctfind/productioncontrol/production/domain`, `src/main/kotlin/com/ctfind/productioncontrol/production/application`, `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence`, and `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web`
-- [ ] T002 Create backend production test directories in `src/test/kotlin/com/ctfind/productioncontrol/production/domain`, `src/test/kotlin/com/ctfind/productioncontrol/production/application`, and `src/test/kotlin/com/ctfind/productioncontrol/production/adapter`
-- [ ] T003 [P] Create frontend production API directories and placeholder files in `frontend/cabinet/src/api/types/production-tasks.ts`, `frontend/cabinet/src/api/composables/use-production-tasks.ts`, `frontend/cabinet/src/api/composables/use-production-task-detail.ts`, and `frontend/cabinet/src/api/composables/use-production-task-workflow.ts`
-- [ ] T004 [P] Create frontend production page placeholders in `frontend/cabinet/src/pages/production/ProductionTasksListPage.vue` and `frontend/cabinet/src/pages/production/ProductionTaskDetailPage.vue`
+- [X] T001 Create backend production package directories in `src/main/kotlin/com/ctfind/productioncontrol/production/domain`, `src/main/kotlin/com/ctfind/productioncontrol/production/application`, `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence`, and `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web`
+- [X] T002 Create backend production test directories in `src/test/kotlin/com/ctfind/productioncontrol/production/domain`, `src/test/kotlin/com/ctfind/productioncontrol/production/application`, and `src/test/kotlin/com/ctfind/productioncontrol/production/adapter`
+- [X] T003 [P] Create frontend production API directories and placeholder files in `frontend/cabinet/src/api/types/production-tasks.ts`, `frontend/cabinet/src/api/composables/use-production-tasks.ts`, `frontend/cabinet/src/api/composables/use-production-task-detail.ts`, and `frontend/cabinet/src/api/composables/use-production-task-workflow.ts`
+- [X] T004 [P] Create frontend production page placeholders in `frontend/cabinet/src/pages/production/ProductionTasksListPage.vue` and `frontend/cabinet/src/pages/production/ProductionTaskDetailPage.vue`
 
 ---
 
@@ -34,28 +34,28 @@
 
 ### Tests for Foundation
 
-- [ ] T005 [P] Add production task status policy tests for allowed and forbidden lifecycle transitions in `src/test/kotlin/com/ctfind/productioncontrol/production/domain/ProductionTaskPoliciesTests.kt`
-- [ ] T006 [P] Add production permission tests for admin/order-manager/supervisor/executor/read-only roles in `src/test/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskPermissionsTests.kt`
-- [ ] T007 [P] Add Flyway migration structure test for production tables and indexes in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskMigrationTests.kt`
+- [X] T005 [P] Add production task status policy tests for allowed and forbidden lifecycle transitions in `src/test/kotlin/com/ctfind/productioncontrol/production/domain/ProductionTaskPoliciesTests.kt`
+- [X] T006 [P] Add production permission tests for admin/order-manager/supervisor/executor/read-only roles in `src/test/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskPermissionsTests.kt`
+- [X] T007 [P] Add Flyway migration structure test for production tables and indexes in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskMigrationTests.kt`
 
 ### Implementation Foundation
 
-- [ ] T008 [P] Implement `ProductionTaskStatus`, `ProductionTaskAction`, and history event enums in `src/main/kotlin/com/ctfind/productioncontrol/production/domain/ProductionTaskStatus.kt`
-- [ ] T009 [P] Implement `ProductionTask`, `ProductionTaskHistoryEvent`, and supporting domain value validation in `src/main/kotlin/com/ctfind/productioncontrol/production/domain/ProductionTask.kt`
-- [ ] T010 [P] Implement lifecycle and editability policies in `src/main/kotlin/com/ctfind/productioncontrol/production/domain/ProductionTaskPolicies.kt`
-- [ ] T011 [P] Implement role constants and permission helpers for `PRODUCTION_SUPERVISOR`, `PRODUCTION_EXECUTOR`, `ORDER_MANAGER`, and `ADMIN` in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskPermissions.kt`
-- [ ] T012 [P] Define application commands, query filters, views, paged results, and mutation result types in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskModels.kt`
-- [ ] T013 [P] Define production application ports for task persistence, order source lookup, executor lookup, audit, and number allocation in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskPorts.kt`
-- [ ] T014 Add Flyway migration for `production_task`, `production_task_history_event`, sequence/table support, and indexes in `src/main/resources/db/migration/V5__create_production_task_tables.sql`
-- [ ] T015 [P] Implement JPA entities for production tasks and history events in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskJpaEntities.kt`
-- [ ] T016 [P] Implement Spring Data repositories for production tasks and history in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskJpaRepositories.kt`
-- [ ] T017 Implement persistence adapters and order source lookup adapters in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt`
-- [ ] T018 Implement task number allocation service in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskNumberService.kt`
-- [ ] T019 Implement task audit service adapter using existing audit patterns in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskAuditService.kt`
-- [ ] T020 Seed production roles and sample executor/supervisor users in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/LocalProductionSeedRunner.kt`
-- [ ] T021 [P] Extend frontend permission flags for production supervisor/executor/create/assign/status visibility in `frontend/cabinet/src/api/composables/use-permissions.ts` and `frontend/cabinet/src/api/types/domain.ts`
-- [ ] T022 [P] Add production task routes under `/cabinet/production-tasks` in `frontend/cabinet/src/router/index.ts`
-- [ ] T023 [P] Add production task i18n labels, route titles, statuses, and error messages in `frontend/cabinet/src/i18n/ru.ts` and `frontend/cabinet/src/i18n/en.ts`
+- [X] T008 [P] Implement `ProductionTaskStatus`, `ProductionTaskAction`, and history event enums in `src/main/kotlin/com/ctfind/productioncontrol/production/domain/ProductionTaskStatus.kt`
+- [X] T009 [P] Implement `ProductionTask`, `ProductionTaskHistoryEvent`, and supporting domain value validation in `src/main/kotlin/com/ctfind/productioncontrol/production/domain/ProductionTask.kt`
+- [X] T010 [P] Implement lifecycle and editability policies in `src/main/kotlin/com/ctfind/productioncontrol/production/domain/ProductionTaskPolicies.kt`
+- [X] T011 [P] Implement role constants and permission helpers for `PRODUCTION_SUPERVISOR`, `PRODUCTION_EXECUTOR`, `ORDER_MANAGER`, and `ADMIN` in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskPermissions.kt`
+- [X] T012 [P] Define application commands, query filters, views, paged results, and mutation result types in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskModels.kt`
+- [X] T013 [P] Define production application ports for task persistence, order source lookup, executor lookup, audit, and number allocation in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskPorts.kt`
+- [X] T014 Add Flyway migration for `production_task`, `production_task_history_event`, sequence/table support, and indexes in `src/main/resources/db/migration/V5__create_production_task_tables.sql`
+- [X] T015 [P] Implement JPA entities for production tasks and history events in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskJpaEntities.kt`
+- [X] T016 [P] Implement Spring Data repositories for production tasks and history in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskJpaRepositories.kt`
+- [X] T017 Implement persistence adapters and order source lookup adapters in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt`
+- [X] T018 Implement task number allocation service in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskNumberService.kt`
+- [X] T019 Implement task audit service adapter using existing audit patterns in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskAuditService.kt`
+- [X] T020 Seed production roles and sample executor/supervisor users in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/LocalProductionSeedRunner.kt`
+- [X] T021 [P] Extend frontend permission flags for production supervisor/executor/create/assign/status visibility in `frontend/cabinet/src/api/composables/use-permissions.ts` and `frontend/cabinet/src/api/types/domain.ts`
+- [X] T022 [P] Add production task routes under `/cabinet/production-tasks` in `frontend/cabinet/src/router/index.ts`
+- [X] T023 [P] Add production task i18n labels, route titles, statuses, and error messages in `frontend/cabinet/src/i18n/ru.ts` and `frontend/cabinet/src/i18n/en.ts`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin.
 

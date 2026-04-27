@@ -11,6 +11,7 @@ export interface Messages {
   nav: {
     dashboard: string
     orders: string
+    productionTasks: string
     customers: string
     logout: string
     openInDesk: string
@@ -207,6 +208,10 @@ export interface Messages {
       }
       customers: {
         list: string
+      }
+      productionTasks: {
+        list: string
+        detail: string
       }
       forbidden: string
       notFound: string
