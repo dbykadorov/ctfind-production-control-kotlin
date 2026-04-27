@@ -183,10 +183,10 @@
 
 ### Tests for User Story 5
 
-- [ ] T074 [P] [US5] Add application tests for timeline ordering and event detail formatting in `src/test/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskHistoryUseCaseTests.kt`
-- [ ] T075 [P] [US5] Add web tests for history content in task detail responses in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskHistoryControllerTests.kt`
-- [ ] T076 [P] [US5] Add frontend timeline mapping tests in `frontend/cabinet/tests/unit/composables/use-production-task-history.test.ts`
-- [ ] T077 [P] [US5] Add frontend detail page tests for chronological history rendering with actor, timestamp, status, assignment, planning, and block reason details in `frontend/cabinet/tests/unit/pages/ProductionTaskDetailHistory.test.ts`
+- [X] T074 [P] [US5] Add application tests for timeline ordering and event detail formatting in `src/test/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskHistoryUseCaseTests.kt`
+- [X] T075 [P] [US5] Add web tests for history content in task detail responses in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskHistoryControllerTests.kt`
+- [X] T076 [P] [US5] Add frontend timeline mapping tests in `frontend/cabinet/tests/unit/composables/use-production-task-history.test.ts`
+- [X] T077 [P] [US5] Add frontend detail page tests for chronological history rendering with actor, timestamp, status, assignment, planning, and block reason details in `frontend/cabinet/tests/unit/pages/ProductionTaskDetailHistory.test.ts`
 
 ### Implementation for User Story 5
 
