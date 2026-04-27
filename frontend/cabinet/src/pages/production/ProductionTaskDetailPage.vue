@@ -1,21 +1,54 @@
 <script setup lang="ts">
 /**
- * Карточка производственной задачи (Feature 005 US1).
+ * Карточка производственной задачи (Feature 005).
  */
+import type { ProductionTaskStatus } from '@/api/types/production-tasks'
+import { usePermissions } from '@/api/composables/use-permissions'
+import {
+  postProductionTaskStatus,
+  putProductionTaskAssignment,
+  useProductionTaskDetail,
+} from '@/api/composables/use-production-task-detail'
+import ProductionTaskAssigneePicker from '@/components/domain/ProductionTaskAssigneePicker.vue'
+import { Badge, Button, Card, Input, Label, Skeleton, Textarea } from '@/components/ui'
 import { format, parseISO } from 'date-fns'
 import { ru } from 'date-fns/locale'
-import { computed, toRef } from 'vue'
+import { computed, ref, toRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { useProductionTaskDetail } from '@/api/composables/use-production-task-detail'
-import { Badge, Button, Card, Skeleton } from '@/components/ui'
+import { toast } from 'vue-sonner'
 
 const props = defineProps<{ id: string }>()
 const router = useRouter()
 const { t } = useI18n()
+const permissions = usePermissions()
 
 const taskId = toRef(props, 'id')
 const { data, loading, error, forbidden, reload } = useProductionTaskDetail(taskId)
+
+const mutating = ref(false)
+const blockReason = ref('')
+const blockOpen = ref(false)
+const assigneeId = ref<string | null>(null)
+const planStart = ref('')
+const planFinish = ref('')
+const assignNote = ref('')
+
+watch(
+  () => data.value,
+  (task) => {
+    if (!task) {
+      assigneeId.value = null
+      planStart.value = ''
+      planFinish.value = ''
+      return
+    }
+    assigneeId.value = task.executor?.id ?? null
+    planStart.value = task.plannedStartDate?.slice(0, 10) ?? ''
+    planFinish.value = task.plannedFinishDate?.slice(0, 10) ?? ''
+  },
+  { immediate: true },
+)
 
 const plannedRange = computed(() => {
   const task = data.value
@@ -26,6 +59,119 @@ const plannedRange = computed(() => {
     return `${fmt(task.plannedStartDate)} — ${fmt(task.plannedFinishDate)}`
   return task.plannedStartDate ? fmt(task.plannedStartDate) : (task.plannedFinishDate ? fmt(task.plannedFinishDate) : null)
 })
+
+const canAssignPanel = computed(
+  () =>
+    data.value
+    && permissions.value.canAssignProductionTasks
+    && (data.value.allowedActions.includes('ASSIGN') || data.value.allowedActions.includes('PLAN')),
+)
+
+async function saveAssignment(): Promise<void> {
+  const task = data.value
+  if (!task || !assigneeId.value) {
+    toast.error('Выберите исполнителя')
+    return
+  }
+  mutating.value = true
+  try {
+    await putProductionTaskAssignment(task.id, {
+      expectedVersion: task.version,
+      executorUserId: assigneeId.value,
+      plannedStartDate: planStart.value || undefined,
+      plannedFinishDate: planFinish.value || undefined,
+      note: assignNote.value.trim() || undefined,
+    })
+    toast.success('Назначение сохранено')
+    assignNote.value = ''
+    await reload()
+  }
+  catch (e) {
+    const st = (e as { response?: { status?: number, data?: { code?: string, message?: string } } }).response?.status
+    const msg = (e as { response?: { data?: { message?: string } } }).response?.data?.message
+    if (st === 409)
+      toast.error('Данные устарели. Обновите страницу.')
+    else
+      toast.error(msg ?? 'Не удалось сохранить')
+  }
+  finally {
+    mutating.value = false
+  }
+}
+
+function openBlock(): void {
+  blockReason.value = ''
+  blockOpen.value = true
+}
+
+async function confirmBlock(): Promise<void> {
+  const task = data.value
+  if (!task)
+    return
+  const r = blockReason.value.trim()
+  if (!r) {
+    toast.error('Укажите причину блокировки')
+    return
+  }
+  blockOpen.value = false
+  mutating.value = true
+  try {
+    await postProductionTaskStatus(task.id, {
+      expectedVersion: task.version,
+      toStatus: 'BLOCKED',
+      reason: r,
+    })
+    toast.success('Задача заблокирована')
+    await reload()
+  }
+  catch (e) {
+    const st = (e as { response?: { status?: number } }).response?.status
+    if (st === 409)
+      toast.error('Данные устарели. Обновите страницу.')
+    else
+      toast.error('Не удалось заблокировать')
+  }
+  finally {
+    mutating.value = false
+  }
+}
+
+async function runStatus(to: ProductionTaskStatus, note?: string): Promise<void> {
+  const task = data.value
+  if (!task)
+    return
+  mutating.value = true
+  try {
+    await postProductionTaskStatus(task.id, {
+      expectedVersion: task.version,
+      toStatus: to,
+      note: note?.trim() || undefined,
+    })
+    await reload()
+    toast.success('Статус обновлён')
+  }
+  catch (e) {
+    const st = (e as { response?: { status?: number } }).response?.status
+    if (st === 409)
+      toast.error('Данные устарели. Обновите страницу.')
+    else if (st === 422)
+      toast.error('Переход запрещён')
+    else
+      toast.error('Не удалось обновить статус')
+  }
+  finally {
+    mutating.value = false
+  }
+}
+
+async function onUnblock(): Promise<void> {
+  const task = data.value
+  if (!task?.previousActiveStatus) {
+    toast.error('Нет данных для разблокировки')
+    return
+  }
+  await runStatus(task.previousActiveStatus, 'Разблокировано')
+}
 </script>
 
 <template>
@@ -143,11 +289,81 @@ const plannedRange = computed(() => {
           <p v-if="data.allowedActions.length === 0" class="text-sm text-slate-500">
             Нет доступных действий для вашей роли или задача завершена.
           </p>
-          <ul v-else class="flex flex-wrap gap-2">
-            <li v-for="a in data.allowedActions" :key="a">
-              <Badge>{{ a }}</Badge>
-            </li>
-          </ul>
+          <div v-else class="flex flex-col gap-2">
+            <Button
+              v-if="data.allowedActions.includes('START')"
+              type="button"
+              variant="primary"
+              size="sm"
+              :loading="mutating"
+              @click="runStatus('IN_PROGRESS')"
+            >
+              В работу
+            </Button>
+            <Button
+              v-if="data.allowedActions.includes('COMPLETE')"
+              type="button"
+              variant="primary"
+              size="sm"
+              :loading="mutating"
+              @click="runStatus('COMPLETED')"
+            >
+              Завершить
+            </Button>
+            <Button
+              v-if="data.allowedActions.includes('BLOCK')"
+              type="button"
+              variant="secondary"
+              size="sm"
+              :disabled="mutating"
+              @click="openBlock"
+            >
+              Заблокировать
+            </Button>
+            <Button
+              v-if="data.allowedActions.includes('UNBLOCK')"
+              type="button"
+              variant="secondary"
+              size="sm"
+              :loading="mutating"
+              @click="onUnblock"
+            >
+              Разблокировать
+            </Button>
+          </div>
+        </Card>
+
+        <Card v-if="canAssignPanel" class="p-4 lg:col-span-3">
+          <h2 class="mb-3 text-sm font-semibold text-slate-900">
+            Назначение и план
+          </h2>
+          <div class="grid gap-4 lg:grid-cols-2">
+            <ProductionTaskAssigneePicker v-model="assigneeId" :disabled="mutating" />
+            <div class="grid gap-3 sm:grid-cols-2">
+              <div class="space-y-1.5">
+                <Label for="pa-start">План: начало</Label>
+                <Input id="pa-start" v-model="planStart" type="date" :disabled="mutating" />
+              </div>
+              <div class="space-y-1.5">
+                <Label for="pa-end">План: окончание</Label>
+                <Input id="pa-end" v-model="planFinish" type="date" :disabled="mutating" />
+              </div>
+            </div>
+          </div>
+          <div class="mt-3 space-y-1.5">
+            <Label for="pa-note">Комментарий (необязательно)</Label>
+            <Textarea id="pa-note" v-model="assignNote" :rows="2" :disabled="mutating" />
+          </div>
+          <Button
+            class="mt-3"
+            type="button"
+            variant="primary"
+            size="sm"
+            :loading="mutating"
+            @click="saveAssignment"
+          >
+            Сохранить
+          </Button>
         </Card>
 
         <Card class="p-4 lg:col-span-3">
@@ -169,5 +385,27 @@ const plannedRange = computed(() => {
         </Card>
       </div>
     </template>
+
+    <div
+      v-if="blockOpen"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="w-full max-w-md rounded-lg bg-white p-4 shadow">
+        <h3 class="text-sm font-semibold text-slate-900">
+          Причина блокировки
+        </h3>
+        <Textarea v-model="blockReason" class="mt-2" :rows="3" placeholder="Обязательно" />
+        <div class="mt-3 flex justify-end gap-2">
+          <Button type="button" variant="secondary" size="sm" @click="blockOpen = false">
+            Отмена
+          </Button>
+          <Button type="button" variant="primary" size="sm" :loading="mutating" @click="confirmBlock">
+            Заблокировать
+          </Button>
+        </div>
+      </div>
+    </div>
   </section>
 </template>

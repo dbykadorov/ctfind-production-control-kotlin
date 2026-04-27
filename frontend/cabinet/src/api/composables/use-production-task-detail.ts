@@ -2,7 +2,12 @@
  * Карточка производственной задачи (`GET /api/production-tasks/{id}`).
  */
 import type { ApiError } from '@/api/types/domain'
-import type { ProductionTaskDetailResponse } from '@/api/types/production-tasks'
+import type {
+  PostProductionTaskStatusPayload,
+  ProductionTaskAssigneesResponse,
+  ProductionTaskDetailResponse,
+  PutProductionTaskAssignmentPayload,
+} from '@/api/types/production-tasks'
 import { httpClient } from '@/api/api-client'
 import { toApiError } from '@/utils/errors'
 import { onScopeDispose, ref, watch, type Ref } from 'vue'
@@ -66,4 +71,36 @@ export function useProductionTaskDetail(taskId: Ref<string | undefined>): UsePro
   onScopeDispose(() => abortController?.abort())
 
   return { data, loading, error, forbidden, reload }
+}
+
+export async function putProductionTaskAssignment(
+  taskId: string,
+  body: PutProductionTaskAssignmentPayload,
+): Promise<ProductionTaskDetailResponse> {
+  const response = await httpClient.put<ProductionTaskDetailResponse>(
+    `/api/production-tasks/${encodeURIComponent(taskId)}/assignment`,
+    body,
+  )
+  return response.data
+}
+
+export async function postProductionTaskStatus(
+  taskId: string,
+  body: PostProductionTaskStatusPayload,
+): Promise<ProductionTaskDetailResponse> {
+  const response = await httpClient.post<ProductionTaskDetailResponse>(
+    `/api/production-tasks/${encodeURIComponent(taskId)}/status`,
+    body,
+  )
+  return response.data
+}
+
+export async function fetchProductionTaskAssignees(
+  search?: string,
+  limit = 20,
+): Promise<ProductionTaskAssigneesResponse> {
+  const response = await httpClient.get<ProductionTaskAssigneesResponse>('/api/production-tasks/assignees', {
+    params: { search, limit },
+  })
+  return response.data
 }

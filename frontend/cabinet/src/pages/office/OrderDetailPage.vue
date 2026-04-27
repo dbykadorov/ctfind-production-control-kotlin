@@ -19,6 +19,7 @@ import { usePermissions } from '@/api/composables/use-permissions'
 import { useOrderTransitions } from '@/api/composables/use-workflow'
 import ConflictDialog from '@/components/domain/ConflictDialog.vue'
 import CustomerPicker from '@/components/domain/CustomerPicker.vue'
+import ProductionTaskCreateForm from '@/components/domain/ProductionTaskCreateForm.vue'
 import OrderItemsTable from '@/components/domain/OrderItemsTable.vue'
 import OrderStatusBadge from '@/components/domain/OrderStatusBadge.vue'
 import OrderTimeline from '@/components/domain/OrderTimeline.vue'
@@ -244,6 +245,22 @@ function back(): void {
               :editability="editability"
             />
           </div>
+
+          <Card v-if="permissions.canCreateProductionTasks" class="border-dashed">
+            <div class="space-y-3 p-4">
+              <h3 class="text-sm font-semibold text-ink-strong">
+                Производственные задачи
+              </h3>
+              <p class="text-xs text-ink-muted">
+                Создайте задачу для выбранной позиции заказа. Для одной позиции можно добавить несколько задач с разным назначением.
+              </p>
+              <ProductionTaskCreateForm
+                v-if="order"
+                :order-id="order.name"
+                :items="draft.items"
+              />
+            </div>
+          </Card>
 
           <div class="space-y-1.5">
             <Label for="d-notes">Комментарий</Label>

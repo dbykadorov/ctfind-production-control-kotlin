@@ -65,6 +65,7 @@ class ProductionTaskQueryUseCase(
 			uom = uom,
 			status = status,
 			statusLabel = productionTaskStatusLabelRu(status),
+			previousActiveStatus = previousActiveStatus,
 			executor = executor,
 			plannedStartDate = plannedStartDate,
 			plannedFinishDate = plannedFinishDate,

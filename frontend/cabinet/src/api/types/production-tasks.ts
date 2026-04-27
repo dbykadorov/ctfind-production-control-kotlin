@@ -34,6 +34,8 @@ export interface ProductionTaskListRowResponse {
   uom: string
   status: ProductionTaskStatus
   statusLabel: string
+  /** Set when status is BLOCKED — use for unblock target `toStatus`. */
+  previousActiveStatus?: ProductionTaskStatus | null
   executor?: ProductionTaskExecutorSummary
   plannedStartDate?: string
   plannedFinishDate?: string
@@ -64,6 +66,52 @@ export interface ProductionTaskDetailResponse extends ProductionTaskListRowRespo
   allowedActions: ProductionTaskAction[]
   history: ProductionTaskHistoryEventResponse[]
   createdAt: string
+}
+
+export interface CreateProductionTaskFromOrderLinePayload {
+  orderItemId: string
+  purpose: string
+  quantity: number
+  uom: string
+  executorUserId?: string
+  plannedStartDate?: string
+  plannedFinishDate?: string
+}
+
+export interface CreatedProductionTaskItemResponse {
+  id: string
+  taskNumber: string
+  status: ProductionTaskStatus
+  version: number
+}
+
+export interface CreateProductionTasksFromOrderResponse {
+  items: CreatedProductionTaskItemResponse[]
+}
+
+export interface PutProductionTaskAssignmentPayload {
+  expectedVersion: number
+  executorUserId: string
+  plannedStartDate?: string
+  plannedFinishDate?: string
+  note?: string
+}
+
+export interface PostProductionTaskStatusPayload {
+  expectedVersion: number
+  toStatus: ProductionTaskStatus
+  reason?: string
+  note?: string
+}
+
+export interface ProductionTaskAssigneeRow {
+  id: string
+  displayName: string
+  login: string
+}
+
+export interface ProductionTaskAssigneesResponse {
+  items: ProductionTaskAssigneeRow[]
 }
 
 export interface ProductionTaskListFilters {

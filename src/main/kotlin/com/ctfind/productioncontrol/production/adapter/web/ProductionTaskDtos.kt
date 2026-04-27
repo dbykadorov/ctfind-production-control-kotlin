@@ -10,6 +10,7 @@ import com.ctfind.productioncontrol.production.application.ProductionTaskOrderIt
 import com.ctfind.productioncontrol.production.application.ProductionTaskOrderSummary
 import com.ctfind.productioncontrol.production.domain.ProductionTaskAction
 import com.ctfind.productioncontrol.production.domain.ProductionTaskHistoryEventType
+import com.ctfind.productioncontrol.production.application.CreatedProductionTaskSummary
 import com.ctfind.productioncontrol.production.domain.ProductionTaskStatus
 import org.springframework.security.oauth2.jwt.Jwt
 import java.math.BigDecimal
@@ -61,6 +62,7 @@ data class ProductionTaskListItemResponse(
 	val uom: String,
 	val status: ProductionTaskStatus,
 	val statusLabel: String,
+	val previousActiveStatus: ProductionTaskStatus? = null,
 	val executor: ProductionTaskExecutorResponse?,
 	val plannedStartDate: LocalDate?,
 	val plannedFinishDate: LocalDate?,
@@ -87,6 +89,57 @@ data class ProductionTaskHistoryEventResponse(
 	val reason: String?,
 )
 
+data class CreateProductionTaskFromOrderItemRequest(
+	val orderItemId: UUID,
+	val purpose: String,
+	val quantity: BigDecimal,
+	val uom: String,
+	val executorUserId: UUID? = null,
+	val plannedStartDate: LocalDate? = null,
+	val plannedFinishDate: LocalDate? = null,
+)
+
+data class CreateProductionTasksFromOrderRequest(
+	val orderId: UUID,
+	val tasks: List<CreateProductionTaskFromOrderItemRequest>,
+)
+
+data class CreatedProductionTaskItemResponse(
+	val id: UUID,
+	val taskNumber: String,
+	val status: ProductionTaskStatus,
+	val version: Long,
+)
+
+data class CreateProductionTasksFromOrderResponse(
+	val items: List<CreatedProductionTaskItemResponse>,
+)
+
+data class PutProductionTaskAssignmentRequest(
+	val expectedVersion: Long,
+	val executorUserId: UUID,
+	val plannedStartDate: LocalDate? = null,
+	val plannedFinishDate: LocalDate? = null,
+	val note: String? = null,
+)
+
+data class PostProductionTaskStatusRequest(
+	val expectedVersion: Long,
+	val toStatus: ProductionTaskStatus,
+	val reason: String? = null,
+	val note: String? = null,
+)
+
+data class ProductionTaskAssigneeListItemResponse(
+	val id: UUID,
+	val displayName: String,
+	val login: String,
+)
+
+data class ProductionTaskAssigneesResponse(
+	val items: List<ProductionTaskAssigneeListItemResponse>,
+)
+
 data class ProductionTaskDetailResponse(
 	val id: UUID,
 	val taskNumber: String,
@@ -97,6 +150,7 @@ data class ProductionTaskDetailResponse(
 	val uom: String,
 	val status: ProductionTaskStatus,
 	val statusLabel: String,
+	val previousActiveStatus: ProductionTaskStatus? = null,
 	val executor: ProductionTaskExecutorResponse?,
 	val plannedStartDate: LocalDate?,
 	val plannedFinishDate: LocalDate?,
@@ -119,12 +173,28 @@ fun ProductionTaskListRowView.toListItemResponse(): ProductionTaskListItemRespon
 		uom = uom,
 		status = status,
 		statusLabel = statusLabel,
+		previousActiveStatus = previousActiveStatus,
 		executor = executor?.toExecutorResponse(),
 		plannedStartDate = plannedStartDate,
 		plannedFinishDate = plannedFinishDate,
 		blockedReason = blockedReason,
 		updatedAt = updatedAt,
 		version = version,
+	)
+
+fun CreatedProductionTaskSummary.toCreatedItemResponse(): CreatedProductionTaskItemResponse =
+	CreatedProductionTaskItemResponse(
+		id = id,
+		taskNumber = taskNumber,
+		status = status,
+		version = version,
+	)
+
+fun ProductionTaskExecutorSummary.toAssigneeListItemResponse(): ProductionTaskAssigneeListItemResponse =
+	ProductionTaskAssigneeListItemResponse(
+		id = id,
+		displayName = displayName,
+		login = login,
 	)
 
 fun ProductionTaskDetailView.toDetailResponse(): ProductionTaskDetailResponse =
@@ -138,6 +208,7 @@ fun ProductionTaskDetailView.toDetailResponse(): ProductionTaskDetailResponse =
 		uom = row.uom,
 		status = row.status,
 		statusLabel = row.statusLabel,
+		previousActiveStatus = row.previousActiveStatus,
 		executor = row.executor?.toExecutorResponse(),
 		plannedStartDate = row.plannedStartDate,
 		plannedFinishDate = row.plannedFinishDate,

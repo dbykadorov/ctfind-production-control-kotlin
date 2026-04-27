@@ -99,21 +99,21 @@
 
 ### Tests for User Story 2
 
-- [ ] T038 [P] [US2] Add application tests for create-from-order validation, distinct purpose rule, initial status, source links, history, and audit in `src/test/kotlin/com/ctfind/productioncontrol/production/application/CreateProductionTasksFromOrderUseCaseTests.kt`
+- [X] T038 [P] [US2] Add application tests for create-from-order validation, distinct purpose rule, initial status, source links, history, and audit in `src/test/kotlin/com/ctfind/productioncontrol/production/application/CreateProductionTasksFromOrderUseCaseTests.kt`
 - [ ] T039 [P] [US2] Add web tests for `POST /api/production-tasks/from-order` success, 400 validation, 403 forbidden, and missing order item cases in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskCreateControllerTests.kt`
 - [ ] T040 [P] [US2] Add frontend composable tests for create-from-order payload mapping and validation error mapping in `frontend/cabinet/tests/unit/composables/use-production-task-create.test.ts`
 - [ ] T041 [P] [US2] Add frontend page tests for order detail create-task affordance and create-task form validation in `frontend/cabinet/tests/unit/pages/OrderDetailProductionTasks.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T042 [US2] Implement create-from-order use case with order/item source validation and distinct purpose enforcement in `src/main/kotlin/com/ctfind/productioncontrol/production/application/CreateProductionTasksFromOrderUseCase.kt`
-- [ ] T043 [US2] Add create-from-order request/response DTOs and result mapping in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskDtos.kt`
-- [ ] T044 [US2] Implement `POST /api/production-tasks/from-order` in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskController.kt`
-- [ ] T045 [US2] Add persistence save methods for created tasks and created history events in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt`
-- [ ] T046 [US2] Implement frontend create-from-order composable function in `frontend/cabinet/src/api/composables/use-production-tasks.ts`
-- [ ] T047 [US2] Add create production task UI entry from order detail in `frontend/cabinet/src/pages/office/OrderDetailPage.vue`
-- [ ] T048 [US2] Add create production task form component with purpose, quantity, executor, and planned dates in `frontend/cabinet/src/components/domain/ProductionTaskCreateForm.vue`
-- [ ] T049 [US2] Refresh production task list/detail caches after task creation in `frontend/cabinet/src/api/composables/use-production-tasks.ts`
+- [X] T042 [US2] Implement create-from-order use case with order/item source validation and distinct purpose enforcement in `src/main/kotlin/com/ctfind/productioncontrol/production/application/CreateProductionTasksFromOrderUseCase.kt`
+- [X] T043 [US2] Add create-from-order request/response DTOs and result mapping in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskDtos.kt`
+- [X] T044 [US2] Implement `POST /api/production-tasks/from-order` in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskController.kt`
+- [X] T045 [US2] Add persistence save methods for created tasks and created history events in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt`
+- [X] T046 [US2] Implement frontend create-from-order composable function in `frontend/cabinet/src/api/composables/use-production-tasks.ts`
+- [X] T047 [US2] Add create production task UI entry from order detail in `frontend/cabinet/src/pages/office/OrderDetailPage.vue`
+- [X] T048 [US2] Add create production task form component with purpose, quantity, executor, and planned dates in `frontend/cabinet/src/components/domain/ProductionTaskCreateForm.vue`
+- [X] T049 [US2] Refresh production task list/detail caches after task creation in `frontend/cabinet/src/api/composables/use-production-tasks.ts`
 
 **Checkpoint**: User Story 2 works independently and does not break US1 list/detail behavior.
 
@@ -134,14 +134,14 @@
 
 ### Implementation for User Story 3
 
-- [ ] T054 [US3] Implement assignment and planning use case in `src/main/kotlin/com/ctfind/productioncontrol/production/application/AssignProductionTaskUseCase.kt`
-- [ ] T055 [US3] Implement executor assignee query use case in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskAssigneeQueryUseCase.kt`
-- [ ] T056 [US3] Add assignment and assignee DTOs in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskDtos.kt`
-- [ ] T057 [US3] Implement `PUT /api/production-tasks/{id}/assignment` and `GET /api/production-tasks/assignees` in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskController.kt`
-- [ ] T058 [US3] Add executor lookup adapter using auth user/role persistence in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt`
-- [ ] T059 [US3] Implement assignee search and assignment save methods in `frontend/cabinet/src/api/composables/use-production-task-detail.ts`
-- [ ] T060 [US3] Add assignment/planning controls to task detail page in `frontend/cabinet/src/pages/production/ProductionTaskDetailPage.vue`
-- [ ] T061 [US3] Add assignee picker component for production executors in `frontend/cabinet/src/components/domain/ProductionTaskAssigneePicker.vue`
+- [X] T054 [US3] Implement assignment and planning use case in `src/main/kotlin/com/ctfind/productioncontrol/production/application/AssignProductionTaskUseCase.kt`
+- [X] T055 [US3] Implement executor assignee query use case in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskAssigneeQueryUseCase.kt`
+- [X] T056 [US3] Add assignment and assignee DTOs in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskDtos.kt`
+- [X] T057 [US3] Implement `PUT /api/production-tasks/{id}/assignment` and `GET /api/production-tasks/assignees` in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskController.kt`
+- [X] T058 [US3] Add executor lookup adapter using auth user/role persistence in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt`
+- [X] T059 [US3] Implement assignee search and assignment save methods in `frontend/cabinet/src/api/composables/use-production-task-detail.ts`
+- [X] T060 [US3] Add assignment/planning controls to task detail page in `frontend/cabinet/src/pages/production/ProductionTaskDetailPage.vue`
+- [X] T061 [US3] Add assignee picker component for production executors in `frontend/cabinet/src/components/domain/ProductionTaskAssigneePicker.vue`
 
 **Checkpoint**: User Story 3 works independently and preserves US1/US2 behavior.
 
@@ -163,13 +163,13 @@
 
 ### Implementation for User Story 4
 
-- [ ] T067 [US4] Implement status change use case with lifecycle policy, block/unblock handling, permissions, history, audit, and stale version protection in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ChangeProductionTaskStatusUseCase.kt`
-- [ ] T068 [US4] Add status request DTOs and error mapping in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskDtos.kt`
-- [ ] T069 [US4] Implement `POST /api/production-tasks/{id}/status` in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskController.kt`
-- [ ] T070 [US4] Persist previous active status and blocked reason changes in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt`
+- [X] T067 [US4] Implement status change use case with lifecycle policy, block/unblock handling, permissions, history, audit, and stale version protection in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ChangeProductionTaskStatusUseCase.kt`
+- [X] T068 [US4] Add status request DTOs and error mapping in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskDtos.kt`
+- [X] T069 [US4] Implement `POST /api/production-tasks/{id}/status` in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskController.kt`
+- [X] T070 [US4] Persist previous active status and blocked reason changes in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt`
 - [ ] T071 [US4] Implement production workflow composable in `frontend/cabinet/src/api/composables/use-production-task-workflow.ts`
-- [ ] T072 [US4] Add workflow buttons and block reason input to task detail page in `frontend/cabinet/src/pages/production/ProductionTaskDetailPage.vue`
-- [ ] T073 [US4] Ensure list row badges and filters reflect blocked and completed task state in `frontend/cabinet/src/pages/production/ProductionTasksListPage.vue`
+- [X] T072 [US4] Add workflow buttons and block reason input to task detail page in `frontend/cabinet/src/pages/production/ProductionTaskDetailPage.vue`
+- [X] T073 [US4] Ensure list row badges and filters reflect blocked and completed task state in `frontend/cabinet/src/pages/production/ProductionTasksListPage.vue`
 
 **Checkpoint**: User Story 4 works independently and preserves US1-US3 behavior.
 
@@ -193,9 +193,9 @@
 - [ ] T078 [US5] Implement task history timeline projection in `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskHistoryUseCase.kt`
 - [ ] T079 [US5] Add history DTO fields and mapper refinements in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskDtos.kt`
 - [ ] T080 [US5] Add history projection query support in `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt`
-- [ ] T081 [US5] Implement frontend history mapping in `frontend/cabinet/src/api/composables/use-production-task-detail.ts`
+- [X] T081 [US5] Implement frontend history mapping in `frontend/cabinet/src/api/composables/use-production-task-detail.ts`
 - [ ] T082 [US5] Add reusable production task timeline component in `frontend/cabinet/src/components/domain/ProductionTaskTimeline.vue`
-- [ ] T083 [US5] Render task timeline in detail page in `frontend/cabinet/src/pages/production/ProductionTaskDetailPage.vue`
+- [X] T083 [US5] Render task timeline in detail page in `frontend/cabinet/src/pages/production/ProductionTaskDetailPage.vue`
 
 **Checkpoint**: User Story 5 works independently and preserves US1-US4 behavior.
 
@@ -209,7 +209,7 @@
 - [ ] T085 [P] Add frontend no-legacy-runtime coverage for production task files in `frontend/cabinet/tests/unit/no-frappe-runtime.test.ts`
 - [ ] T086 [P] Add production task route guard tests for manager/supervisor/executor/admin access in `frontend/cabinet/tests/unit/router/guard.test.ts`
 - [ ] T087 Run backend tests with Docker Gradle command and fix any failures from `specs/005-production-tasks/quickstart.md`
-- [ ] T088 Run frontend tests and build with `pnpm --dir frontend/cabinet test` and `pnpm --dir frontend/cabinet build`
+- [X] T088 Run frontend tests and build with `pnpm --dir frontend/cabinet test` and `pnpm --dir frontend/cabinet build`
 - [ ] T089 Run `docker compose up --build --wait` and verify backend health, frontend availability, and PostgreSQL startup from `specs/005-production-tasks/quickstart.md`
 - [ ] T090 Execute API smoke checks for login, order context, create task, list/detail, assign, lifecycle, invalid transition, and executor visibility from `specs/005-production-tasks/quickstart.md`
 - [ ] T091 Execute manual frontend smoke checks for task list, filters, create from order, assignment, workflow, history, completed read-only state, and executor assigned-only access from `specs/005-production-tasks/quickstart.md`

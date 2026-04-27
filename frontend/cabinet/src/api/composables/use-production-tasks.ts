@@ -2,7 +2,12 @@
  * Список производственных задач через Spring API (`/api/production-tasks`).
  */
 import type { ApiError } from '@/api/types/domain'
-import type { ProductionTaskListFilters, ProductionTasksPageResponse } from '@/api/types/production-tasks'
+import type {
+  CreateProductionTaskFromOrderLinePayload,
+  CreateProductionTasksFromOrderResponse,
+  ProductionTaskListFilters,
+  ProductionTasksPageResponse,
+} from '@/api/types/production-tasks'
 import { httpClient } from '@/api/api-client'
 import { toApiError } from '@/utils/errors'
 import { onScopeDispose, ref, type Ref } from 'vue'
@@ -77,4 +82,15 @@ export function useProductionTasksList(): UseProductionTasksListResult {
   onScopeDispose(() => abortController?.abort())
 
   return { data, loading, error, refetch }
+}
+
+export async function createProductionTasksFromOrder(
+  orderId: string,
+  tasks: CreateProductionTaskFromOrderLinePayload[],
+): Promise<CreateProductionTasksFromOrderResponse> {
+  const response = await httpClient.post<CreateProductionTasksFromOrderResponse>('/api/production-tasks/from-order', {
+    orderId,
+    tasks,
+  })
+  return response.data
 }

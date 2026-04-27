@@ -67,6 +67,7 @@ data class ProductionTaskListRowView(
 	val uom: String,
 	val status: ProductionTaskStatus,
 	val statusLabel: String,
+	val previousActiveStatus: ProductionTaskStatus?,
 	val executor: ProductionTaskExecutorSummary?,
 	val plannedStartDate: LocalDate?,
 	val plannedFinishDate: LocalDate?,
@@ -143,11 +144,22 @@ data class ChangeProductionTaskStatusCommand(
 	val roleCodes: Set<String>,
 )
 
+data class CreatedProductionTaskSummary(
+	val id: UUID,
+	val taskNumber: String,
+	val status: ProductionTaskStatus,
+	val version: Long,
+)
+
 sealed interface ProductionTaskMutationResult<out T> {
 	data class Success<T>(val value: T) : ProductionTaskMutationResult<T>
 	data object Forbidden : ProductionTaskMutationResult<Nothing>
 	data object NotFound : ProductionTaskMutationResult<Nothing>
 	data object StaleVersion : ProductionTaskMutationResult<Nothing>
-	data class ValidationFailed(val message: String) : ProductionTaskMutationResult<Nothing>
+	data class ValidationFailed(
+		val message: String,
+		val errorCode: String = "validation_failed",
+		val details: Map<String, String> = emptyMap(),
+	) : ProductionTaskMutationResult<Nothing>
 	data object InvalidTransition : ProductionTaskMutationResult<Nothing>
 }
