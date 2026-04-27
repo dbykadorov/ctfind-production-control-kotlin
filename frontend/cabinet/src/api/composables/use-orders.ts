@@ -117,6 +117,7 @@ function buildOrderQueryParams(filters: OrderFilters, start: number, pageSize: n
 function mapOrderListRow(row: OrderListRowResponse): OrderListItem {
   return {
     name: row.id,
+    order_number: row.orderNumber,
     status: row.statusLabel ?? BACKEND_TO_UI_STATUS[row.status],
     delivery_date: row.deliveryDate,
     modified: row.updatedAt,

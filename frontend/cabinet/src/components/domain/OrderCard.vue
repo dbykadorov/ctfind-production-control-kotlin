@@ -52,6 +52,9 @@ const creationLabel = computed(() => {
 })
 
 const customerLabel = computed(() => props.order.customer_name || props.order.customer || '—')
+
+/** Заголовок карточки: человекочитаемый номер; `name` остаётся UUID для ссылки. */
+const orderDisplayLabel = computed(() => props.order.order_number ?? props.order.name)
 </script>
 
 <template>
@@ -63,9 +66,12 @@ const customerLabel = computed(() => props.order.customer_name || props.order.cu
       class="p-4 transition-all hover:border-brand-500 hover:shadow-elevated focus-within:border-brand-500"
     >
       <div class="flex items-start justify-between gap-3">
-        <div class="flex min-w-0 items-baseline gap-2">
-          <span class="shrink-0 font-mono text-sm font-semibold text-ink-strong">
-            {{ order.name }}
+        <div class="flex min-w-0 flex-1 items-baseline gap-2">
+          <span
+            class="min-w-0 shrink truncate text-sm font-semibold tabular-nums text-ink-strong"
+            :title="orderDisplayLabel"
+          >
+            {{ orderDisplayLabel }}
           </span>
           <span class="shrink-0 text-ink-muted">/</span>
           <h3 class="truncate text-sm font-medium text-ink" :title="customerLabel">

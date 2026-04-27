@@ -23,7 +23,10 @@ export interface BootPayload {
 
 /** Item в списке заказов: проекция Customer Order + join customer.customer_name. */
 export interface OrderListItem {
+  /** UUID заказа для маршрута `/cabinet/orders/:name` и API. */
   name: string
+  /** Человекочитаемый номер с бэкенда (`orderNumber`), для отображения в карточке. */
+  order_number?: string
   status: OrderStatus
   delivery_date: string
   modified: string

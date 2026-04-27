@@ -170,6 +170,7 @@ describe('use-orders / Spring API mapping', () => {
       overdue: false,
     })).toMatchObject({
       name: 'order-1',
+      order_number: 'ORD-000001',
       customer: 'customer-1',
       customer_name: 'ООО Ромашка',
       status: 'новый',
