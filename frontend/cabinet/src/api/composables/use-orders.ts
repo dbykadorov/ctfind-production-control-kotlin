@@ -179,6 +179,13 @@ function mapUpdateOrderPayload(payload: Partial<CustomerOrder>, expectedVersion:
   }
 }
 
+function isCanceledRequest(error: unknown): boolean {
+  const candidate = error as { name?: string, code?: string }
+  return candidate.name === 'CanceledError'
+    || candidate.name === 'AbortError'
+    || candidate.code === 'ERR_CANCELED'
+}
+
 async function fetchOrdersListPage(
   filters: OrderFilters,
   start: number,
@@ -228,7 +235,7 @@ export function useOrdersList(filters: Ref<OrderFilters>, options: UseOrdersList
       state.value = data.value.length === 0 ? 'empty' : 'loaded'
     }
     catch (e) {
-      if ((e as { name?: string }).name === 'CanceledError')
+      if (isCanceledRequest(e))
         return
       error.value = toApiError(e)
       state.value = 'error'
@@ -295,7 +302,7 @@ export function useOrder(name: Ref<string>): UseOrderResult {
       state.value = 'loaded'
     }
     catch (e) {
-      if ((e as { name?: string }).name === 'CanceledError')
+      if (isCanceledRequest(e))
         return
       error.value = toApiError(e)
       state.value = 'error'
@@ -364,4 +371,5 @@ export const ordersInternals = {
   mapOrderListRow,
   mapCreateOrderPayload,
   mapUpdateOrderPayload,
+  isCanceledRequest,
 }

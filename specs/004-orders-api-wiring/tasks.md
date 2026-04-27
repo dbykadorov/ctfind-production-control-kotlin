@@ -182,13 +182,13 @@
 
 **Purpose**: Validate the whole feature, harden contracts, and update verification records.
 
-- [ ] T074 [P] Review controllers for business-rule leakage and keep rules in domain/application code in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderController.kt`
-- [ ] T075 [P] Review persistence adapters for domain terminology and mapping isolation in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/persistence/OrderPersistenceAdapters.kt`
-- [ ] T076 [P] Update frontend no-legacy-runtime regression expectations if needed in `frontend/cabinet/tests/unit/no-frappe-runtime.test.ts`
-- [ ] T077 Run backend tests and record result in `specs/004-orders-api-wiring/quickstart.md`
-- [ ] T078 Run frontend tests and build, then record result in `specs/004-orders-api-wiring/quickstart.md`
-- [ ] T079 Run Docker startup, API smoke checks, and manual frontend smoke checks, then record result in `specs/004-orders-api-wiring/quickstart.md`
-- [ ] T080 Search for forbidden legacy runtime patterns and record result in `specs/004-orders-api-wiring/quickstart.md`
+- [X] T074 [P] Review controllers for business-rule leakage and keep rules in domain/application code in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/web/OrderController.kt`
+- [X] T075 [P] Review persistence adapters for domain terminology and mapping isolation in `src/main/kotlin/com/ctfind/productioncontrol/orders/adapter/persistence/OrderPersistenceAdapters.kt`
+- [X] T076 [P] Update frontend no-legacy-runtime regression expectations if needed in `frontend/cabinet/tests/unit/no-frappe-runtime.test.ts`
+- [X] T077 Run backend tests and record result in `specs/004-orders-api-wiring/quickstart.md`
+- [X] T078 Run frontend tests and build, then record result in `specs/004-orders-api-wiring/quickstart.md`
+- [X] T079 Run Docker startup, API smoke checks, and manual frontend smoke checks, then record result in `specs/004-orders-api-wiring/quickstart.md`
+- [X] T080 Search for forbidden legacy runtime patterns and record result in `specs/004-orders-api-wiring/quickstart.md`
 
 ---
 

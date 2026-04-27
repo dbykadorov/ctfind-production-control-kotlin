@@ -41,6 +41,7 @@ const {
   mapCreateOrderPayload,
   mapUpdateOrderPayload,
   mapOrderListRow,
+  isCanceledRequest,
 } = ordersInternals
 
 describe('use-orders / constants', () => {
@@ -240,6 +241,15 @@ describe('use-orders / Spring API mapping', () => {
         },
       ],
     })
+  })
+})
+
+describe('use-orders / request cancellation', () => {
+  it('recognizes browser and Axios cancellation shapes', () => {
+    expect(isCanceledRequest({ name: 'CanceledError' })).toBe(true)
+    expect(isCanceledRequest({ name: 'AbortError' })).toBe(true)
+    expect(isCanceledRequest({ code: 'ERR_CANCELED' })).toBe(true)
+    expect(isCanceledRequest(new Error('Network'))).toBe(false)
   })
 })
 

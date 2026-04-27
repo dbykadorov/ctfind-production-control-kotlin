@@ -179,11 +179,11 @@ Expected:
 
 ## Verification Record
 
-To be filled during `/speckit-implement`:
-
-- Backend tests:
-- Frontend tests:
-- Frontend build:
-- Docker startup:
-- API smoke checks:
-- Manual frontend smoke:
+- Backend tests: PASS on 2026-04-27. Command: `docker run --rm -e GRADLE_USER_HOME=/tmp/gradle-home -v "$PWD":/workspace -w /workspace eclipse-temurin:21-jdk ./gradlew --project-cache-dir /tmp/gradle-project-cache test`. Result: `BUILD SUCCESSFUL`, 5 tasks executed.
+- Frontend tests: PASS on 2026-04-27. Command: `pnpm test` from `frontend/cabinet`. Result: 29 test files passed, 207 tests passed.
+- Frontend build: PASS on 2026-04-27. Command: `pnpm build` from `frontend/cabinet`. Result: `vue-tsc --noEmit && vite build`, Vite build completed successfully.
+- Docker startup: PASS on 2026-04-27. Command: `docker compose up --build --wait`. Result: backend, frontend, and PostgreSQL containers reported healthy.
+- API smoke checks: PASS on 2026-04-27. Verified login, health `UP`, active customer lookup, order list, order creation (`NEW`), status transition to `IN_WORK`, invalid reverse transition `422`, dashboard totals, and frontend HTTP `200`.
+- Manual frontend smoke: PASS on 2026-04-27. Verified login with `admin/admin`, dashboard KPI/recent widgets, orders list, order detail/history/actions, and absence of the session-expired overlay or legacy Frappe popup. During this smoke, an order-list cancellation regression was found and fixed; final frontend tests/build passed after the fix.
+- Legacy runtime search: PASS on 2026-04-27. Search for `/api/method|frappeCall|frappe.client|frappe.auth|frappe-client|X-Frappe|socket.io` returned only intentional guard definitions in `frontend/cabinet/tests/unit/no-frappe-runtime.test.ts`; no runtime offenders found.
+- Controller/persistence boundary review: PASS on 2026-04-27. `OrderController` and `OrderDashboardController` remain HTTP/DTO/result mappers; order write/status/dashboard rules live in application/domain services. Persistence adapters remain JPA mapping/query adapters without business-rule enforcement beyond persistence concerns.
