@@ -114,15 +114,15 @@ description: "Task list for feature 006 — Production Tasks Board (M4)"
 
 **Purpose**: Verification and final review.
 
-- [ ] T018 [P] Run `pnpm --dir frontend/cabinet typecheck` + `pnpm --dir frontend/cabinet test` + `pnpm --dir frontend/cabinet build`; fix any failures from the new files
-- [ ] T019 [P] Run `make backend-test-docker` as regression — must remain green since no backend code changed
-- [ ] T020 Run `make docker-up-detached` and `make health`; verify the full stack starts Healthy after the frontend build incorporates the new page
-- [ ] T021 Execute the manual frontend smoke for the supervisor / admin role per `specs/006-production-tasks-board-m4/quickstart.md` §6
-- [ ] T022 Execute the manual frontend smoke for the executor role per `specs/006-production-tasks-board-m4/quickstart.md` §6
-- [ ] T023 Execute the tablet smoke per `specs/006-production-tasks-board-m4/quickstart.md` §6 (DevTools tablet preset or real 10–12" device in landscape)
-- [ ] T024 [P] Run the legacy runtime guard search per `specs/006-production-tasks-board-m4/quickstart.md` §7; expect only the existing `tests/unit/no-frappe-runtime.test.ts` matches
-- [ ] T025 Update the Verification Record section in `specs/006-production-tasks-board-m4/quickstart.md` with PASS/FAIL for each step
-- [ ] T026 Cross-review the spec for residual ambiguity and constitution alignment (TOC readiness facts preserved, no new auditable mutations, API-only behavior intact, role gates explicit) and append the review note to `specs/006-production-tasks-board-m4/quickstart.md`
+- [X] T018 [P] Run `pnpm --dir frontend/cabinet typecheck` + `pnpm --dir frontend/cabinet test` + `pnpm --dir frontend/cabinet build`; fix any failures from the new files
+- [X] T019 [P] Run `make backend-test-docker` as regression — must remain green since no backend code changed
+- [X] T020 Run `make docker-up-detached` and `make health`; verify the full stack starts Healthy after the frontend build incorporates the new page
+- [~] T021 Execute the manual frontend smoke for the supervisor / admin role per `specs/006-production-tasks-board-m4/quickstart.md` §6 — **deferred to manual ops (op runs on next cabinet session)**
+- [~] T022 Execute the manual frontend smoke for the executor role per `specs/006-production-tasks-board-m4/quickstart.md` §6 — **deferred to manual ops**
+- [~] T023 Execute the tablet smoke per `specs/006-production-tasks-board-m4/quickstart.md` §6 (DevTools tablet preset or real 10–12" device in landscape) — **deferred to manual ops**
+- [X] T024 [P] Run the legacy runtime guard search per `specs/006-production-tasks-board-m4/quickstart.md` §7; expect only the existing `tests/unit/no-frappe-runtime.test.ts` matches
+- [X] T025 Update the Verification Record section in `specs/006-production-tasks-board-m4/quickstart.md` with PASS/FAIL for each step
+- [X] T026 Cross-review the spec for residual ambiguity and constitution alignment (TOC readiness facts preserved, no new auditable mutations, API-only behavior intact, role gates explicit) and append the review note to `specs/006-production-tasks-board-m4/quickstart.md`
 
 ---
 

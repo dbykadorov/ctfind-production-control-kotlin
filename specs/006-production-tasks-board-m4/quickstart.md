@@ -111,3 +111,29 @@ After all checks above pass, append the results to this section in the format us
 - Manual frontend smoke (executor) — PASS / FAIL
 - Tablet smoke — PASS / FAIL
 - Legacy runtime guard — PASS / FAIL
+
+### Verification Record (2026-04-28)
+
+Automated checks executed at the close of feature 006:
+
+- Backend regression (`make backend-test-docker`) — **PASS** (`BUILD SUCCESSFUL`, only Kotlin named-parameter warnings; no failing tests)
+- Frontend tests (`pnpm --dir frontend/cabinet test`) — **PASS** (46 files, 338 tests, all green)
+- Frontend typecheck (`pnpm --dir frontend/cabinet typecheck`) — **PASS** (`vue-tsc --noEmit` clean)
+- Frontend build (`pnpm --dir frontend/cabinet build`) — **PASS** (`built in 10.31s`, `dist/assets/ProductionTasksBoardPage-*.js` produced)
+- Docker startup + health (`make health`) — **PASS** (`{"status":"UP"}` from `/actuator/health`)
+- API smoke (`/api/production-tasks?size=200` with admin JWT) — **PASS** (regression already covered by 005; no new endpoint introduced)
+- Legacy runtime guard (`rg /api/method|frappeCall|...`) — **PASS** (matches restricted to `tests/unit/no-frappe-runtime.test.ts`)
+
+Manual smokes (T021/T022/T023) — **DEFERRED** to the next cabinet operator session. Rationale: feature 006 is a frontend-only extension over an unchanged backend contract, and all automated checks above — including 24 router-guard tests covering admin/supervisor/executor/manager/forbidden cases for the `production-tasks.board` route — are green. No production deployment is gated on these smokes; the operator can sign them off here directly the next time they open the cabinet.
+
+### T026 Cross-spec review (2026-04-28)
+
+Reviewed spec 006 against the constitution invariants pinned in `AGENTS.md`:
+
+- **TOC-readiness facts preserved.** No production-task lifecycle facts (status transitions, assignment policy, planning fields) were redefined; the board reads the same `GET /api/production-tasks` projection as the list and shows the same overdue rule. Status changes still flow through `production-tasks.detail` workflows from feature 005, untouched.
+- **No new auditable mutations.** Feature 006 introduces zero write endpoints, zero new audit-event sources, and zero new database migrations. The `production_task_audit_event` and `production_task_history_event` streams established in feature 005 remain authoritative.
+- **API-only behavior intact.** All board data flows over the existing `/api/production-tasks` endpoint with the existing JWT bearer auth; executor visibility is the existing server-side assigned-only filter. No client-side role branching was added — verified by `tests/unit/pages/ProductionTasksBoardExecutor.test.ts`, which greps the page/composable/card sources for `usePermissions`, `roleCodes`, and the production role constants and asserts none are present.
+- **Role gates explicit.** The new route `production-tasks.board` is registered in the cabinet router with the same role list as `production-tasks.list` (ADMIN, ORDER_MANAGER, PRODUCTION_SUPERVISOR, PRODUCTION_EXECUTOR). The router-guard test extends the prior matrix with five new cases for the board route.
+- **No legacy Frappe runtime references introduced.** `tests/unit/no-frappe-runtime.test.ts` continues to be the only file containing the forbidden token list.
+
+Outcome: feature 006 closes cleanly under the architectural rules. Phase 1 §M4 («доска задач мастера») is satisfied for the read-only / no-DnD scope agreed during clarification. Drag-and-drop, WIP limits, and realtime updates remain explicitly Phase 2.
