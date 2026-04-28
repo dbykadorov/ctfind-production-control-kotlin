@@ -101,4 +101,58 @@ describe('router guard (009)', () => {
     await router.push('/cabinet/orders/new')
     expect(router.currentRoute.value.name).toBe('orders.new')
   })
+
+  // T086: production-task route access for manager / supervisor / executor / admin
+  describe('production-tasks routes (T086)', () => {
+    it('ADMIN backend role can open the production task list', async () => {
+      authState.roles = ['ADMIN']
+      authState.permissions = { isAdmin: false }
+      await router.push('/cabinet/production-tasks')
+      expect(router.currentRoute.value.name).toBe('production-tasks.list')
+    })
+
+    it('isAdmin=true bypasses RBAC for production tasks', async () => {
+      authState.roles = []
+      authState.permissions = { isAdmin: true }
+      await router.push('/cabinet/production-tasks')
+      expect(router.currentRoute.value.name).toBe('production-tasks.list')
+    })
+
+    it('PRODUCTION_SUPERVISOR backend role can open production tasks', async () => {
+      authState.roles = ['PRODUCTION_SUPERVISOR']
+      authState.permissions = { isAdmin: false }
+      await router.push('/cabinet/production-tasks')
+      expect(router.currentRoute.value.name).toBe('production-tasks.list')
+    })
+
+    it('PRODUCTION_EXECUTOR backend role can open production tasks', async () => {
+      authState.roles = ['PRODUCTION_EXECUTOR']
+      authState.permissions = { isAdmin: false }
+      await router.push('/cabinet/production-tasks')
+      expect(router.currentRoute.value.name).toBe('production-tasks.list')
+    })
+
+    it('ORDER_MANAGER backend role can open production tasks', async () => {
+      authState.roles = ['ORDER_MANAGER']
+      authState.permissions = { isAdmin: false }
+      await router.push('/cabinet/production-tasks')
+      expect(router.currentRoute.value.name).toBe('production-tasks.list')
+    })
+
+    it('a role outside the production-tasks allowlist gets sent to /cabinet/403', async () => {
+      authState.roles = ['Some Other Role']
+      authState.permissions = { isAdmin: false }
+      authState.hasCabinetAccess = true
+      await router.push('/cabinet/production-tasks')
+      expect(router.currentRoute.value.name).toBe('forbidden')
+    })
+
+    it('PRODUCTION_EXECUTOR can open the production task detail route', async () => {
+      authState.roles = ['PRODUCTION_EXECUTOR']
+      authState.permissions = { isAdmin: false }
+      await router.push('/cabinet/production-tasks/abc-123')
+      expect(router.currentRoute.value.name).toBe('production-tasks.detail')
+      expect(router.currentRoute.value.params.id).toBe('abc-123')
+    })
+  })
 })

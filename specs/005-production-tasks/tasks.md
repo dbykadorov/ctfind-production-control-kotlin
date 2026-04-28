@@ -205,9 +205,9 @@
 
 **Purpose**: Verification, documentation, security hardening, and architectural checks across the full feature.
 
-- [ ] T084 [P] Add or update backend architecture boundary regression tests for controller/persistence rule placement in `src/test/kotlin/com/ctfind/productioncontrol/production/ProductionArchitectureTests.kt`
-- [ ] T085 [P] Add frontend no-legacy-runtime coverage for production task files in `frontend/cabinet/tests/unit/no-frappe-runtime.test.ts`
-- [ ] T086 [P] Add production task route guard tests for manager/supervisor/executor/admin access in `frontend/cabinet/tests/unit/router/guard.test.ts`
+- [X] T084 [P] Add or update backend architecture boundary regression tests for controller/persistence rule placement in `src/test/kotlin/com/ctfind/productioncontrol/production/ProductionArchitectureTests.kt`
+- [X] T085 [P] Add frontend no-legacy-runtime coverage for production task files in `frontend/cabinet/tests/unit/no-frappe-runtime.test.ts`
+- [X] T086 [P] Add production task route guard tests for manager/supervisor/executor/admin access in `frontend/cabinet/tests/unit/router/guard.test.ts`
 - [ ] T087 Run backend tests with Docker Gradle command and fix any failures from `specs/005-production-tasks/quickstart.md`
 - [X] T088 Run frontend tests and build with `pnpm --dir frontend/cabinet test` and `pnpm --dir frontend/cabinet build`
 - [ ] T089 Run `docker compose up --build --wait` and verify backend health, frontend availability, and PostgreSQL startup from `specs/005-production-tasks/quickstart.md`

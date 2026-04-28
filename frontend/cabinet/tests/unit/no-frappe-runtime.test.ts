@@ -34,4 +34,40 @@ describe('frontend runtime API boundaries', () => {
 
     expect(offenders).toEqual([])
   })
+
+  it('production task source files use the Spring API client only (T085)', () => {
+    const productionPaths = sourceFiles(SRC_ROOT).filter(p =>
+      p.includes(`${SRC_ROOT}/pages/production`)
+      || p.includes(`${SRC_ROOT}/components/domain/ProductionTask`)
+      || /use-production-task/.test(p),
+    )
+    expect(productionPaths.length).toBeGreaterThan(0)
+
+    const offenders = productionPaths.flatMap((path) => {
+      const content = readFileSync(path, 'utf8')
+      return FORBIDDEN_RUNTIME_PATTERNS
+        .filter(pattern => content.includes(pattern))
+        .map(pattern => `${path.replace(`${SRC_ROOT}/`, '')}: ${pattern}`)
+    })
+
+    expect(offenders).toEqual([])
+  })
+
+  it('production task source files only call Spring `/api/production-tasks` endpoints (T085)', () => {
+    const productionPaths = sourceFiles(SRC_ROOT).filter(p =>
+      p.includes(`${SRC_ROOT}/pages/production`)
+      || p.includes(`${SRC_ROOT}/components/domain/ProductionTask`)
+      || /use-production-task/.test(p),
+    )
+    const apiCalls = productionPaths.flatMap((path) => {
+      const content = readFileSync(path, 'utf8')
+      const matches = content.match(/['"`]\/api\/[^'"`]+['"`]/g) ?? []
+      return matches.map(m => m.replace(/['"`]/g, ''))
+    })
+    const nonProductionEndpoints = apiCalls.filter(url =>
+      !url.startsWith('/api/production-tasks')
+      && !url.startsWith('/api/orders'),
+    )
+    expect(nonProductionEndpoints).toEqual([])
+  })
 })
