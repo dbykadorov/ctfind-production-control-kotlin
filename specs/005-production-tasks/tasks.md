@@ -73,7 +73,7 @@
 - [X] T025 [P] [US1] Web-layer checks: JWT→actor mapping in `ProductionTaskJwtActorTests.kt`; full MVC slice deferred.
 - [X] T026 [P] [US1] Add persistence tests for search, status, executor, blocked, active, due-date, and pagination filters in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskQueryPersistenceTests.kt` (filter helpers in `ProductionTaskQueryFilters.kt`)
 - [X] T027 [P] [US1] Add frontend composable tests for production task list/detail response mapping and filter params in `frontend/cabinet/tests/unit/composables/use-production-tasks.test.ts`
-- [ ] T028 [P] [US1] Add frontend page tests for list empty/loading/error states and executor assigned-only labels in `frontend/cabinet/tests/unit/pages/ProductionTasksListPage.test.ts`
+- [X] T028 [P] [US1] Add frontend page tests for list empty/loading/error states and executor assigned-only labels in `frontend/cabinet/tests/unit/pages/ProductionTasksListPage.test.ts`
 
 ### Implementation for User Story 1
 
@@ -100,9 +100,9 @@
 ### Tests for User Story 2
 
 - [X] T038 [P] [US2] Add application tests for create-from-order validation, distinct purpose rule, initial status, source links, history, and audit in `src/test/kotlin/com/ctfind/productioncontrol/production/application/CreateProductionTasksFromOrderUseCaseTests.kt`
-- [ ] T039 [P] [US2] Add web tests for `POST /api/production-tasks/from-order` success, 400 validation, 403 forbidden, and missing order item cases in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskCreateControllerTests.kt`
-- [ ] T040 [P] [US2] Add frontend composable tests for create-from-order payload mapping and validation error mapping in `frontend/cabinet/tests/unit/composables/use-production-task-create.test.ts`
-- [ ] T041 [P] [US2] Add frontend page tests for order detail create-task affordance and create-task form validation in `frontend/cabinet/tests/unit/pages/OrderDetailProductionTasks.test.ts`
+- [X] T039 [P] [US2] Add web tests for `POST /api/production-tasks/from-order` success, 400 validation, 403 forbidden, and missing order item cases in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskCreateControllerTests.kt`
+- [X] T040 [P] [US2] Add frontend composable tests for create-from-order payload mapping and validation error mapping in `frontend/cabinet/tests/unit/composables/use-production-task-create.test.ts`
+- [X] T041 [P] [US2] Add frontend page tests for order detail create-task affordance and create-task form validation in `frontend/cabinet/tests/unit/pages/OrderDetailProductionTasks.test.ts`
 
 ### Implementation for User Story 2
 
@@ -127,10 +127,10 @@
 
 ### Tests for User Story 3
 
-- [ ] T050 [P] [US3] Add application tests for assignment, reassignment, planned date validation, completed-task rejection, history, audit, and stale version handling in `src/test/kotlin/com/ctfind/productioncontrol/production/application/AssignProductionTaskUseCaseTests.kt`
-- [ ] T051 [P] [US3] Add web tests for `PUT /api/production-tasks/{id}/assignment` and `GET /api/production-tasks/assignees` in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskAssignmentControllerTests.kt`
-- [ ] T052 [P] [US3] Add frontend composable tests for assignee search and assignment payload/stale error handling in `frontend/cabinet/tests/unit/composables/use-production-task-assignment.test.ts`
-- [ ] T053 [P] [US3] Add frontend detail page tests for permission-driven assignment controls and completed read-only behavior in `frontend/cabinet/tests/unit/pages/ProductionTaskDetailAssignment.test.ts`
+- [X] T050 [P] [US3] Add application tests for assignment, reassignment, planned date validation, completed-task rejection, history, audit, and stale version handling in `src/test/kotlin/com/ctfind/productioncontrol/production/application/AssignProductionTaskUseCaseTests.kt`
+- [X] T051 [P] [US3] Add web tests for `PUT /api/production-tasks/{id}/assignment` and `GET /api/production-tasks/assignees` in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskAssignmentControllerTests.kt`
+- [X] T052 [P] [US3] Add frontend composable tests for assignee search and assignment payload/stale error handling in `frontend/cabinet/tests/unit/composables/use-production-task-assignment.test.ts`
+- [X] T053 [P] [US3] Add frontend detail page tests for permission-driven assignment controls and completed read-only behavior in `frontend/cabinet/tests/unit/pages/ProductionTaskDetailAssignment.test.ts`
 
 ### Implementation for User Story 3
 
@@ -155,11 +155,11 @@
 
 ### Tests for User Story 4
 
-- [ ] T062 [P] [US4] Add domain tests for blocked previous-active-status restoration and completion rules in `src/test/kotlin/com/ctfind/productioncontrol/production/domain/ProductionTaskPoliciesTests.kt`
-- [ ] T063 [P] [US4] Add application tests for supervisor any-task status updates, executor assigned-only updates, block reason requirement, invalid transitions, audit, and stale version handling in `src/test/kotlin/com/ctfind/productioncontrol/production/application/ChangeProductionTaskStatusUseCaseTests.kt`
-- [ ] T064 [P] [US4] Add web tests for `POST /api/production-tasks/{id}/status` success, 403, 409, and 422 responses in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskStatusControllerTests.kt`
-- [ ] T065 [P] [US4] Add frontend workflow composable tests for allowed actions, block reason payload, stale errors, and assigned-only behavior in `frontend/cabinet/tests/unit/composables/use-production-task-workflow.test.ts`
-- [ ] T066 [P] [US4] Add frontend detail page tests for workflow buttons and blocked/unblocked UI state in `frontend/cabinet/tests/unit/pages/ProductionTaskDetailWorkflow.test.ts`
+- [X] T062 [P] [US4] Add domain tests for blocked previous-active-status restoration and completion rules in `src/test/kotlin/com/ctfind/productioncontrol/production/domain/ProductionTaskPoliciesTests.kt`
+- [X] T063 [P] [US4] Add application tests for supervisor any-task status updates, executor assigned-only updates, block reason requirement, invalid transitions, audit, and stale version handling in `src/test/kotlin/com/ctfind/productioncontrol/production/application/ChangeProductionTaskStatusUseCaseTests.kt`
+- [X] T064 [P] [US4] Add web tests for `POST /api/production-tasks/{id}/status` success, 403, 409, and 422 responses in `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskStatusControllerTests.kt`
+- [X] T065 [P] [US4] Add frontend workflow composable tests for allowed actions, block reason payload, stale errors, and assigned-only behavior in `frontend/cabinet/tests/unit/composables/use-production-task-workflow.test.ts`
+- [X] T066 [P] [US4] Add frontend detail page tests for workflow buttons and blocked/unblocked UI state in `frontend/cabinet/tests/unit/pages/ProductionTaskDetailWorkflow.test.ts`
 
 ### Implementation for User Story 4
 
