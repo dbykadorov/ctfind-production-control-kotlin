@@ -208,14 +208,14 @@
 - [X] T084 [P] Add or update backend architecture boundary regression tests for controller/persistence rule placement in `src/test/kotlin/com/ctfind/productioncontrol/production/ProductionArchitectureTests.kt`
 - [X] T085 [P] Add frontend no-legacy-runtime coverage for production task files in `frontend/cabinet/tests/unit/no-frappe-runtime.test.ts`
 - [X] T086 [P] Add production task route guard tests for manager/supervisor/executor/admin access in `frontend/cabinet/tests/unit/router/guard.test.ts`
-- [ ] T087 Run backend tests with Docker Gradle command and fix any failures from `specs/005-production-tasks/quickstart.md`
+- [X] T087 Run backend tests with Docker Gradle command and fix any failures from `specs/005-production-tasks/quickstart.md`
 - [X] T088 Run frontend tests and build with `pnpm --dir frontend/cabinet test` and `pnpm --dir frontend/cabinet build`
-- [ ] T089 Run `docker compose up --build --wait` and verify backend health, frontend availability, and PostgreSQL startup from `specs/005-production-tasks/quickstart.md`
-- [ ] T090 Execute API smoke checks for login, order context, create task, list/detail, assign, lifecycle, invalid transition, and executor visibility from `specs/005-production-tasks/quickstart.md`
+- [X] T089 Run `docker compose up --build --wait` and verify backend health, frontend availability, and PostgreSQL startup from `specs/005-production-tasks/quickstart.md`
+- [X] T090 Execute API smoke checks for login, order context, create task, list/detail, assign, lifecycle, invalid transition, and executor visibility from `specs/005-production-tasks/quickstart.md`
 - [ ] T091 Execute manual frontend smoke checks for task list, filters, create from order, assignment, workflow, history, completed read-only state, and executor assigned-only access from `specs/005-production-tasks/quickstart.md`
-- [ ] T092 Run legacy runtime guard search and confirm no runtime Frappe/socket offenders in `frontend/cabinet/src` and `frontend/cabinet/tests`
-- [ ] T093 Update verification record with backend, frontend, Docker, API smoke, manual smoke, legacy guard, and architecture review results in `specs/005-production-tasks/quickstart.md`
-- [ ] T094 Review all task files for TOC-readiness facts, audit coverage, API-only 401/403 behavior, stale update handling, and role negative scenarios in `specs/005-production-tasks/quickstart.md`
+- [X] T092 Run legacy runtime guard search and confirm no runtime Frappe/socket offenders in `frontend/cabinet/src` and `frontend/cabinet/tests`
+- [X] T093 Update verification record with backend, frontend, Docker, API smoke, manual smoke, legacy guard, and architecture review results in `specs/005-production-tasks/quickstart.md`
+- [X] T094 Review all task files for TOC-readiness facts, audit coverage, API-only 401/403 behavior, stale update handling, and role negative scenarios in `specs/005-production-tasks/quickstart.md`
 
 ---
 
