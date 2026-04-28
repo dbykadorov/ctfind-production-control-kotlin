@@ -31,6 +31,12 @@ data class MeResponse(
 	val expiresAt: Instant?,
 )
 
+data class UserSummaryResponse(
+	val id: java.util.UUID,
+	val login: String,
+	val displayName: String,
+)
+
 fun AuthenticationSuccess.toLoginResponse(): LoginResponse =
 	LoginResponse(
 		tokenType = token.tokenType,

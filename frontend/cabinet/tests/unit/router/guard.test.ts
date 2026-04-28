@@ -209,4 +209,52 @@ describe('router guard (009)', () => {
       expect(router.currentRoute.value.params.id).toBeUndefined()
     })
   })
+
+  describe('audit.list route (007 T010)', () => {
+    it('ADMIN backend role can open the audit log', async () => {
+      authState.roles = ['ADMIN']
+      authState.permissions = { isAdmin: false }
+      await router.push('/cabinet/audit')
+      expect(router.currentRoute.value.name).toBe('audit.list')
+    })
+
+    it('isAdmin=true bypasses RBAC for the audit log', async () => {
+      authState.roles = []
+      authState.permissions = { isAdmin: true }
+      await router.push('/cabinet/audit')
+      expect(router.currentRoute.value.name).toBe('audit.list')
+    })
+
+    it('ORDER_MANAGER cannot access audit log', async () => {
+      authState.roles = ['ORDER_MANAGER']
+      authState.permissions = { isAdmin: false }
+      authState.hasCabinetAccess = true
+      await router.push('/cabinet/audit')
+      expect(router.currentRoute.value.name).toBe('forbidden')
+    })
+
+    it('PRODUCTION_SUPERVISOR cannot access audit log', async () => {
+      authState.roles = ['PRODUCTION_SUPERVISOR']
+      authState.permissions = { isAdmin: false }
+      authState.hasCabinetAccess = true
+      await router.push('/cabinet/audit')
+      expect(router.currentRoute.value.name).toBe('forbidden')
+    })
+
+    it('PRODUCTION_EXECUTOR cannot access audit log', async () => {
+      authState.roles = ['PRODUCTION_EXECUTOR']
+      authState.permissions = { isAdmin: false }
+      authState.hasCabinetAccess = true
+      await router.push('/cabinet/audit')
+      expect(router.currentRoute.value.name).toBe('forbidden')
+    })
+
+    it('unauthenticated user is sent to login', async () => {
+      authState.isAuthenticated = false
+      authState.hasCabinetAccess = false
+      await router.push('/cabinet/audit')
+      expect(router.currentRoute.value.path).toBe('/cabinet/login')
+      expect(router.currentRoute.value.query.from).toBe('/cabinet/audit')
+    })
+  })
 })

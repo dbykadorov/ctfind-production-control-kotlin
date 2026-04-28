@@ -122,6 +122,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'audit',
+        name: 'audit.list',
+        component: () => import('@/pages/audit/AuditLogPage.vue'),
+        meta: {
+          roles: ['ADMIN'],
+          title: 'meta.title.audit',
+        },
+      },
+      {
         path: '403',
         name: 'forbidden',
         component: () => import('@/pages/common/ForbiddenPage.vue'),

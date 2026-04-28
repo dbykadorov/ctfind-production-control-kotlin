@@ -25,3 +25,13 @@ interface AuthenticationAuditPort {
 interface TokenIssuer {
 	fun issue(user: UserAccount): IssuedToken
 }
+
+interface UserQueryPort {
+	fun searchUsers(search: String?, limit: Int): List<UserSummary>
+}
+
+data class UserSummary(
+	val id: java.util.UUID,
+	val login: String,
+	val displayName: String,
+)

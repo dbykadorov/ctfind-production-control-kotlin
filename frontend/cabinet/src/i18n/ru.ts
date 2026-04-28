@@ -13,6 +13,7 @@ export const ru: Messages = {
     customers: 'Клиенты',
     logout: 'Выйти',
     openInDesk: 'Открыть в Desk',
+    audit: 'Журнал действий',
   },
   common: {
     loading: 'Загрузка…',
@@ -225,6 +226,7 @@ export const ru: Messages = {
         detail: 'Производственная задача',
         board: 'Доска производственных задач',
       },
+      audit: 'Журнал действий',
       forbidden: 'Нет доступа',
       notFound: 'Страница не найдена',
       noModules: 'Нет модулей',
@@ -244,5 +246,35 @@ export const ru: Messages = {
   layout: {
     back: 'Назад',
     backAria: 'Вернуться на предыдущую страницу',
+  },
+  audit: {
+    refresh: 'Обновить',
+    resetFilters: 'Сбросить',
+    filters: {
+      dateFrom: 'Дата с',
+      dateTo: 'Дата по',
+      category: 'Категория',
+      actor: 'Исполнитель',
+      search: 'Поиск по описанию, номеру объекта или логину',
+    },
+    columns: {
+      time: 'Время',
+      category: 'Категория',
+      eventType: 'Событие',
+      actor: 'Кто',
+      summary: 'Описание',
+      target: '',
+    },
+    category: {
+      AUTH: 'Авторизация',
+      ORDER: 'Заказы',
+      PRODUCTION_TASK: 'Производство',
+    },
+    empty: 'Событий за выбранный период нет',
+    emptyFiltered: 'Под фильтры ничего не подходит — измените или сбросьте',
+    errorLoading: 'Не удалось загрузить журнал',
+    forbidden: 'Нет доступа к журналу действий',
+    totalItems: 'Всего: {count} событий',
+    page: 'Стр. {current} из {total}',
   },
 }

@@ -14,6 +14,7 @@ export interface Messages {
     productionTasks: string
     productionTasksBoard: string
     customers: string
+    audit: string
     logout: string
     openInDesk: string
   }
@@ -215,6 +216,7 @@ export interface Messages {
         detail: string
         board: string
       }
+      audit: string
       forbidden: string
       notFound: string
       noModules: string
@@ -249,6 +251,36 @@ export interface Messages {
     back: string
     /** aria-label кнопки «Назад» для screen-reader'ов. */
     backAria: string
+  }
+  audit: {
+    refresh: string
+    resetFilters: string
+    filters: {
+      dateFrom: string
+      dateTo: string
+      category: string
+      actor: string
+      search: string
+    }
+    columns: {
+      time: string
+      category: string
+      eventType: string
+      actor: string
+      summary: string
+      target: string
+    }
+    category: {
+      AUTH: string
+      ORDER: string
+      PRODUCTION_TASK: string
+    }
+    empty: string
+    emptyFiltered: string
+    errorLoading: string
+    forbidden: string
+    totalItems: string
+    page: string
   }
 }
 
