@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Plus, RotateCw, Search, Users } from 'lucide-vue-next'
+import { RotateCw, Search, Users } from 'lucide-vue-next'
 /**
  * Список клиентов (read-only, MVP-стаб для US1).
  *
@@ -9,10 +9,8 @@ import { Plus, RotateCw, Search, Users } from 'lucide-vue-next'
  */
 import { onMounted, ref, watch } from 'vue'
 import { useCustomersSearch } from '@/api/composables/use-customers'
-import { usePermissions } from '@/api/composables/use-permissions'
 import { Button, Input, Skeleton } from '@/components/ui'
 
-const permissions = usePermissions()
 const { data: customers, loading, error, search } = useCustomersSearch({ onlyActive: false })
 
 const SEARCH_DEBOUNCE_MS = 300
@@ -37,8 +35,6 @@ const STATUS_LABEL = {
   active: 'Активен',
   inactive: 'Неактивен',
 } as const
-
-const deskUrl = (name: string) => `/app/customer/${encodeURIComponent(name)}`
 </script>
 
 <template>
@@ -56,18 +52,6 @@ const deskUrl = (name: string) => `/app/customer/${encodeURIComponent(name)}`
         <Button variant="ghost" size="md" :loading="loading" @click="reload">
           <RotateCw class="size-4" aria-hidden="true" />
           Обновить
-        </Button>
-        <Button
-          v-if="permissions.canManageCustomers"
-          variant="secondary"
-          size="md"
-          as="a"
-          :href="deskUrl('new?customer_name=')"
-          target="_blank"
-          rel="noopener"
-        >
-          <Plus class="size-4" aria-hidden="true" />
-          Новый клиент (Desk)
         </Button>
       </div>
     </header>
@@ -157,16 +141,6 @@ const deskUrl = (name: string) => `/app/customer/${encodeURIComponent(name)}`
             </dd>
           </template>
         </dl>
-        <div v-if="permissions.canManageCustomers" class="mt-1 flex justify-end">
-          <a
-            :href="deskUrl(c.name)"
-            target="_blank"
-            rel="noopener"
-            class="text-xs text-ink-muted hover:text-brand-500"
-          >
-            Открыть в Desk →
-          </a>
-        </div>
       </li>
     </ul>
   </div>

@@ -17,7 +17,6 @@ export interface BootPayload {
   language: string
   csrfToken: string
   siteName: string
-  deskUrl: string
   cabinetVersion: string
 }
 

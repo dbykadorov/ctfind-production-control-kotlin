@@ -19,7 +19,6 @@ beforeEach(() => {
     language: 'ru',
     csrfToken: 'csrf-test-token',
     siteName: 'test.local',
-    deskUrl: '/app',
     cabinetVersion: '0.0.0-test',
   }
   window.__CSRF__ = 'csrf-test-token'

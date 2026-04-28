@@ -32,17 +32,6 @@ async function logoutAndReturnToLogin(): Promise<void> {
         <Button variant="ghost" @click="logoutAndReturnToLogin">
           {{ t('nav.logout') }}
         </Button>
-        <!-- Если у пользователя есть админская роль — даём короткий путь в Desk
-             (например, чтобы добавить себе cabinet-роль). Для обычного юзера
-             эта ссылка скрыта, чтобы не путать. -->
-        <Button
-          v-if="auth.permissions.isAdmin"
-          as="a"
-          variant="secondary"
-          :href="auth.deskUrl || '/app'"
-        >
-          {{ t('nav.openInDesk') }}
-        </Button>
       </div>
     </Card>
   </section>

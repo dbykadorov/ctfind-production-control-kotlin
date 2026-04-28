@@ -47,7 +47,6 @@ export function readBoot(): BootPayload {
     language: FALLBACK_LANGUAGE,
     csrfToken: '',
     siteName: '',
-    deskUrl: '/app',
     cabinetVersion: '0.0.0',
   }
 }

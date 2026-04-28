@@ -20,7 +20,6 @@ import { ru } from '@/i18n/ru'
 const logoutMock = vi.fn()
 const authState = {
   user: 'tester@example.com',
-  deskUrl: '/app',
   logout: logoutMock,
 }
 
@@ -43,7 +42,7 @@ function setupI18n() {
     fallbackLocale: 'ru',
     messages: {
       ru: {
-        nav: { logout: 'Выйти', openInDesk: 'Открыть в Desk', dashboard: '', orders: '', customers: '' },
+        nav: { logout: 'Выйти', dashboard: '', orders: '', customers: '' },
         ui: ru.ui,
       },
     } as unknown as Record<string, Record<string, string>>,

@@ -16,7 +16,6 @@ export interface Messages {
     customers: string
     audit: string
     logout: string
-    openInDesk: string
   }
   ui: {
     appearance: string

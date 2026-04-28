@@ -2,7 +2,7 @@
 import type { CustomerOrder, CustomerOrderItem } from '@/api/types/domain'
 import { format, parseISO } from 'date-fns'
 import { ru } from 'date-fns/locale'
-import { ArrowLeft, ExternalLink, Save } from 'lucide-vue-next'
+import { ArrowLeft, Save } from 'lucide-vue-next'
 /**
  * Карточка заказа (US1, FR-017–FR-022).
  * Двухколоночный layout: слева — атрибуты + items + actions, справа — timeline.
@@ -136,12 +136,6 @@ async function onTransitionApplied(): Promise<void> {
   await Promise.all([reload(), reloadTransitions(), reloadHistory()])
 }
 
-const deskUrl = computed(() => `/app/customer-order/${encodeURIComponent(orderName.value)}`)
-
-function openInDesk(): void {
-  window.open(deskUrl.value, '_blank', 'noopener')
-}
-
 function back(): void {
   router.push({ name: 'orders.list' })
 }
@@ -167,10 +161,6 @@ function back(): void {
       </div>
       <div class="flex flex-wrap items-center gap-2">
         <OrderStatusBadge v-if="order" :status="order.status" />
-        <Button v-if="permissions.isAdmin" variant="ghost" size="sm" @click="openInDesk">
-          <ExternalLink class="size-4" aria-hidden="true" />
-          Открыть в Desk
-        </Button>
         <Button
           v-if="editability.canEdit && !editability.readonly"
           variant="primary"

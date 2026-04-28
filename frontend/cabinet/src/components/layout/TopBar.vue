@@ -11,7 +11,7 @@
  *
  * Контракт: contracts/topbar-title-back.contract.md.
  */
-import { ChevronDown, ExternalLink, LogOut } from 'lucide-vue-next'
+import { ChevronDown, LogOut } from 'lucide-vue-next'
 import { computed, onBeforeUnmount, onMounted, ref, useSlots } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -134,17 +134,6 @@ async function logout(): Promise<void> {
           <SidebarPresetPicker />
         </section>
 
-        <a
-          :href="auth.deskUrl"
-          target="_blank"
-          rel="noopener"
-          class="flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-ink hover:bg-bg"
-          role="menuitem"
-          @click="closeMenu"
-        >
-          <ExternalLink class="size-4 text-ink-muted" />
-          {{ t('nav.openInDesk') }}
-        </a>
         <button
           type="button"
           class="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm text-ink hover:bg-bg"

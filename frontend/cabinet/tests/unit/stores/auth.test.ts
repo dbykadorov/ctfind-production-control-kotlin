@@ -58,7 +58,6 @@ describe('auth store', () => {
       language: 'ru',
       csrfToken: 'new-csrf',
       siteName: 'site',
-      deskUrl: '/app',
       cabinetVersion: '0.1.0',
     })
     expect(auth.user).toBe('admin@x')
@@ -74,7 +73,6 @@ describe('auth store', () => {
       language: 'ru',
       csrfToken: '',
       siteName: '',
-      deskUrl: '/app',
       cabinetVersion: '0.0.0',
     })
     expect(auth.user).toBeNull()

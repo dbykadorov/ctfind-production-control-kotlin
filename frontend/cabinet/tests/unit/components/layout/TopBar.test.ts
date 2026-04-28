@@ -20,7 +20,6 @@ import TopBar from '@/components/layout/TopBar.vue'
 vi.mock('@/stores/auth', () => ({
   useAuthStore: () => ({
     user: 'tester@example.com',
-    deskUrl: '/app',
     logout: vi.fn(),
   }),
 }))
@@ -37,7 +36,7 @@ function setupI18n() {
     locale: 'ru',
     messages: {
       ru: {
-        nav: { logout: 'Выйти', openInDesk: 'Открыть в Desk' },
+        nav: { logout: 'Выйти' },
         ui: { appearance: 'Внешний вид' },
         meta: { title: { dashboard: 'Обзор', orders: { list: 'Заказы' } } },
         layout: { back: 'Назад', backAria: 'Вернуться назад' },

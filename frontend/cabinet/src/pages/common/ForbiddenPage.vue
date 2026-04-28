@@ -26,9 +26,6 @@ const auth = useAuthStore()
             {{ t('nav.dashboard') }}
           </Button>
         </RouterLink>
-        <a :href="auth.deskUrl" target="_blank" rel="noopener" class="contents">
-          <Button variant="secondary">{{ t('nav.openInDesk') }}</Button>
-        </a>
       </div>
     </Card>
   </section>

@@ -41,7 +41,6 @@ export const useAuthStore = defineStore('auth', () => {
   const language = ref<string>(boot.language)
   const csrfToken = ref<string>(boot.csrfToken)
   const siteName = ref<string>(boot.siteName)
-  const deskUrl = ref<string>(boot.deskUrl)
   const cabinetVersion = ref<string>(boot.cabinetVersion)
   const sessionExpired = ref(false)
   const loginRedirectFrom = ref<string | null>(null)
@@ -74,7 +73,6 @@ export const useAuthStore = defineStore('auth', () => {
     language.value = payload.language
     csrfToken.value = payload.csrfToken
     siteName.value = payload.siteName
-    deskUrl.value = payload.deskUrl
     cabinetVersion.value = payload.cabinetVersion
     sessionExpired.value = false
   }
@@ -167,7 +165,6 @@ export const useAuthStore = defineStore('auth', () => {
     language,
     csrfToken,
     siteName,
-    deskUrl,
     cabinetVersion,
     sessionExpired,
     loginRedirectFrom,

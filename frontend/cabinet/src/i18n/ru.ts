@@ -12,7 +12,6 @@ export const ru: Messages = {
     productionTasksBoard: 'Доска',
     customers: 'Клиенты',
     logout: 'Выйти',
-    openInDesk: 'Открыть в Desk',
     audit: 'Журнал действий',
   },
   common: {
