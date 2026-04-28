@@ -4,10 +4,12 @@ import com.ctfind.productioncontrol.orders.domain.OrderStatus
 import com.ctfind.productioncontrol.production.domain.ProductionTask
 import com.ctfind.productioncontrol.production.domain.ProductionTaskStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.util.UUID
 
 @Service
+@Transactional(readOnly = true)
 class ProductionTaskQueryUseCase(
 	private val tasks: ProductionTaskPort,
 	private val orderSource: ProductionOrderSourcePort,

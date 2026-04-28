@@ -1,12 +1,11 @@
-FROM eclipse-temurin:21-jdk AS builder
+FROM gradle:9.4.1-jdk21 AS builder
 
 WORKDIR /workspace
 
-COPY gradlew settings.gradle.kts build.gradle.kts ./
-COPY gradle/ gradle/
+COPY settings.gradle.kts build.gradle.kts ./
 COPY src/ src/
 
-RUN chmod +x ./gradlew && ./gradlew --no-daemon bootJar -x test
+RUN gradle --no-daemon bootJar -x test
 
 FROM eclipse-temurin:21-jre
 

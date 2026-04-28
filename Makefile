@@ -23,18 +23,13 @@ help: ## Show available commands
 backend-test: ## Run backend tests
 	$(GRADLEW) test
 
-GRADLE_DOCKER_HOME ?= $(HOME)/.cache/ctfind-gradle-home
-
-backend-test-docker: ## Run backend tests inside eclipse-temurin:21-jdk (matches quickstart §10)
-	mkdir -p "$(GRADLE_DOCKER_HOME)"
+backend-test-docker: ## Run backend tests inside gradle:9.4.1-jdk21 (no wrapper download)
 	docker run --rm \
-		--network host \
 		-e GRADLE_USER_HOME=/tmp/gradle-home \
 		-v "$(CURDIR)":/workspace \
-		-v "$(GRADLE_DOCKER_HOME)":/tmp/gradle-home \
 		-w /workspace \
-		eclipse-temurin:21-jdk \
-		./gradlew --project-cache-dir /tmp/gradle-project-cache test
+		gradle:9.4.1-jdk21 \
+		gradle --project-cache-dir /tmp/gradle-project-cache test
 
 backend-build: ## Build backend artifacts
 	$(GRADLEW) build

@@ -27,6 +27,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      network: host
     depends_on:
       postgres:
         condition: service_healthy
@@ -52,6 +53,7 @@ services:
     build:
       context: ./frontend/cabinet
       dockerfile: Dockerfile
+      network: host
     depends_on:
       app:
         condition: service_healthy
