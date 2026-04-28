@@ -212,7 +212,7 @@
 - [X] T088 Run frontend tests and build with `pnpm --dir frontend/cabinet test` and `pnpm --dir frontend/cabinet build`
 - [X] T089 Run `docker compose up --build --wait` and verify backend health, frontend availability, and PostgreSQL startup from `specs/005-production-tasks/quickstart.md`
 - [X] T090 Execute API smoke checks for login, order context, create task, list/detail, assign, lifecycle, invalid transition, and executor visibility from `specs/005-production-tasks/quickstart.md`
-- [ ] T091 Execute manual frontend smoke checks for task list, filters, create from order, assignment, workflow, history, completed read-only state, and executor assigned-only access from `specs/005-production-tasks/quickstart.md`
+- [X] T091 Execute manual frontend smoke checks for task list, filters, create from order, assignment, workflow, history, completed read-only state, and executor assigned-only access from `specs/005-production-tasks/quickstart.md`
 - [X] T092 Run legacy runtime guard search and confirm no runtime Frappe/socket offenders in `frontend/cabinet/src` and `frontend/cabinet/tests`
 - [X] T093 Update verification record with backend, frontend, Docker, API smoke, manual smoke, legacy guard, and architecture review results in `specs/005-production-tasks/quickstart.md`
 - [X] T094 Review all task files for TOC-readiness facts, audit coverage, API-only 401/403 behavior, stale update handling, and role negative scenarios in `specs/005-production-tasks/quickstart.md`

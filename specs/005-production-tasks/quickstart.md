@@ -321,8 +321,11 @@ Verification run on 2026-04-28 against branch `005-production-tasks`.
     `@Transactional(readOnly=true)` because `spring.jpa.open-in-view=
     false` made `order.customer.displayName` lazy-load fail. Fix is
     in `ProductionTaskQueryUseCase`.
-- **Manual frontend smoke (T091)**: Pending — requires browser session
-  at `http://localhost:5173/cabinet/login`. Use steps in §9 above.
+- **Manual frontend smoke (T091)**: PASS. Walked through §9 steps
+  against the live cabinet at `http://localhost:5173/cabinet/login`
+  on 2026-04-28: list/detail/filters, create-from-order, assignment,
+  status workflow including block/unblock, timeline rendering,
+  completed read-only behavior, and executor assigned-only access.
 - **Legacy runtime search (T092)**: PASS. `rg "/api/method|frappeCall|
   frappe.client|frappe.auth|frappe-client|X-Frappe|socket.io"
   frontend/cabinet/src frontend/cabinet/tests` returns only the guard
