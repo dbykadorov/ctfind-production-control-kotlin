@@ -28,7 +28,7 @@ internal fun unusedQueryPort(): AuditLogQueryPort = object : AuditLogQueryPort {
 internal fun stubAuditQueryUseCase(
 	exec: (AuditLogQuery, Set<String>) -> AuditLogQueryResult,
 ): AuditLogQueryUseCase = object : AuditLogQueryUseCase(
-	port = unusedQueryPort(),
+	auditLog = unusedQueryPort(),
 ) {
 	override fun list(query: AuditLogQuery, roleCodes: Set<String>): AuditLogQueryResult =
 		exec(query, roleCodes)

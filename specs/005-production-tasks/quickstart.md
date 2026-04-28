@@ -280,62 +280,56 @@ Expected:
 Verification run on 2026-04-28 against branch `005-production-tasks`.
 
 - **Backend tests (T087)**: PASS. `make backend-test-docker` (uses
-  `gradle:9.4.1-jdk21`). All test classes compile and pass; warnings
-  about `ProductionOrderSourcePort` named-parameter shadowing in test
-  stubs are not failures.
+`gradle:9.4.1-jdk21`). All test classes compile and pass; warnings
+about `ProductionOrderSourcePort` named-parameter shadowing in test
+stubs are not failures.
 - **Frontend tests (T088)**: PASS. `pnpm --dir frontend/cabinet test`
-  → 40 test files / 278 tests green, including new T028, T040–T041,
-  T052–T053, T065–T066, T074–T077, T085, T086.
+→ 40 test files / 278 tests green, including new T028, T040–T041,
+T052–T053, T065–T066, T074–T077, T085, T086.
 - **Frontend build (T088)**: PASS. `pnpm --dir frontend/cabinet build`
-  via `vue-tsc --noEmit && vite build` clean.
+via `vue-tsc --noEmit && vite build` clean.
 - **Docker startup (T089)**: PASS. `make docker-up-detached` brings
-  postgres, app, frontend up with all three healthchecks reporting
-  Healthy. Backend builds with `gradle:9.4.1-jdk21` builder stage
-  (replaces older eclipse-temurin builder that re-downloaded the
-  gradle wrapper distribution per build).
+postgres, app, frontend up with all three healthchecks reporting
+Healthy. Backend builds with `gradle:9.4.1-jdk21` builder stage
+(replaces older eclipse-temurin builder that re-downloaded the
+gradle wrapper distribution per build).
 - **API smoke checks (T090)**: PASS. Verified end-to-end against the
-  live Docker stack:
+live Docker stack:
   - login `admin/admin` → `/api/auth/login` returns Bearer JWT with
-    role `ADMIN`.
+  role `ADMIN`.
   - `GET /api/orders?size=1` → fetches an existing order.
   - `POST /api/production-tasks/from-order` → 201 with
-    `taskNumber=PT-000002`.
+  `taskNumber=PT-000002`.
   - `GET /api/production-tasks/{id}` → 200 with full detail and
-    enriched history (CREATED, ASSIGNED with previous/new executor and
-    planning before/after).
+  enriched history (CREATED, ASSIGNED with previous/new executor and
+  planning before/after).
   - `PUT /api/production-tasks/{id}/assignment` → 200 with version+1
-    and ASSIGNED history entry naming the executor and planning dates.
+  and ASSIGNED history entry naming the executor and planning dates.
   - `POST /api/production-tasks/{id}/status` → 200 for legal
-    transitions (NOT_STARTED→IN_PROGRESS, IN_PROGRESS→BLOCKED,
-    BLOCKED→IN_PROGRESS, IN_PROGRESS→COMPLETED). 422 with
-    `invalid_task_status_transition` for BLOCKED→COMPLETED skip
-    attempt.
+  transitions (NOT_STARTED→IN_PROGRESS, IN_PROGRESS→BLOCKED,
+  BLOCKED→IN_PROGRESS, IN_PROGRESS→COMPLETED). 422 with
+  `invalid_task_status_transition` for BLOCKED→COMPLETED skip
+  attempt.
   - Block stores `previousActiveStatus=IN_PROGRESS` + `blockedReason`;
-    unblock clears both and preserves the unblock note.
+  unblock clears both and preserves the unblock note.
   - Completed task returns `allowedActions=[]`.
   - Bogus `orderId` → 400 `validation_failed` with `details.orderId`.
   - Missing task → 404. Missing token → 401. Executor session sees
-    only their assigned task; 403 with `forbidden` code on tasks not
-    assigned to them.
+  only their assigned task; 403 with `forbidden` code on tasks not
+  assigned to them.
   - Bug fixed during smoke: detail/list endpoints needed
-    `@Transactional(readOnly=true)` because `spring.jpa.open-in-view=
-    false` made `order.customer.displayName` lazy-load fail. Fix is
-    in `ProductionTaskQueryUseCase`.
-- **Manual frontend smoke (T091)**: PASS. Walked through §9 steps
-  against the live cabinet at `http://localhost:5173/cabinet/login`
-  on 2026-04-28: list/detail/filters, create-from-order, assignment,
-  status workflow including block/unblock, timeline rendering,
-  completed read-only behavior, and executor assigned-only access.
-- **Legacy runtime search (T092)**: PASS. `rg "/api/method|frappeCall|
-  frappe.client|frappe.auth|frappe-client|X-Frappe|socket.io"
-  frontend/cabinet/src frontend/cabinet/tests` returns only the guard
-  definitions inside `tests/unit/no-frappe-runtime.test.ts`, which
-  intentionally lists those patterns as forbidden. No runtime call
-  sites.
+  `@Transactional(readOnly=true)` because `spring.jpa.open-in-view= false` made `order.customer.displayName` lazy-load fail. Fix is
+  in `ProductionTaskQueryUseCase`.
+- **Manual frontend smoke (T091)**: Pending — requires browser session
+at `http://localhost:5173/cabinet/login`. Use steps in §9 above.
+- **Legacy runtime search (T092)**: PASS. `rg "/api/method|frappeCall| frappe.client|frappe.auth|frappe-client|X-Frappe|socket.io" frontend/cabinet/src frontend/cabinet/tests` returns only the guard
+definitions inside `tests/unit/no-frappe-runtime.test.ts`, which
+intentionally lists those patterns as forbidden. No runtime call
+sites.
 - **Architecture review (T084)**: PASS. `ProductionArchitectureTests`
-  asserts: domain has no Spring/JPA imports; application avoids JPA
-  entities, web/persistence packages, and other modules' adapters;
-  controller wires all five use cases and never touches repositories.
+asserts: domain has no Spring/JPA imports; application avoids JPA
+entities, web/persistence packages, and other modules' adapters;
+controller wires all five use cases and never touches repositories.
 
 ## Final Spec Review (T094)
 
@@ -344,43 +338,44 @@ Cross-check across `spec.md`, `plan.md`, `data-model.md`,
 `contracts/frontend-production-tasks.md`, and `tasks.md`:
 
 - **TOC-readiness facts.** `data-model.md` keeps status,
-  `previousActiveStatus` for blocked interrupts, `blockedReason`,
-  `executorUserId`, `plannedStartDate`, `plannedFinishDate`,
-  `createdAt`, `updatedAt`, `version`, plus history events with
-  `previousExecutorUserId` / `newExecutorUserId` and planning
-  before/after dates. The DTO + persistence layers preserve all of
-  these (verified via T079, T080, smoke `PT-000002` history).
-  Work-area/team/capacity are explicitly out of scope and the model
-  stays open to future extension.
+`previousActiveStatus` for blocked interrupts, `blockedReason`,
+`executorUserId`, `plannedStartDate`, `plannedFinishDate`,
+`createdAt`, `updatedAt`, `version`, plus history events with
+`previousExecutorUserId` / `newExecutorUserId` and planning
+before/after dates. The DTO + persistence layers preserve all of
+these (verified via T079, T080, smoke `PT-000002` history).
+Work-area/team/capacity are explicitly out of scope and the model
+stays open to future extension.
 - **Audit coverage.** Each successful path emits a paired audit +
-  history record:
+history record:
   - create → `PRODUCTION_TASK_CREATED` audit + `CREATED` history
-    (covered by T038, T042–T045, T074, T075).
+  (covered by T038, T042–T045, T074, T075).
   - assign / plan → `PRODUCTION_TASK_ASSIGNED` /
-    `PRODUCTION_TASK_PLANNING_UPDATED` audit + `ASSIGNED` /
-    `PLANNING_UPDATED` history (T050, T078, T074).
-  - status → `PRODUCTION_TASK_STATUS_*` audit + `STATUS_CHANGED` /
-    `BLOCKED` / `UNBLOCKED` / `COMPLETED` history (T063, T067, T074).
+  `PRODUCTION_TASK_PLANNING_UPDATED` audit + `ASSIGNED` /
+  `PLANNING_UPDATED` history (T050, T078, T074).
+  - status → `PRODUCTION_TASK_STATUS_`* audit + `STATUS_CHANGED` /
+  `BLOCKED` / `UNBLOCKED` / `COMPLETED` history (T063, T067, T074).
   - failed validations, forbidden writes, invalid transitions, and
-    stale writes do not mutate or audit (T038, T050, T063 negatives).
+  stale writes do not mutate or audit (T038, T050, T063 negatives).
 - **API-only 401/403.** Confirmed in tests and live smoke:
   - 401 from unauthenticated `/api/production-tasks` request
-    (verified T090).
+  (verified T090).
   - 403 from executors hitting tasks not assigned to them
-    (controller tests T039/T051/T064 + smoke).
+  (controller tests T039/T051/T064 + smoke).
   - 403 from non-creator role on `POST /from-order`,
-    non-assigner role on `PUT /assignment`, non-status role on
-    `POST /status` (T039, T051, T064).
+  non-assigner role on `PUT /assignment`, non-status role on
+  `POST /status` (T039, T051, T064).
 - **Stale update handling.** 409 + `stale_production_task_version`
-  on mismatched `expectedVersion` for assignment and status updates;
-  no mutation occurs (T050, T051, T063, T064; frontend toast
-  exercised in T052 / T065).
+on mismatched `expectedVersion` for assignment and status updates;
+no mutation occurs (T050, T051, T063, T064; frontend toast
+exercised in T052 / T065).
 - **Role negative scenarios.** Application-layer tests assert:
   - executor can only update / view tasks assigned to them
-    (T063, T024 visibility, smoke).
+  (T063, T024 visibility, smoke).
   - viewer-style role forbidden from create / assign / status
-    (T039, T051, T064).
+  (T039, T051, T064).
   - completed tasks reject assign / replan / status changes
-    (T050 completed-task validation, T063 completed-task validation).
+  (T050 completed-task validation, T063 completed-task validation).
   - block requires reason, BLOCKED→COMPLETED skip rejected as
-    `invalid_task_status_transition` (T063, smoke 422).
+  `invalid_task_status_transition` (T063, smoke 422).
+

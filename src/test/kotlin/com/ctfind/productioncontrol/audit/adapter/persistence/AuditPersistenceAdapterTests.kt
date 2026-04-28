@@ -16,7 +16,7 @@ class AuditPersistenceAdapterTests {
 	fun `auth summary for LOGIN_SUCCESS and SUCCESS`() {
 		val summary = authEventSummary(
 			eventType = "LOGIN_SUCCESS",
-			eventOutcome = "SUCCESS",
+			outcome = "SUCCESS",
 			login = "admin",
 		)
 		assertEquals("Вход в систему: admin", summary)
@@ -26,7 +26,7 @@ class AuditPersistenceAdapterTests {
 	fun `auth summary for LOGIN_FAILURE and INVALID_CREDENTIALS`() {
 		val summary = authEventSummary(
 			eventType = "LOGIN_FAILURE",
-			eventOutcome = "INVALID_CREDENTIALS",
+			outcome = "INVALID_CREDENTIALS",
 			login = "admin",
 		)
 		assertEquals("Неудачный вход: admin — неверные учётные данные", summary)
@@ -36,7 +36,7 @@ class AuditPersistenceAdapterTests {
 	fun `auth summary for LOGOUT and LOGGED_OUT`() {
 		val summary = authEventSummary(
 			eventType = "LOGOUT",
-			eventOutcome = "LOGGED_OUT",
+			outcome = "LOGGED_OUT",
 			login = "admin",
 		)
 		assertEquals("Выход из системы: admin", summary)
@@ -46,7 +46,7 @@ class AuditPersistenceAdapterTests {
 	fun `auth summary for LOCAL_SEED and SEEDED`() {
 		val summary = authEventSummary(
 			eventType = "LOCAL_SEED",
-			eventOutcome = "SEEDED",
+			outcome = "SEEDED",
 			login = "admin",
 		)
 		assertEquals("Инициализация учётных данных: admin", summary)
@@ -142,7 +142,7 @@ class AuditPersistenceAdapterTests {
 			sampleRow(occurredAt = t3, summary = "third"),
 		)
 
-		val sorted = sortByOccurredAtDescending(rows)
+		val sorted = rows.sortedByDescending { it.occurredAt }
 		assertEquals("second", sorted[0].summary)
 		assertEquals("third", sorted[1].summary)
 		assertEquals("first", sorted[2].summary)
