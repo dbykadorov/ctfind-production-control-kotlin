@@ -101,6 +101,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'production-tasks/board',
+        name: 'production-tasks.board',
+        component: () => import('@/pages/production/ProductionTasksBoardPage.vue'),
+        meta: {
+          roles: ['Order Manager', 'Shop Supervisor', 'Executor', 'ORDER_MANAGER', 'PRODUCTION_SUPERVISOR', 'PRODUCTION_EXECUTOR'],
+          title: 'meta.title.productionTasks.board',
+        },
+      },
+      {
         path: 'production-tasks/:id',
         name: 'production-tasks.detail',
         component: () => import('@/pages/production/ProductionTaskDetailPage.vue'),

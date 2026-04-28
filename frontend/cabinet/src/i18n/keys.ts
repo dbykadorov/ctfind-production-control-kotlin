@@ -12,6 +12,7 @@ export interface Messages {
     dashboard: string
     orders: string
     productionTasks: string
+    productionTasksBoard: string
     customers: string
     logout: string
     openInDesk: string
@@ -212,6 +213,7 @@ export interface Messages {
       productionTasks: {
         list: string
         detail: string
+        board: string
       }
       forbidden: string
       notFound: string

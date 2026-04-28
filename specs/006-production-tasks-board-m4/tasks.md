@@ -31,7 +31,7 @@ description: "Task list for feature 006 — Production Tasks Board (M4)"
 
 **Purpose**: i18n keys and route shell needed before any user-story page work.
 
-- [ ] T001 [P] Add i18n key `meta.title.productionTasks.board` (and any related `nav.productionTasks.board` label used by the navigation entry) in `frontend/cabinet/src/i18n/ru.ts` and the corresponding `en.ts` (if present)
+- [X] T001 [P] Add i18n key `meta.title.productionTasks.board` (and any related `nav.productionTasks.board` label used by the navigation entry) in `frontend/cabinet/src/i18n/ru.ts` and the corresponding `en.ts` (if present)
 
 ---
 
@@ -41,8 +41,8 @@ description: "Task list for feature 006 — Production Tasks Board (M4)"
 
 **⚠️ CRITICAL**: User story phases cannot start until this phase is complete.
 
-- [ ] T002 Create stub page `frontend/cabinet/src/pages/production/ProductionTasksBoardPage.vue` that imports nothing project-specific yet — only renders an `<h1>` from the `meta.title.productionTasks.board` i18n key. Real implementation comes in T010.
-- [ ] T003 Register a new route `production-tasks.board` at path `production-tasks/board` in `frontend/cabinet/src/router/index.ts`, lazy-loading the stub page from T002. Use the same `meta.roles` allowlist as `production-tasks.list` (`Order Manager`, `Shop Supervisor`, `Executor`, `ORDER_MANAGER`, `PRODUCTION_SUPERVISOR`, `PRODUCTION_EXECUTOR`) and add `meta.title: 'meta.title.productionTasks.board'`.
+- [X] T002 Create stub page `frontend/cabinet/src/pages/production/ProductionTasksBoardPage.vue` that imports nothing project-specific yet — only renders an `<h1>` from the `meta.title.productionTasks.board` i18n key. Real implementation comes in T010.
+- [X] T003 Register a new route `production-tasks.board` at path `production-tasks/board` in `frontend/cabinet/src/router/index.ts`, lazy-loading the stub page from T002. Use the same `meta.roles` allowlist as `production-tasks.list` (`Order Manager`, `Shop Supervisor`, `Executor`, `ORDER_MANAGER`, `PRODUCTION_SUPERVISOR`, `PRODUCTION_EXECUTOR`) and add `meta.title: 'meta.title.productionTasks.board'`.
 
 **Checkpoint**: Foundation ready — route resolves to a non-empty page, role guard can be tested, and US1 can begin.
 
@@ -56,17 +56,17 @@ description: "Task list for feature 006 — Production Tasks Board (M4)"
 
 ### Tests for User Story 1
 
-- [ ] T004 [P] [US1] Add composable tests covering: GET `/api/production-tasks?size=200` with filter params, grouping into all four `byStatus` keys (including empty arrays), COMPLETED window cap (last 7 days × max 30 by `updatedAt desc`), `truncated` flag when `totalItems > 200`, abort/CanceledError handling, 403 mapping to `error.kind = 'forbidden'`, in `frontend/cabinet/tests/unit/composables/use-production-tasks-board.test.ts`
-- [ ] T005 [P] [US1] Add component tests for `ProductionTaskBoardCard` covering: task number + purpose + order context render, executor display name vs «не назначен», planned-finish formatting + overdue badge rule (date < today AND status ≠ COMPLETED), `blockedReason` clamp-to-2-lines for status BLOCKED, no `blockedReason` rendering for non-BLOCKED tasks, in `frontend/cabinet/tests/unit/components/ProductionTaskBoardCard.test.ts`
-- [ ] T006 [P] [US1] Add page tests for `ProductionTasksBoardPage` covering: four-column structure in fixed left-to-right order with the Russian status labels, empty state per column, loading skeleton when `data === null && loading`, error banner on generic error, 403 → forbidden empty state, truncation banner appears when `data.truncated`, RouterLink wraps each card pointing to `production-tasks.detail`, refresh button calls `refetch`, in `frontend/cabinet/tests/unit/pages/ProductionTasksBoardPage.test.ts`
-- [ ] T007 [P] [US1] Extend router-guard test in `frontend/cabinet/tests/unit/router/guard.test.ts` with `production-tasks.board` cases for ADMIN role, isAdmin=true bypass, PRODUCTION_SUPERVISOR, PRODUCTION_EXECUTOR, ORDER_MANAGER (all → `production-tasks.board`), and a non-allowed role → `forbidden`
+- [X] T004 [P] [US1] Add composable tests covering: GET `/api/production-tasks?size=200` with filter params, grouping into all four `byStatus` keys (including empty arrays), COMPLETED window cap (last 7 days × max 30 by `updatedAt desc`), `truncated` flag when `totalItems > 200`, abort/CanceledError handling, 403 mapping to `error.kind = 'forbidden'`, in `frontend/cabinet/tests/unit/composables/use-production-tasks-board.test.ts`
+- [X] T005 [P] [US1] Add component tests for `ProductionTaskBoardCard` covering: task number + purpose + order context render, executor display name vs «не назначен», planned-finish formatting + overdue badge rule (date < today AND status ≠ COMPLETED), `blockedReason` clamp-to-2-lines for status BLOCKED, no `blockedReason` rendering for non-BLOCKED tasks, in `frontend/cabinet/tests/unit/components/ProductionTaskBoardCard.test.ts`
+- [X] T006 [P] [US1] Add page tests for `ProductionTasksBoardPage` covering: four-column structure in fixed left-to-right order with the Russian status labels, empty state per column, loading skeleton when `data === null && loading`, error banner on generic error, 403 → forbidden empty state, truncation banner appears when `data.truncated`, RouterLink wraps each card pointing to `production-tasks.detail`, refresh button calls `refetch`, in `frontend/cabinet/tests/unit/pages/ProductionTasksBoardPage.test.ts`
+- [X] T007 [P] [US1] Extend router-guard test in `frontend/cabinet/tests/unit/router/guard.test.ts` with `production-tasks.board` cases for ADMIN role, isAdmin=true bypass, PRODUCTION_SUPERVISOR, PRODUCTION_EXECUTOR, ORDER_MANAGER (all → `production-tasks.board`), and a non-allowed role → `forbidden`
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Implement `useProductionTasksBoard` composable in `frontend/cabinet/src/api/composables/use-production-tasks-board.ts` per `contracts/frontend-production-tasks-board.md`: fetch with `size=200`, group by `status`, COMPLETED window cap, `truncated` flag, abort + scope dispose, error/forbidden mapping. Reuse helpers from `use-production-tasks.ts` where possible.
-- [ ] T009 [P] [US1] Implement `ProductionTaskBoardCard` component in `frontend/cabinet/src/components/domain/ProductionTaskBoardCard.vue` per `contracts/frontend-production-tasks-board.md`: props `{ row: ProductionTaskListRowResponse }`, layout per FR-003, BLOCKED reason clamped to 2 lines via Tailwind `line-clamp-2`, overdue rule shared with list view (extract a helper if needed).
-- [ ] T010 [US1] Replace the T002 stub with the full implementation of `ProductionTasksBoardPage.vue` in `frontend/cabinet/src/pages/production/ProductionTasksBoardPage.vue`: wire `useProductionTasksBoard`, render four columns with cards in the order NOT_STARTED, IN_PROGRESS, BLOCKED, COMPLETED, embed `ProductionTaskBoardCard` inside `RouterLink` to `production-tasks.detail`, manual «Обновить» button, truncation banner when `data.truncated`, forbidden empty state when `error.kind === 'forbidden'`, basic search input bound to `filters.search`, tablet-friendly layout (`overflow-x-auto` row + `min-w-[18rem]` columns below `lg:`).
-- [ ] T011 [US1] Add navigation entry «Доска» to the cabinet layout (existing component(s) under `frontend/cabinet/src/components/layout/`) so all four allowed roles see it next to «Список задач»; ordering: list first, then board.
+- [X] T008 [US1] Implement `useProductionTasksBoard` composable in `frontend/cabinet/src/api/composables/use-production-tasks-board.ts` per `contracts/frontend-production-tasks-board.md`: fetch with `size=200`, group by `status`, COMPLETED window cap, `truncated` flag, abort + scope dispose, error/forbidden mapping. Reuse helpers from `use-production-tasks.ts` where possible.
+- [X] T009 [P] [US1] Implement `ProductionTaskBoardCard` component in `frontend/cabinet/src/components/domain/ProductionTaskBoardCard.vue` per `contracts/frontend-production-tasks-board.md`: props `{ row: ProductionTaskListRowResponse }`, layout per FR-003, BLOCKED reason clamped to 2 lines via Tailwind `line-clamp-2`, overdue rule shared with list view (extract a helper if needed).
+- [X] T010 [US1] Replace the T002 stub with the full implementation of `ProductionTasksBoardPage.vue` in `frontend/cabinet/src/pages/production/ProductionTasksBoardPage.vue`: wire `useProductionTasksBoard`, render four columns with cards in the order NOT_STARTED, IN_PROGRESS, BLOCKED, COMPLETED, embed `ProductionTaskBoardCard` inside `RouterLink` to `production-tasks.detail`, manual «Обновить» button, truncation banner when `data.truncated`, forbidden empty state when `error.kind === 'forbidden'`, basic search input bound to `filters.search`, tablet-friendly layout (`overflow-x-auto` row + `min-w-[18rem]` columns below `lg:`).
+- [X] T011 [US1] Add navigation entry «Доска» to the cabinet layout (existing component(s) under `frontend/cabinet/src/components/layout/`) so all four allowed roles see it next to «Список задач»; ordering: list first, then board.
 
 **Checkpoint**: US1 is the MVP — supervisors and admins can use the board end-to-end. US2 (filters beyond search) and US3 (executor scenario) extend it.
 
@@ -80,13 +80,13 @@ description: "Task list for feature 006 — Production Tasks Board (M4)"
 
 ### Tests for User Story 2
 
-- [ ] T012 [P] [US2] Add page tests for the extended filter panel in a separate file `frontend/cabinet/tests/unit/pages/ProductionTasksBoardFilters.test.ts`: assert executor picker mounts, date-range inputs are bound, «только просроченные» toggle filters cards client-side, filters changes call `refetch` (debounced for search) without losing column structure.
-- [ ] T013 [P] [US2] Add composable tests for filter wiring + `overdueOnly` in a separate file `frontend/cabinet/tests/unit/composables/use-production-tasks-board-filters.test.ts`: server params include the active filter set, `overdueOnly` is applied client-side after grouping but before COMPLETED cap and yields an empty COMPLETED column by definition.
+- [X] T012 [P] [US2] Add page tests for the extended filter panel in a separate file `frontend/cabinet/tests/unit/pages/ProductionTasksBoardFilters.test.ts`: assert executor picker mounts, date-range inputs are bound, «только просроченные» toggle filters cards client-side, filters changes call `refetch` (debounced for search) without losing column structure.
+- [X] T013 [P] [US2] Add composable tests for filter wiring + `overdueOnly` in a separate file `frontend/cabinet/tests/unit/composables/use-production-tasks-board-filters.test.ts`: server params include the active filter set, `overdueOnly` is applied client-side after grouping but before COMPLETED cap and yields an empty COMPLETED column by definition.
 
 ### Implementation for User Story 2
 
-- [ ] T014 [US2] Add the full filter panel (executor picker reusing `ProductionTaskAssigneePicker`, planned-finish from/to date inputs, «только просроченные» checkbox) to `frontend/cabinet/src/pages/production/ProductionTasksBoardPage.vue`. Persist filter state in component refs; re-fetch on change with the same debounce pattern used by `ProductionTasksListPage`.
-- [ ] T015 [US2] Add the `overdueOnly` client-side filter inside `frontend/cabinet/src/api/composables/use-production-tasks-board.ts`: after server response is grouped, drop non-overdue tasks across all columns when `overdueOnly` is true; the COMPLETED column ends up empty by the overdue rule.
+- [X] T014 [US2] Add the full filter panel (executor picker reusing `ProductionTaskAssigneePicker`, planned-finish from/to date inputs, «только просроченные» checkbox) to `frontend/cabinet/src/pages/production/ProductionTasksBoardPage.vue`. Persist filter state in component refs; re-fetch on change with the same debounce pattern used by `ProductionTasksListPage`.
+- [X] T015 [US2] Add the `overdueOnly` client-side filter inside `frontend/cabinet/src/api/composables/use-production-tasks-board.ts`: after server response is grouped, drop non-overdue tasks across all columns when `overdueOnly` is true; the COMPLETED column ends up empty by the overdue rule.
 
 **Checkpoint**: US1 + US2 — supervisors can narrow the board to any slice. US3 only extends executor visibility tests.
 
@@ -100,11 +100,11 @@ description: "Task list for feature 006 — Production Tasks Board (M4)"
 
 ### Tests for User Story 3
 
-- [ ] T016 [P] [US3] Add page tests for the executor scenario in `frontend/cabinet/tests/unit/pages/ProductionTasksBoardExecutor.test.ts`: mock the composable to return a board response containing only assigned tasks across two columns, mount the page, verify all four columns render (with empty states for the two with no tasks), verify no UI element is hidden behind a role check (the page treats the data as authoritative), and verify the nav entry from T011 is reachable from an executor session via the existing guard tests.
+- [X] T016 [P] [US3] Add page tests for the executor scenario in `frontend/cabinet/tests/unit/pages/ProductionTasksBoardExecutor.test.ts`: mock the composable to return a board response containing only assigned tasks across two columns, mount the page, verify all four columns render (with empty states for the two with no tasks), verify no UI element is hidden behind a role check (the page treats the data as authoritative), and verify the nav entry from T011 is reachable from an executor session via the existing guard tests.
 
 ### Implementation for User Story 3
 
-- [ ] T017 [US3] No production code change required — verify by code review that `ProductionTasksBoardPage.vue`, `ProductionTaskBoardCard.vue`, and `useProductionTasksBoard.ts` contain zero references to `roleCodes` / `permissions.canViewAllProductionTasks` / `usePermissions` (no client-side role branching). Add a brief comment in the page or composable noting that visibility is server-side only.
+- [X] T017 [US3] No production code change required — verify by code review that `ProductionTasksBoardPage.vue`, `ProductionTaskBoardCard.vue`, and `useProductionTasksBoard.ts` contain zero references to `roleCodes` / `permissions.canViewAllProductionTasks` / `usePermissions` (no client-side role branching). Add a brief comment in the page or composable noting that visibility is server-side only.
 
 **Checkpoint**: All three user stories testable independently. Board is feature-complete.
 

@@ -155,4 +155,58 @@ describe('router guard (009)', () => {
       expect(router.currentRoute.value.params.id).toBe('abc-123')
     })
   })
+
+  // T007: production-tasks board route — same role allowlist as the list
+  describe('production-tasks.board route (T007)', () => {
+    it('ADMIN backend role can open the board', async () => {
+      authState.roles = ['ADMIN']
+      authState.permissions = { isAdmin: false }
+      await router.push('/cabinet/production-tasks/board')
+      expect(router.currentRoute.value.name).toBe('production-tasks.board')
+    })
+
+    it('isAdmin=true bypasses RBAC for the board', async () => {
+      authState.roles = []
+      authState.permissions = { isAdmin: true }
+      await router.push('/cabinet/production-tasks/board')
+      expect(router.currentRoute.value.name).toBe('production-tasks.board')
+    })
+
+    it('PRODUCTION_SUPERVISOR can open the board', async () => {
+      authState.roles = ['PRODUCTION_SUPERVISOR']
+      authState.permissions = { isAdmin: false }
+      await router.push('/cabinet/production-tasks/board')
+      expect(router.currentRoute.value.name).toBe('production-tasks.board')
+    })
+
+    it('PRODUCTION_EXECUTOR can open the board', async () => {
+      authState.roles = ['PRODUCTION_EXECUTOR']
+      authState.permissions = { isAdmin: false }
+      await router.push('/cabinet/production-tasks/board')
+      expect(router.currentRoute.value.name).toBe('production-tasks.board')
+    })
+
+    it('ORDER_MANAGER can open the board', async () => {
+      authState.roles = ['ORDER_MANAGER']
+      authState.permissions = { isAdmin: false }
+      await router.push('/cabinet/production-tasks/board')
+      expect(router.currentRoute.value.name).toBe('production-tasks.board')
+    })
+
+    it('a role outside the allowlist gets sent to /cabinet/403', async () => {
+      authState.roles = ['Some Other Role']
+      authState.permissions = { isAdmin: false }
+      authState.hasCabinetAccess = true
+      await router.push('/cabinet/production-tasks/board')
+      expect(router.currentRoute.value.name).toBe('forbidden')
+    })
+
+    it('the board path resolves to the board route, not the detail route', async () => {
+      authState.roles = ['PRODUCTION_SUPERVISOR']
+      authState.permissions = { isAdmin: false }
+      await router.push('/cabinet/production-tasks/board')
+      expect(router.currentRoute.value.name).toBe('production-tasks.board')
+      expect(router.currentRoute.value.params.id).toBeUndefined()
+    })
+  })
 })

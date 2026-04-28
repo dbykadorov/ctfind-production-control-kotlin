@@ -53,6 +53,7 @@ export const en = {
       productionTasks: {
         list: 'Production tasks',
         detail: 'Production task',
+        board: 'Production tasks board',
       },
       forbidden: 'Access denied',
       notFound: 'Page not found',

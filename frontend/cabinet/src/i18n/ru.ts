@@ -9,6 +9,7 @@ export const ru: Messages = {
     dashboard: 'Обзор',
     orders: 'Заказы',
     productionTasks: 'Производство',
+    productionTasksBoard: 'Доска',
     customers: 'Клиенты',
     logout: 'Выйти',
     openInDesk: 'Открыть в Desk',
@@ -222,6 +223,7 @@ export const ru: Messages = {
       productionTasks: {
         list: 'Производственные задачи',
         detail: 'Производственная задача',
+        board: 'Доска производственных задач',
       },
       forbidden: 'Нет доступа',
       notFound: 'Страница не найдена',
