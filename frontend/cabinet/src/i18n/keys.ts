@@ -14,6 +14,7 @@ export interface Messages {
     productionTasks: string
     productionTasksBoard: string
     customers: string
+    warehouse: string
     audit: string
     notifications: string
     logout: string
@@ -216,6 +217,8 @@ export interface Messages {
         detail: string
         board: string
       }
+      warehouse: string
+      warehouseMaterial: string
       audit: string
       notifications: string
       forbidden: string
@@ -293,6 +296,7 @@ export interface Messages {
       AUTH: string
       ORDER: string
       PRODUCTION_TASK: string
+      INVENTORY: string
     }
     empty: string
     emptyFiltered: string
@@ -300,6 +304,39 @@ export interface Messages {
     forbidden: string
     totalItems: string
     page: string
+  }
+  warehouse: {
+    title: string
+    addMaterial: string
+    editMaterial: string
+    receipt: string
+    movements: string
+    emptyMaterials: string
+    search: string
+    deleteMaterial: string
+    confirmDelete: string
+    hasMovementsError: string
+    duplicateNameError: string
+    currentStock: string
+    units: {
+      PIECE: string
+      KILOGRAM: string
+      METER: string
+      LITER: string
+      SQUARE_METER: string
+      CUBIC_METER: string
+    }
+    fields: {
+      name: string
+      unit: string
+      currentStock: string
+      quantity: string
+      comment: string
+      actorDisplayName: string
+    }
+    movement: {
+      RECEIPT: string
+    }
   }
 }
 

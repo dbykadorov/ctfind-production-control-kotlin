@@ -4,7 +4,7 @@ import java.time.Instant
 import java.util.UUID
 
 enum class AuditCategory {
-    AUTH, ORDER, PRODUCTION_TASK,
+    AUTH, ORDER, PRODUCTION_TASK, INVENTORY,
 }
 
 data class AuditLogRow(

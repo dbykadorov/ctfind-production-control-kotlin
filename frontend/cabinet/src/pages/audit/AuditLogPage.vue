@@ -22,6 +22,7 @@ const categories = ref<Record<AuditCategory, boolean>>({
   AUTH: true,
   ORDER: true,
   PRODUCTION_TASK: true,
+  INVENTORY: true,
 })
 const actorUserId = ref<string | null>(null)
 const searchQuery = ref('')
@@ -38,7 +39,7 @@ const isError = computed(() => error.value !== null && error.value.kind !== 'for
 const totalPages = computed(() => data.value?.totalPages ?? 0)
 const hasFilters = computed(() =>
   dateFrom.value !== '' || dateTo.value !== ''
-  || !categories.value.AUTH || !categories.value.ORDER || !categories.value.PRODUCTION_TASK
+  || !categories.value.AUTH || !categories.value.ORDER || !categories.value.PRODUCTION_TASK || !categories.value.INVENTORY
   || actorUserId.value !== null || searchQuery.value.trim() !== '',
 )
 
@@ -72,7 +73,7 @@ function onFilterChange(): void {
 function resetFilters(): void {
   dateFrom.value = ''
   dateTo.value = ''
-  categories.value = { AUTH: true, ORDER: true, PRODUCTION_TASK: true }
+  categories.value = { AUTH: true, ORDER: true, PRODUCTION_TASK: true, INVENTORY: true }
   actorUserId.value = null
   searchQuery.value = ''
   page.value = 0
@@ -169,7 +170,7 @@ onMounted(() => {
         <div class="space-y-1">
           <label class="text-xs font-medium text-ink-muted">{{ t('audit.filters.category') }}</label>
           <div class="flex flex-wrap gap-3 pt-1">
-            <label v-for="cat in (['AUTH', 'ORDER', 'PRODUCTION_TASK'] as AuditCategory[])" :key="cat" class="inline-flex items-center gap-1 text-sm">
+            <label v-for="cat in (['AUTH', 'ORDER', 'PRODUCTION_TASK', 'INVENTORY'] as AuditCategory[])" :key="cat" class="inline-flex items-center gap-1 text-sm">
               <input
                 v-model="categories[cat]"
                 type="checkbox"

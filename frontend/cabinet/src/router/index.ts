@@ -128,6 +128,25 @@ const routes: RouteRecordRaw[] = [
         meta: { title: 'meta.title.notifications' },
       },
       {
+        path: 'warehouse',
+        name: 'warehouse.list',
+        component: () => import('@/pages/warehouse/WarehouseListPage.vue'),
+        meta: {
+          roles: ['ADMIN', 'WAREHOUSE'],
+          title: 'meta.title.warehouse',
+        },
+      },
+      {
+        path: 'warehouse/:id',
+        name: 'warehouse.detail',
+        component: () => import('@/pages/warehouse/MaterialDetailPage.vue'),
+        props: true,
+        meta: {
+          roles: ['ADMIN', 'WAREHOUSE'],
+          title: 'meta.title.warehouseMaterial',
+        },
+      },
+      {
         path: 'audit',
         name: 'audit.list',
         component: () => import('@/pages/audit/AuditLogPage.vue'),

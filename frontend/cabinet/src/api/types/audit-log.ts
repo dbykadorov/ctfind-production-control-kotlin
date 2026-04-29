@@ -1,4 +1,4 @@
-export type AuditCategory = 'AUTH' | 'ORDER' | 'PRODUCTION_TASK'
+export type AuditCategory = 'AUTH' | 'ORDER' | 'PRODUCTION_TASK' | 'INVENTORY'
 
 export interface AuditLogRowResponse {
   id: string

@@ -18,7 +18,7 @@
  * Активный пункт высчитывается здесь (родитель), передаётся в SidebarItem
  * через :active prop — компонент пункта только рендерит и обрабатывает hover/focus.
  */
-import { Bell, ChevronLeft, ClipboardList, Factory, LayoutDashboard, LayoutGrid, ScrollText, Users } from 'lucide-vue-next'
+import { Bell, ChevronLeft, ClipboardList, Factory, LayoutDashboard, LayoutGrid, Package, ScrollText, Users } from 'lucide-vue-next'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -66,6 +66,12 @@ const items = computed<NavItem[]>(() => [
     icon: Bell,
     key: 'nav.notifications',
     visible: true,
+  },
+  {
+    to: '/cabinet/warehouse',
+    icon: Package,
+    key: 'nav.warehouse',
+    visible: permissions.value.isWarehouse || permissions.value.isAdmin,
   },
   {
     to: '/cabinet/audit',

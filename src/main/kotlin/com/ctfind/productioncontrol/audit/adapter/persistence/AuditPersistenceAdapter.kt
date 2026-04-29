@@ -22,6 +22,7 @@ class JpaAuditLogAdapter(
         if (AuditCategory.AUTH in categories) rows += fetchAuthEvents(query)
         if (AuditCategory.ORDER in categories) rows += fetchOrderEvents(query)
         if (AuditCategory.PRODUCTION_TASK in categories) rows += fetchProductionTaskEvents(query)
+        if (AuditCategory.INVENTORY in categories) rows += fetchInventoryEvents(query)
 
         val filtered = applySearchFilter(rows, query.search)
         val sorted = filtered.sortedByDescending { it.occurredAt }
@@ -91,6 +92,52 @@ class JpaAuditLogAdapter(
             category = AuditCategory.PRODUCTION_TASK,
             query = query,
         )
+    }
+
+    private fun fetchInventoryEvents(query: AuditLogQuery): List<AuditLogRow> {
+        val sql = buildString {
+            append(
+                """
+                SELECT e.id, e.event_at, e.event_type, e.actor_user_id,
+                       e.target_id, e.summary,
+                       u.display_name, u.login AS actor_login
+                FROM inventory_audit_event e
+                LEFT JOIN app_user u ON u.id = e.actor_user_id
+                WHERE e.event_at >= ?1 AND e.event_at < ?2
+                """.trimIndent(),
+            )
+            if (query.actorUserId != null) {
+                append(" AND e.actor_user_id = ?3")
+            }
+        }
+
+        val nq = em.createNativeQuery(sql)
+        nq.setParameter(1, query.from)
+        nq.setParameter(2, query.to)
+        if (query.actorUserId != null) {
+            nq.setParameter(3, query.actorUserId)
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        val results = nq.resultList as List<Array<Any?>>
+
+        return results.map { row ->
+            val displayName = row[6] as String?
+            val actorLogin = row[7] as String?
+
+            AuditLogRow(
+                id = toUUID(row[0]!!),
+                occurredAt = toInstant(row[1]!!),
+                category = AuditCategory.INVENTORY,
+                eventType = row[2] as String,
+                actorUserId = toUUID(row[3]!!),
+                actorDisplayName = resolveActorDisplayName(displayName, actorLogin),
+                actorLogin = actorLogin,
+                summary = row[5] as String,
+                targetType = "MATERIAL",
+                targetId = toUUID(row[4]!!),
+            )
+        }
     }
 
     private fun fetchGenericAuditEvents(
