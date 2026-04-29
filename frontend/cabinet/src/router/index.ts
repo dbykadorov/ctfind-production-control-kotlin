@@ -122,6 +122,12 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'notifications',
+        name: 'notifications.list',
+        component: () => import('@/pages/notifications/NotificationsPage.vue'),
+        meta: { title: 'meta.title.notifications' },
+      },
+      {
         path: 'audit',
         name: 'audit.list',
         component: () => import('@/pages/audit/AuditLogPage.vue'),

@@ -16,6 +16,7 @@ import { computed, onBeforeUnmount, onMounted, ref, useSlots } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import BackButton from '@/components/layout/BackButton.vue'
+import NotificationBell from '@/components/domain/notifications/NotificationBell.vue'
 import SidebarPresetPicker from '@/components/ui/SidebarPresetPicker.vue'
 import ThemeSwitcher from '@/components/ui/ThemeSwitcher.vue'
 import { useAuthStore } from '@/stores/auth'
@@ -107,6 +108,7 @@ async function logout(): Promise<void> {
 
     <div ref="menuRef" class="relative flex items-center gap-3">
       <slot name="actions" />
+      <NotificationBell />
       <button
         type="button"
         class="flex items-center gap-2 rounded px-2 py-1 text-sm text-ink-strong transition-colors hover:bg-bg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"

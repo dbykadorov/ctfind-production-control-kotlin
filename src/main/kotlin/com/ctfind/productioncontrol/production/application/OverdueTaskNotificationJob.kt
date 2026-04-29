@@ -45,6 +45,7 @@ class OverdueTaskNotificationJob(
                             title = "Задача ${task.taskNumber} просрочена",
                             targetType = NotificationTargetType.PRODUCTION_TASK,
                             targetId = task.taskNumber,
+                            targetEntityId = task.id,
                         ),
                     )
                 } catch (e: Exception) {

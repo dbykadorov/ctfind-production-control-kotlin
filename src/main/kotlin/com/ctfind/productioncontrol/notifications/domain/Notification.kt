@@ -11,6 +11,7 @@ data class Notification(
 	val body: String? = null,
 	val targetType: NotificationTargetType? = null,
 	val targetId: String? = null,
+	val targetEntityId: UUID? = null,
 	val read: Boolean = false,
 	val readAt: Instant? = null,
 	val createdAt: Instant,

@@ -101,10 +101,10 @@ describe('sidebar (010 US2)', () => {
     expect(btn.attributes('aria-label')).toBe('Развернуть')
   })
 
-  it('список пунктов плоский: ровно 3 navlink-а (Dashboard/Orders/Customers)', async () => {
+  it('список пунктов плоский: ровно 4 navlink-а (Dashboard/Orders/Customers/Notifications)', async () => {
     const { wrapper } = await renderSidebar()
     const links = wrapper.findAll('a.cabinet-sidebar-item')
-    expect(links).toHaveLength(3)
+    expect(links).toHaveLength(4)
   })
 
   it('cabinet-sidebar-bg НЕ применяется при preset=\'none\' (R-008 default)', async () => {

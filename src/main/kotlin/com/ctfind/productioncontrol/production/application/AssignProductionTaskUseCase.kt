@@ -105,6 +105,7 @@ class AssignProductionTaskUseCase(
 							title = "Вам назначена задача ${updated.taskNumber}",
 							targetType = NotificationTargetType.PRODUCTION_TASK,
 							targetId = updated.taskNumber,
+							targetEntityId = updated.id,
 						),
 					)
 				} catch (e: Exception) {

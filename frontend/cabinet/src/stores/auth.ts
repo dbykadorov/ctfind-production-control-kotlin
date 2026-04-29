@@ -16,6 +16,7 @@ import { buildPermissions } from '@/api/composables/use-permissions'
 import { onSessionExpired } from '@/api/api-client'
 import { disconnectSocket } from '@/api/socket'
 import { useNavigationStore } from '@/stores/navigation'
+import { useNotificationStore } from '@/stores/notifications'
 import { sanitizeFrom } from '@/utils/url'
 
 const GUEST = 'Guest'
@@ -97,9 +98,7 @@ export const useAuthStore = defineStore('auth', () => {
     sessionExpired.value = false
     csrfToken.value = ''
     disconnectSocket()
-    // 010 US3 (T034 / NS-G2): новый пользователь не должен унаследовать
-    // навигационную историю предыдущего. Очищаем стек ПОСЛЕ logout API,
-    // ДО редиректа на /cabinet/login (редирект делает caller — TopBar).
+    useNotificationStore().stopPolling()
     useNavigationStore().clear()
   }
 

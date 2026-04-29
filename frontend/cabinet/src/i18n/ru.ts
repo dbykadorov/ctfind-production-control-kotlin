@@ -13,6 +13,7 @@ export const ru: Messages = {
     customers: 'Клиенты',
     logout: 'Выйти',
     audit: 'Журнал действий',
+    notifications: 'Уведомления',
   },
   common: {
     loading: 'Загрузка…',
@@ -226,6 +227,7 @@ export const ru: Messages = {
         board: 'Доска производственных задач',
       },
       audit: 'Журнал действий',
+      notifications: 'Уведомления',
       forbidden: 'Нет доступа',
       notFound: 'Страница не найдена',
       noModules: 'Нет модулей',
@@ -245,6 +247,24 @@ export const ru: Messages = {
   layout: {
     back: 'Назад',
     backAria: 'Вернуться на предыдущую страницу',
+  },
+  notifications: {
+    title: 'Уведомления',
+    empty: 'Нет уведомлений',
+    markAllRead: 'Отметить все прочитанными',
+    allNotifications: 'Все уведомления',
+    unreadOnly: 'Только непрочитанные',
+    badge99plus: '99+',
+    timeJustNow: 'только что',
+    timeMinAgo: '{n} мин назад',
+    timeHoursAgo: '{n} ч назад',
+    timeYesterday: 'вчера',
+    timeDaysAgo: '{n} дн назад',
+    types: {
+      TASK_ASSIGNED: 'Назначение задачи',
+      STATUS_CHANGED: 'Изменение статуса',
+      TASK_OVERDUE: 'Просрочка задачи',
+    },
   },
   audit: {
     refresh: 'Обновить',

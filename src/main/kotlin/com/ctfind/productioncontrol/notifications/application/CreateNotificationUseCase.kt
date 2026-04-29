@@ -17,6 +17,7 @@ class CreateNotificationUseCase(
 			body = command.body,
 			targetType = command.targetType,
 			targetId = command.targetId,
+			targetEntityId = command.targetEntityId,
 			read = false,
 			readAt = null,
 			createdAt = Instant.now(),

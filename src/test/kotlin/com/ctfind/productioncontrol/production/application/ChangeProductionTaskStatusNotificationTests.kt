@@ -170,6 +170,7 @@ class ChangeProductionTaskStatusNotificationTests {
 						body = command.body,
 						targetType = command.targetType,
 						targetId = command.targetId,
+						targetEntityId = command.targetEntityId,
 						createdAt = Instant.now(),
 					)
 				}

@@ -134,6 +134,7 @@ class ChangeProductionTaskStatusUseCase(
 						title = "Задача ${saved.taskNumber}: статус изменён на ${to.name}",
 						targetType = NotificationTargetType.PRODUCTION_TASK,
 						targetId = saved.taskNumber,
+						targetEntityId = saved.id,
 					),
 				)
 			} catch (e: Exception) {

@@ -15,6 +15,7 @@ export interface Messages {
     productionTasksBoard: string
     customers: string
     audit: string
+    notifications: string
     logout: string
   }
   ui: {
@@ -216,6 +217,7 @@ export interface Messages {
         board: string
       }
       audit: string
+      notifications: string
       forbidden: string
       notFound: string
       noModules: string
@@ -250,6 +252,24 @@ export interface Messages {
     back: string
     /** aria-label кнопки «Назад» для screen-reader'ов. */
     backAria: string
+  }
+  notifications: {
+    title: string
+    empty: string
+    markAllRead: string
+    allNotifications: string
+    unreadOnly: string
+    badge99plus: string
+    timeJustNow: string
+    timeMinAgo: string
+    timeHoursAgo: string
+    timeYesterday: string
+    timeDaysAgo: string
+    types: {
+      TASK_ASSIGNED: string
+      STATUS_CHANGED: string
+      TASK_OVERDUE: string
+    }
   }
   audit: {
     refresh: string

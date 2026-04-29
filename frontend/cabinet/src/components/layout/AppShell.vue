@@ -13,10 +13,16 @@
  * См. specs/010-cabinet-layout-rework/spec.md US1, contracts/design-tokens.contract.md,
  * research.md §R-004 (scoped fg-перебивка внутри .cabinet-card для контраста).
  */
+import { onMounted, onBeforeUnmount } from 'vue'
 import { RouterView } from 'vue-router'
 import Sidebar from './Sidebar.vue'
 import TopBar from './TopBar.vue'
 import UnsupportedViewport from './UnsupportedViewport.vue'
+import { useNotificationStore } from '@/stores/notifications'
+
+const notificationStore = useNotificationStore()
+onMounted(() => notificationStore.startPolling())
+onBeforeUnmount(() => notificationStore.stopPolling())
 </script>
 
 <template>

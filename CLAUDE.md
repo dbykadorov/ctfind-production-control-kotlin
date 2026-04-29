@@ -81,5 +81,5 @@ Active feature work lives under `specs/<NNN>-<slug>/` (current: `006-production-
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/009-notification-triggers/plan.md`
+`specs/010-notification-frontend/plan.md`
 <!-- SPECKIT END -->

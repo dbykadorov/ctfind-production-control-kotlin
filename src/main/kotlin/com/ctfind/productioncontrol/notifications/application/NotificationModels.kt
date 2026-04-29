@@ -28,4 +28,5 @@ data class CreateNotificationCommand(
 	val body: String? = null,
 	val targetType: NotificationTargetType? = null,
 	val targetId: String? = null,
+	val targetEntityId: UUID? = null,
 )

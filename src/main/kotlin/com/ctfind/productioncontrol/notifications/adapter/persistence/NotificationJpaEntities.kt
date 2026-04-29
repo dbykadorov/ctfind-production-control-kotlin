@@ -31,6 +31,9 @@ class NotificationEntity(
 	@Column(name = "target_id", length = 100)
 	var targetId: String? = null,
 
+	@Column(name = "target_entity_id")
+	var targetEntityId: UUID? = null,
+
 	@Column(nullable = false)
 	var read: Boolean = false,
 
