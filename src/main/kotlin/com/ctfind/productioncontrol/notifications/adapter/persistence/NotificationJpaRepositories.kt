@@ -26,4 +26,6 @@ interface NotificationJpaRepository : JpaRepository<NotificationEntity, UUID> {
 		@Param("recipientUserId") recipientUserId: UUID,
 		@Param("readAt") readAt: Instant,
 	): Int
+
+	fun existsByTypeAndTargetIdAndRecipientUserId(type: String, targetId: String, recipientUserId: UUID): Boolean
 }

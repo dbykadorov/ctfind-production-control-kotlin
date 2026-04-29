@@ -50,6 +50,7 @@ class ListNotificationsUseCaseTests {
 				override fun countUnreadByRecipientUserId(recipientUserId: UUID) =
 					store.count { it.recipientUserId == recipientUserId && !it.read }.toLong()
 				override fun markAllReadByRecipientUserId(recipientUserId: UUID, readAt: Instant) = 0
+				override fun existsByTypeAndTargetIdAndRecipient(type: com.ctfind.productioncontrol.notifications.domain.NotificationType, targetId: String, recipientUserId: UUID) = false
 			},
 		)
 	}

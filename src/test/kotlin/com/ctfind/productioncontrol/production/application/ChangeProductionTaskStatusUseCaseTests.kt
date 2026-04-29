@@ -260,6 +260,7 @@ class ChangeProductionTaskStatusUseCaseTests {
 				): ProductionTaskPageResult<ProductionTask> = ProductionTaskPageResult(emptyList(), 0, 20, 0)
 
 				override fun existsByOrderItemIdAndPurpose(orderItemId: UUID, purpose: String): Boolean = false
+				override fun findOverdue(today: java.time.LocalDate): List<ProductionTask> = emptyList()
 			},
 			traces = object : ProductionTaskTracePort {
 				override fun saveHistoryEvent(event: ProductionTaskHistoryEvent): ProductionTaskHistoryEvent {
@@ -270,6 +271,15 @@ class ChangeProductionTaskStatusUseCaseTests {
 				override fun findHistoryEvents(taskId: UUID): List<ProductionTaskHistoryEvent> = emptyList()
 			},
 			audit = ProductionTaskAuditService(auditPort),
+			notifications = object : com.ctfind.productioncontrol.notifications.application.NotificationCreatePort {
+				override fun create(command: com.ctfind.productioncontrol.notifications.application.CreateNotificationCommand) =
+					com.ctfind.productioncontrol.notifications.domain.Notification(
+						recipientUserId = command.recipientUserId,
+						type = command.type,
+						title = command.title,
+						createdAt = java.time.Instant.now(),
+					)
+			},
 		)
 	}
 }

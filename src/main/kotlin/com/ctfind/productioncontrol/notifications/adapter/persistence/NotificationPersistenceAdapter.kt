@@ -48,6 +48,12 @@ class NotificationPersistenceAdapter(
 	override fun markAllReadByRecipientUserId(recipientUserId: UUID, readAt: Instant): Int =
 		repo.markAllReadByRecipientUserId(recipientUserId, readAt)
 
+	override fun existsByTypeAndTargetIdAndRecipient(
+		type: NotificationType,
+		targetId: String,
+		recipientUserId: UUID,
+	): Boolean = repo.existsByTypeAndTargetIdAndRecipientUserId(type.name, targetId, recipientUserId)
+
 	private fun toEntity(n: Notification) = NotificationEntity(
 		id = n.id,
 		recipientUserId = n.recipientUserId,

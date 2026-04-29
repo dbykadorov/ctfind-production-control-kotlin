@@ -134,6 +134,7 @@ class ProductionTaskQueryUseCaseTests {
 					)
 				}
 				override fun existsByOrderItemIdAndPurpose(orderItemId: UUID, purpose: String): Boolean = false
+				override fun findOverdue(today: java.time.LocalDate): List<ProductionTask> = emptyList()
 			},
 			orderSource = object : ProductionOrderSourcePort {
 				override fun findOrderSource(oId: UUID) = orderSummary.takeIf { oId == oid }

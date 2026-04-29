@@ -49,6 +49,7 @@ internal fun unusedTaskPort(): ProductionTaskPort = object : ProductionTaskPort 
 		roleCodes: Set<String>,
 	): ProductionTaskPageResult<ProductionTask> = ProductionTaskPageResult(emptyList(), 0, 20, 0)
 	override fun existsByOrderItemIdAndPurpose(orderItemId: UUID, purpose: String): Boolean = false
+	override fun findOverdue(today: java.time.LocalDate): List<ProductionTask> = emptyList()
 }
 
 internal fun unusedOrderSourcePort(): ProductionOrderSourcePort = object : ProductionOrderSourcePort {
@@ -80,6 +81,17 @@ internal fun unusedAuditService(): ProductionTaskAuditService =
 internal fun unusedActorLookup(): ProductionActorLookupPort = object : ProductionActorLookupPort {
 	override fun displayName(userId: UUID): String? = null
 }
+
+internal fun unusedNotificationPort(): com.ctfind.productioncontrol.notifications.application.NotificationCreatePort =
+	object : com.ctfind.productioncontrol.notifications.application.NotificationCreatePort {
+		override fun create(command: com.ctfind.productioncontrol.notifications.application.CreateNotificationCommand) =
+			com.ctfind.productioncontrol.notifications.domain.Notification(
+				recipientUserId = command.recipientUserId,
+				type = command.type,
+				title = command.title,
+				createdAt = java.time.Instant.now(),
+			)
+	}
 
 internal fun unusedHistoryUseCase(): ProductionTaskHistoryUseCase =
 	object : ProductionTaskHistoryUseCase(
@@ -125,6 +137,7 @@ internal fun stubAssignUseCase(
 	executors = unusedExecutorPort(),
 	traces = unusedTracePort(),
 	audit = unusedAuditService(),
+	notifications = unusedNotificationPort(),
 ) {
 	override fun execute(cmd: AssignProductionTaskCommand) = exec(cmd)
 }
@@ -136,6 +149,7 @@ internal fun stubChangeStatusUseCase(
 	tasks = unusedTaskPort(),
 	traces = unusedTracePort(),
 	audit = unusedAuditService(),
+	notifications = unusedNotificationPort(),
 ) {
 	override fun execute(cmd: ChangeProductionTaskStatusCommand) = exec(cmd)
 }

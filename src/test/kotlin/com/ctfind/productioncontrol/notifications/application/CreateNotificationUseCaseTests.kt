@@ -32,6 +32,7 @@ class CreateNotificationUseCaseTests {
 					NotificationPageResult<Notification>(emptyList(), 0, 20, 0)
 				override fun countUnreadByRecipientUserId(recipientUserId: UUID) = 0L
 				override fun markAllReadByRecipientUserId(recipientUserId: UUID, readAt: Instant) = 0
+				override fun existsByTypeAndTargetIdAndRecipient(type: com.ctfind.productioncontrol.notifications.domain.NotificationType, targetId: String, recipientUserId: UUID) = false
 			},
 		)
 	}

@@ -3,6 +3,7 @@ package com.ctfind.productioncontrol.production.application
 import com.ctfind.productioncontrol.production.domain.ProductionTask
 import com.ctfind.productioncontrol.production.domain.ProductionTaskAuditEvent
 import com.ctfind.productioncontrol.production.domain.ProductionTaskHistoryEvent
+import java.time.LocalDate
 import java.util.UUID
 
 interface ProductionTaskPort {
@@ -10,6 +11,7 @@ interface ProductionTaskPort {
 	fun save(task: ProductionTask): ProductionTask
 	fun search(query: ProductionTaskListQuery, currentUserId: UUID?, roleCodes: Set<String>): ProductionTaskPageResult<ProductionTask>
 	fun existsByOrderItemIdAndPurpose(orderItemId: UUID, purpose: String): Boolean
+	fun findOverdue(today: LocalDate): List<ProductionTask>
 }
 
 interface ProductionTaskTracePort {

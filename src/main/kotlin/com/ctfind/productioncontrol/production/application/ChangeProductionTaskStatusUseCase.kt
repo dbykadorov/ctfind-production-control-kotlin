@@ -1,11 +1,16 @@
 package com.ctfind.productioncontrol.production.application
 
+import com.ctfind.productioncontrol.notifications.application.CreateNotificationCommand
+import com.ctfind.productioncontrol.notifications.application.NotificationCreatePort
+import com.ctfind.productioncontrol.notifications.domain.NotificationTargetType
+import com.ctfind.productioncontrol.notifications.domain.NotificationType
 import com.ctfind.productioncontrol.production.domain.InvalidProductionTaskStatusTransition
 import com.ctfind.productioncontrol.production.domain.ProductionTask
 import com.ctfind.productioncontrol.production.domain.ProductionTaskHistoryEvent
 import com.ctfind.productioncontrol.production.domain.ProductionTaskHistoryEventType
 import com.ctfind.productioncontrol.production.domain.ProductionTaskStatus
 import com.ctfind.productioncontrol.production.domain.ProductionTaskStatusPolicy
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
@@ -15,7 +20,10 @@ class ChangeProductionTaskStatusUseCase(
 	private val tasks: ProductionTaskPort,
 	private val traces: ProductionTaskTracePort,
 	private val audit: ProductionTaskAuditService,
+	private val notifications: NotificationCreatePort,
 ) {
+
+	private val log = LoggerFactory.getLogger(javaClass)
 
 	@Transactional
 	fun execute(cmd: ChangeProductionTaskStatusCommand): ProductionTaskMutationResult<Unit> {
@@ -117,6 +125,21 @@ class ChangeProductionTaskStatusUseCase(
 			summary = summary,
 			eventAt = now,
 		)
+		if (cmd.actorUserId != saved.createdByUserId) {
+			try {
+				notifications.create(
+					CreateNotificationCommand(
+						recipientUserId = saved.createdByUserId,
+						type = NotificationType.STATUS_CHANGED,
+						title = "Задача ${saved.taskNumber}: статус изменён на ${to.name}",
+						targetType = NotificationTargetType.PRODUCTION_TASK,
+						targetId = saved.taskNumber,
+					),
+				)
+			} catch (e: Exception) {
+				log.warn("Failed to create STATUS_CHANGED notification for task {}", saved.taskNumber, e)
+			}
+		}
 		return ProductionTaskMutationResult.Success(Unit)
 	}
 }

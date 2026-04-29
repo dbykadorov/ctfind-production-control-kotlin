@@ -20,6 +20,7 @@ import com.ctfind.productioncontrol.production.domain.ProductionTaskAuditEvent
 import com.ctfind.productioncontrol.production.domain.ProductionTaskHistoryEvent
 import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 import java.util.UUID
 
 @Component
@@ -60,6 +61,9 @@ class JpaProductionTaskAdapter(
 
 	override fun existsByOrderItemIdAndPurpose(orderItemId: UUID, purpose: String): Boolean =
 		taskRepository.existsByOrderItemIdAndPurposeIgnoreCase(orderItemId, purpose.trim())
+
+	override fun findOverdue(today: LocalDate): List<ProductionTask> =
+		taskRepository.findOverdue(today).map { it.toDomain() }
 }
 
 @Component

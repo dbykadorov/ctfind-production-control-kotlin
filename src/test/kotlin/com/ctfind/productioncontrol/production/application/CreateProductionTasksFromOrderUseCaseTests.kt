@@ -178,6 +178,7 @@ class CreateProductionTasksFromOrderUseCaseTests {
 					roleCodes: Set<String>,
 				): ProductionTaskPageResult<ProductionTask> = ProductionTaskPageResult(emptyList(), 0, 20, 0)
 				override fun existsByOrderItemIdAndPurpose(orderItemId: UUID, purpose: String): Boolean = false
+				override fun findOverdue(today: java.time.LocalDate): List<ProductionTask> = emptyList()
 			},
 			orderSource = object : ProductionOrderSourcePort {
 				override fun findOrderSource(oId: UUID) = orderSummary.takeIf { oId == orderId }

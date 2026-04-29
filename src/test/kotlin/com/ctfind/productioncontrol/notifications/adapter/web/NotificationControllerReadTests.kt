@@ -132,6 +132,7 @@ class NotificationControllerReadTests {
 				}
 				return count
 			}
+			override fun existsByTypeAndTargetIdAndRecipient(type: com.ctfind.productioncontrol.notifications.domain.NotificationType, targetId: String, recipientUserId: UUID) = false
 		}
 		return NotificationController(
 			listUseCase = ListNotificationsUseCase(persistence),

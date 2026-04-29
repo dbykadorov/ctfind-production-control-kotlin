@@ -1,9 +1,14 @@
 package com.ctfind.productioncontrol.production.application
 
+import com.ctfind.productioncontrol.notifications.application.CreateNotificationCommand
+import com.ctfind.productioncontrol.notifications.application.NotificationCreatePort
+import com.ctfind.productioncontrol.notifications.domain.NotificationTargetType
+import com.ctfind.productioncontrol.notifications.domain.NotificationType
 import com.ctfind.productioncontrol.production.domain.ProductionTask
 import com.ctfind.productioncontrol.production.domain.ProductionTaskHistoryEvent
 import com.ctfind.productioncontrol.production.domain.ProductionTaskHistoryEventType
 import com.ctfind.productioncontrol.production.domain.ProductionTaskStatus
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
@@ -15,7 +20,10 @@ class AssignProductionTaskUseCase(
 	private val executors: ProductionExecutorPort,
 	private val traces: ProductionTaskTracePort,
 	private val audit: ProductionTaskAuditService,
+	private val notifications: NotificationCreatePort,
 ) {
+
+	private val log = LoggerFactory.getLogger(javaClass)
 
 	@Transactional
 	fun execute(cmd: AssignProductionTaskCommand): ProductionTaskMutationResult<Unit> {
@@ -89,6 +97,19 @@ class AssignProductionTaskUseCase(
 					summary = "Назначен исполнитель ${exec.displayName} на ${updated.taskNumber}",
 					eventAt = now,
 				)
+				try {
+					notifications.create(
+						CreateNotificationCommand(
+							recipientUserId = cmd.executorUserId,
+							type = NotificationType.TASK_ASSIGNED,
+							title = "Вам назначена задача ${updated.taskNumber}",
+							targetType = NotificationTargetType.PRODUCTION_TASK,
+							targetId = updated.taskNumber,
+						),
+					)
+				} catch (e: Exception) {
+					log.warn("Failed to create TASK_ASSIGNED notification for task {}", updated.taskNumber, e)
+				}
 			}
 			planningChanged -> {
 				traces.saveHistoryEvent(

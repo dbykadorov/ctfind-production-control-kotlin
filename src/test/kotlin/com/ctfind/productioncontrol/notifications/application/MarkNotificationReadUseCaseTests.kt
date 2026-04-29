@@ -53,6 +53,7 @@ class MarkNotificationReadUseCaseTests {
 					}
 					return count
 				}
+				override fun existsByTypeAndTargetIdAndRecipient(type: com.ctfind.productioncontrol.notifications.domain.NotificationType, targetId: String, recipientUserId: UUID) = false
 			},
 		)
 	}

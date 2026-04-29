@@ -242,6 +242,7 @@ class AssignProductionTaskUseCaseTests {
 				): ProductionTaskPageResult<ProductionTask> = ProductionTaskPageResult(emptyList(), 0, 20, 0)
 
 				override fun existsByOrderItemIdAndPurpose(orderItemId: UUID, purpose: String): Boolean = false
+				override fun findOverdue(today: java.time.LocalDate): List<ProductionTask> = emptyList()
 			},
 			executors = object : ProductionExecutorPort {
 				override fun findExecutor(id: UUID): ProductionTaskExecutorSummary? =
@@ -258,6 +259,15 @@ class AssignProductionTaskUseCaseTests {
 				override fun findHistoryEvents(taskId: UUID): List<ProductionTaskHistoryEvent> = emptyList()
 			},
 			audit = ProductionTaskAuditService(auditPort),
+			notifications = object : com.ctfind.productioncontrol.notifications.application.NotificationCreatePort {
+				override fun create(command: com.ctfind.productioncontrol.notifications.application.CreateNotificationCommand) =
+					com.ctfind.productioncontrol.notifications.domain.Notification(
+						recipientUserId = command.recipientUserId,
+						type = command.type,
+						title = command.title,
+						createdAt = Instant.now(),
+					)
+			},
 		)
 	}
 }
