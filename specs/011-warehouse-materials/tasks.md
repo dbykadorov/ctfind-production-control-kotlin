@@ -123,8 +123,8 @@
 - [X] T039 Run `pnpm typecheck` in `frontend/cabinet/` — no TypeScript errors
 - [X] T040 Run `pnpm test` in `frontend/cabinet/` — all tests pass (existing + new T014, T015, T031)
 - [X] T041 Run `pnpm build` in `frontend/cabinet/` — production build succeeds
-- [ ] T042 Run `make docker-up-detached && make health` — stack healthy, V8 migration applied
-- [ ] T043 Run quickstart.md manual verification: create materials → receipt → journal → audit log → WAREHOUSE role visibility
+- [X] T042 Run `make docker-up-detached && make health` — stack healthy, V8 migration applied
+- [X] T043 Run quickstart.md manual verification: create materials → receipt → journal → audit log → WAREHOUSE role visibility
 
 ---
 

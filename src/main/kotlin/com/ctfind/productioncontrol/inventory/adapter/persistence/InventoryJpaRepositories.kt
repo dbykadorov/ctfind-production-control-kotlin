@@ -12,11 +12,11 @@ interface MaterialJpaRepository : JpaRepository<MaterialEntity, UUID> {
     fun existsByNameIgnoreCase(name: String): Boolean
     fun existsByNameIgnoreCaseAndIdNot(name: String, id: UUID): Boolean
 
-    @Query("SELECT m FROM MaterialEntity m WHERE (:search IS NULL OR LOWER(m.name) LIKE LOWER(CONCAT('%', :search, '%')))")
-    fun findAllBySearchTerm(@Param("search") search: String?, pageable: Pageable): Page<MaterialEntity>
+    @Query("SELECT m FROM MaterialEntity m WHERE LOWER(m.name) LIKE LOWER(CONCAT('%', :search, '%'))")
+    fun findAllBySearchTerm(@Param("search") search: String, pageable: Pageable): Page<MaterialEntity>
 
-    @Query("SELECT COUNT(m) FROM MaterialEntity m WHERE (:search IS NULL OR LOWER(m.name) LIKE LOWER(CONCAT('%', :search, '%')))")
-    fun countBySearchTerm(@Param("search") search: String?): Long
+    @Query("SELECT COUNT(m) FROM MaterialEntity m WHERE LOWER(m.name) LIKE LOWER(CONCAT('%', :search, '%'))")
+    fun countBySearchTerm(@Param("search") search: String): Long
 }
 
 interface StockMovementJpaRepository : JpaRepository<StockMovementEntity, UUID> {

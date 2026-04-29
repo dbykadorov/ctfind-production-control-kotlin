@@ -25,10 +25,16 @@ class InventoryPersistenceAdapter(
 
     override fun findAll(query: MaterialListQuery): List<Material> {
         val pageable = PageRequest.of(query.page, query.size, Sort.by("name"))
-        return materialRepo.findAllBySearchTerm(query.search, pageable).content.map { it.toDomain() }
+        return if (query.search.isNullOrBlank()) {
+            materialRepo.findAll(pageable).content
+        } else {
+            materialRepo.findAllBySearchTerm(query.search, pageable).content
+        }.map { it.toDomain() }
     }
 
-    override fun count(query: MaterialListQuery): Long = materialRepo.countBySearchTerm(query.search)
+    override fun count(query: MaterialListQuery): Long =
+        if (query.search.isNullOrBlank()) materialRepo.count()
+        else materialRepo.countBySearchTerm(query.search)
 
     override fun save(material: Material): Material = materialRepo.save(material.toEntity()).toDomain()
 

@@ -33,6 +33,6 @@ CREATE TABLE inventory_audit_event (
 
 CREATE INDEX idx_inventory_audit_event_at ON inventory_audit_event (event_at DESC);
 
-INSERT INTO role (id, code, name, created_at)
+INSERT INTO app_role (id, code, name, created_at)
 VALUES ('a0000000-0000-0000-0000-000000000005', 'WAREHOUSE', 'Warehouse', NOW())
 ON CONFLICT (code) DO NOTHING;
