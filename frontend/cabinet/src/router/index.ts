@@ -54,7 +54,7 @@ const routes: RouteRecordRaw[] = [
         name: 'orders.list',
         component: () => import('@/pages/office/OrdersListPage.vue'),
         meta: {
-          roles: ['Order Manager', 'Shop Supervisor', 'Order Corrector'],
+          roles: ['Order Manager', 'Shop Supervisor', 'Order Corrector', 'Warehouse', 'ORDER_MANAGER', 'PRODUCTION_SUPERVISOR', 'WAREHOUSE'],
           title: 'meta.title.orders.list',
         },
       },
@@ -76,7 +76,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/office/OrderDetailPage.vue'),
         props: true,
         meta: {
-          roles: ['Order Manager', 'Shop Supervisor', 'Order Corrector'],
+          roles: ['Order Manager', 'Shop Supervisor', 'Order Corrector', 'Warehouse', 'ORDER_MANAGER', 'PRODUCTION_SUPERVISOR', 'WAREHOUSE'],
           title: 'meta.title.orders.detail',
           showBackButton: true,
           backPath: '/cabinet/orders',

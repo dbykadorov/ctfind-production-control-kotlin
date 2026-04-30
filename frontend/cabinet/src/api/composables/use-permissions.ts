@@ -49,6 +49,9 @@ export function buildPermissions(user: string | null, roles: readonly string[]):
   const canViewAllProductionTasks = isAdmin || isOrderManager || isShopSupervisor
   const canUpdateAnyProductionTaskStatus = isAdmin || isShopSupervisor
   const canWorkAssignedProductionTasks = isExecutor
+  const canEditOrderBom = isAdmin || isOrderManager
+  const canViewOrderBom = isAdmin || isOrderManager || isWarehouse || isShopSupervisor || isOrderCorrector
+  const canConsumeStock = isAdmin || isWarehouse
 
   return {
     isAdmin,
@@ -57,7 +60,7 @@ export function buildPermissions(user: string | null, roles: readonly string[]):
     isExecutor,
     isWarehouse,
     isOrderCorrector,
-    canSeeCabinetWorkArea: isAdmin || isOrderManager || isShopSupervisor || isExecutor,
+    canSeeCabinetWorkArea: isAdmin || isOrderManager || isShopSupervisor || isExecutor || isWarehouse,
     hasOrderCorrection,
     canManageOrders,
     canManageCustomers,
@@ -66,6 +69,9 @@ export function buildPermissions(user: string | null, roles: readonly string[]):
     canViewAllProductionTasks,
     canUpdateAnyProductionTaskStatus,
     canWorkAssignedProductionTasks,
+    canEditOrderBom,
+    canViewOrderBom,
+    canConsumeStock,
   }
 }
 

@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui'
 import { format, parseISO } from 'date-fns'
 import { ru } from 'date-fns/locale'
 
-const { t } = useI18n()
+const { t, te } = useI18n()
 const { data, loading, error, refetch } = useAuditLog()
 
 const DEBOUNCE_MS = 300
@@ -114,6 +114,11 @@ function targetRoute(row: AuditLogRowResponse) {
   if (row.targetType === 'PRODUCTION_TASK' && row.targetId)
     return { name: 'production-tasks.detail', params: { id: row.targetId } }
   return null
+}
+
+function eventTypeLabel(eventType: string): string {
+  const key = `audit.event.${eventType}`
+  return te(key) ? t(key) : eventType
 }
 
 onMounted(() => {
@@ -273,7 +278,7 @@ onMounted(() => {
                   {{ t(`audit.category.${row.category}`) }}
                 </span>
               </td>
-              <td class="px-3 py-2 text-ink-strong">{{ row.eventType }}</td>
+              <td class="px-3 py-2 text-ink-strong">{{ eventTypeLabel(row.eventType) }}</td>
               <td class="px-3 py-2">{{ row.actorDisplayName }}</td>
               <td class="max-w-xs truncate px-3 py-2 text-ink-muted">{{ row.summary }}</td>
               <td class="px-3 py-2">

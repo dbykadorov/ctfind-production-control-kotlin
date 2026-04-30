@@ -46,6 +46,7 @@ class ReceiveStockUseCase private constructor(
             movementType = MovementType.RECEIPT,
             quantity = command.quantity,
             comment = command.comment,
+            orderId = null,
             actorUserId = command.actor.userId,
             actorDisplayName = command.actor.displayName,
             createdAt = Instant.now(),

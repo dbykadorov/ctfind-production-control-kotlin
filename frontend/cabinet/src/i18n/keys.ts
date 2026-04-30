@@ -298,6 +298,12 @@ export interface Messages {
       PRODUCTION_TASK: string
       INVENTORY: string
     }
+    event: {
+      BOM_LINE_ADDED: string
+      BOM_LINE_UPDATED: string
+      BOM_LINE_REMOVED: string
+      STOCK_CONSUMPTION: string
+    }
     empty: string
     emptyFiltered: string
     errorLoading: string
@@ -336,7 +342,52 @@ export interface Messages {
     }
     movement: {
       RECEIPT: string
+      CONSUMPTION: string
     }
+  }
+  bom: {
+    section: {
+      title: string
+    }
+    empty: string
+    add: string
+    edit: string
+    delete: string
+    confirmDelete: string
+    duplicate: string
+    cannotDeleteWithConsumption: string
+    lockedShipped: string
+    materialRequired: string
+    quantityRequired: string
+    quantityPositive: string
+  }
+  usage: {
+    section: {
+      title: string
+    }
+    empty: string
+    column: {
+      required: string
+      consumed: string
+      remaining: string
+    }
+    overconsumption: string
+    consumeButton: string
+  }
+  consume: {
+    button: string
+    title: string
+    pickOrder: string
+    searchOrder: string
+    pickMaterial: string
+    quantity: string
+    comment: string
+    submit: string
+    insufficientStock: string
+    available: string
+    overconsumption: string
+    materialNotInBom: string
+    orderLocked: string
   }
 }
 

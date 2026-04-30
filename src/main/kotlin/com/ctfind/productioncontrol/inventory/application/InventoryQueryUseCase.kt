@@ -2,12 +2,15 @@ package com.ctfind.productioncontrol.inventory.application
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import java.util.UUID
 
 @Service
 class InventoryQueryUseCase @Autowired constructor(
     private val materials: MaterialPort,
     private val movements: StockMovementPort,
+    private val requirements: OrderMaterialRequirementPort,
+    private val orderLookup: OrderLookupPort,
 ) {
     fun listMaterials(query: MaterialListQuery): MaterialsPageResult {
         val items = materials.findAll(query)
@@ -45,4 +48,39 @@ class InventoryQueryUseCase @Autowired constructor(
             totalPages = totalPages,
         )
     }
+
+    fun listBom(orderId: UUID): List<BomLineView>? {
+        orderLookup.findOrderSummary(orderId) ?: return null
+        return requirements.findByOrderIdOrderByCreatedAtDesc(orderId)
+            .mapNotNull { line ->
+                val material = materials.findById(line.materialId) ?: return@mapNotNull null
+                line.toView(material.name, material.unit)
+            }
+    }
+
+    fun getMaterialUsage(orderId: UUID): MaterialUsageView? {
+        orderLookup.findOrderSummary(orderId) ?: return null
+        val lines = requirements.findByOrderIdOrderByCreatedAtDesc(orderId)
+        val consumedByMaterial = movements.sumConsumedByOrder(orderId)
+
+        val rows = lines.mapNotNull { line ->
+            val material = materials.findById(line.materialId) ?: return@mapNotNull null
+            val consumed = consumedByMaterial[line.materialId] ?: BigDecimal.ZERO
+            val required = line.quantity
+            MaterialUsageRowView(
+                materialId = line.materialId,
+                materialName = material.name,
+                materialUnit = material.unit,
+                requiredQuantity = required,
+                consumedQuantity = consumed,
+                remainingToConsume = positiveOrZero(required - consumed),
+                overconsumption = positiveOrZero(consumed - required),
+            )
+        }.sortedBy { it.materialName.lowercase() }
+
+        return MaterialUsageView(orderId = orderId, rows = rows)
+    }
+
+    private fun positiveOrZero(value: BigDecimal): BigDecimal =
+        if (value < BigDecimal.ZERO) BigDecimal.ZERO else value
 }

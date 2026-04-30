@@ -22,8 +22,13 @@ vi.mock('@/api/composables/use-permissions', () => ({
   usePermissions: () => ({
     value: {
       canManageOrders: true,
+      canViewOrderBom: true,
       isShopSupervisor: false,
+      canViewAllProductionTasks: false,
+      canWorkAssignedProductionTasks: false,
       canManageCustomers: true,
+      isWarehouse: false,
+      isAdmin: false,
     },
   }),
 }))

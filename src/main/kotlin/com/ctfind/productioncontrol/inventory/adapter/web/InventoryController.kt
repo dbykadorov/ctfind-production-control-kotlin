@@ -5,6 +5,8 @@ import com.ctfind.productioncontrol.inventory.application.CreateMaterialCommand
 import com.ctfind.productioncontrol.inventory.application.CreateMaterialUseCase
 import com.ctfind.productioncontrol.inventory.application.DeleteMaterialCommand
 import com.ctfind.productioncontrol.inventory.application.DeleteMaterialUseCase
+import com.ctfind.productioncontrol.inventory.application.ConsumeStockCommand
+import com.ctfind.productioncontrol.inventory.application.ConsumeStockUseCase
 import com.ctfind.productioncontrol.inventory.application.InventoryMutationResult
 import com.ctfind.productioncontrol.inventory.application.InventoryQueryUseCase
 import com.ctfind.productioncontrol.inventory.application.MaterialListQuery
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.math.BigDecimal
 import java.util.UUID
 
 @RestController
@@ -35,6 +38,7 @@ class InventoryController(
     private val updateMaterial: UpdateMaterialUseCase,
     private val deleteMaterial: DeleteMaterialUseCase,
     private val receiveStock: ReceiveStockUseCase,
+    private val consumeStock: ConsumeStockUseCase,
 ) {
     @GetMapping
     fun list(
@@ -59,6 +63,18 @@ class InventoryController(
             InventoryMutationResult.Forbidden -> ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(InventoryApiError("forbidden", "Warehouse write access is required"))
             InventoryMutationResult.NotFound -> ResponseEntity.notFound().build()
+            InventoryMutationResult.OrderNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("order_not_found", "Order not found"))
+            InventoryMutationResult.MaterialNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("material_not_found", "Material not found"))
+            InventoryMutationResult.BomLineNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("bom_line_not_found", "BOM line not found"))
+            InventoryMutationResult.OrderLocked -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("order_locked", "Order is locked for inventory changes"))
+            InventoryMutationResult.MaterialNotInBom -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("material_not_in_bom", "Material is not part of order BOM"))
+            is InventoryMutationResult.InsufficientStock -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("insufficient_stock", "Insufficient stock", available = result.available))
             is InventoryMutationResult.ValidationFailed -> ResponseEntity.badRequest()
                 .body(InventoryApiError("validation_failed", result.message, result.field))
             is InventoryMutationResult.Conflict -> ResponseEntity.status(HttpStatus.CONFLICT)
@@ -76,6 +92,18 @@ class InventoryController(
             InventoryMutationResult.Forbidden -> ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(InventoryApiError("forbidden", "Warehouse write access is required"))
             InventoryMutationResult.NotFound -> ResponseEntity.notFound().build()
+            InventoryMutationResult.OrderNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("order_not_found", "Order not found"))
+            InventoryMutationResult.MaterialNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("material_not_found", "Material not found"))
+            InventoryMutationResult.BomLineNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("bom_line_not_found", "BOM line not found"))
+            InventoryMutationResult.OrderLocked -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("order_locked", "Order is locked for inventory changes"))
+            InventoryMutationResult.MaterialNotInBom -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("material_not_in_bom", "Material is not part of order BOM"))
+            is InventoryMutationResult.InsufficientStock -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("insufficient_stock", "Insufficient stock", available = result.available))
             is InventoryMutationResult.ValidationFailed -> ResponseEntity.badRequest()
                 .body(InventoryApiError("validation_failed", result.message, result.field))
             is InventoryMutationResult.Conflict -> ResponseEntity.status(HttpStatus.CONFLICT)
@@ -92,6 +120,18 @@ class InventoryController(
             InventoryMutationResult.Forbidden -> ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(InventoryApiError("forbidden", "Warehouse write access is required"))
             InventoryMutationResult.NotFound -> ResponseEntity.notFound().build()
+            InventoryMutationResult.OrderNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("order_not_found", "Order not found"))
+            InventoryMutationResult.MaterialNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("material_not_found", "Material not found"))
+            InventoryMutationResult.BomLineNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("bom_line_not_found", "BOM line not found"))
+            InventoryMutationResult.OrderLocked -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("order_locked", "Order is locked for inventory changes"))
+            InventoryMutationResult.MaterialNotInBom -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("material_not_in_bom", "Material is not part of order BOM"))
+            is InventoryMutationResult.InsufficientStock -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("insufficient_stock", "Insufficient stock", available = result.available))
             is InventoryMutationResult.ValidationFailed -> ResponseEntity.badRequest()
                 .body(InventoryApiError("validation_failed", result.message, result.field))
             is InventoryMutationResult.Conflict -> ResponseEntity.status(HttpStatus.CONFLICT)
@@ -109,6 +149,57 @@ class InventoryController(
             InventoryMutationResult.Forbidden -> ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(InventoryApiError("forbidden", "Warehouse write access is required"))
             InventoryMutationResult.NotFound -> ResponseEntity.notFound().build()
+            InventoryMutationResult.OrderNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("order_not_found", "Order not found"))
+            InventoryMutationResult.MaterialNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("material_not_found", "Material not found"))
+            InventoryMutationResult.BomLineNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("bom_line_not_found", "BOM line not found"))
+            InventoryMutationResult.OrderLocked -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("order_locked", "Order is locked for inventory changes"))
+            InventoryMutationResult.MaterialNotInBom -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("material_not_in_bom", "Material is not part of order BOM"))
+            is InventoryMutationResult.InsufficientStock -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("insufficient_stock", "Insufficient stock", available = result.available))
+            is InventoryMutationResult.ValidationFailed -> ResponseEntity.badRequest()
+                .body(InventoryApiError("validation_failed", result.message, result.field))
+            is InventoryMutationResult.Conflict -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("conflict", result.message))
+        }
+
+    @PostMapping("/{id}/consume")
+    fun consume(
+        @PathVariable id: UUID,
+        @RequestBody request: ConsumeRequest,
+        @AuthenticationPrincipal jwt: Jwt,
+    ): ResponseEntity<Any> =
+        when (
+            val result = consumeStock.consume(
+                ConsumeStockCommand(
+                    materialId = id,
+                    orderId = request.orderId,
+                    quantity = request.quantity,
+                    comment = request.comment,
+                    actor = jwt.toActor(),
+                ),
+            )
+        ) {
+            is InventoryMutationResult.Success -> ResponseEntity.status(HttpStatus.CREATED).body(result.value.toResponse())
+            InventoryMutationResult.Forbidden -> ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(InventoryApiError("forbidden", "Warehouse write access is required"))
+            InventoryMutationResult.NotFound -> ResponseEntity.notFound().build()
+            InventoryMutationResult.OrderNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("order_not_found", "Order not found"))
+            InventoryMutationResult.MaterialNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("material_not_found", "Material not found"))
+            InventoryMutationResult.BomLineNotFound -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(InventoryApiError("bom_line_not_found", "BOM line not found"))
+            InventoryMutationResult.OrderLocked -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("order_locked", "Order is locked for inventory changes"))
+            InventoryMutationResult.MaterialNotInBom -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("material_not_in_bom", "Material is not part of order BOM"))
+            is InventoryMutationResult.InsufficientStock -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(InventoryApiError("insufficient_stock", "Insufficient stock", available = result.available))
             is InventoryMutationResult.ValidationFailed -> ResponseEntity.badRequest()
                 .body(InventoryApiError("validation_failed", result.message, result.field))
             is InventoryMutationResult.Conflict -> ResponseEntity.status(HttpStatus.CONFLICT)
@@ -146,4 +237,5 @@ data class InventoryApiError(
     val error: String,
     val message: String,
     val field: String? = null,
+    val available: BigDecimal? = null,
 )

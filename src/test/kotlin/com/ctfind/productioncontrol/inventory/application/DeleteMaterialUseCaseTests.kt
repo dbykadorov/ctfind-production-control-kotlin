@@ -14,9 +14,9 @@ import java.util.UUID
 class DeleteMaterialUseCaseTests {
 
     private val materialPort = mockk<MaterialPort>()
-    private val movementPort = mockk<StockMovementPort>()
+    private val requirementPort = mockk<OrderMaterialRequirementPort>()
     private val auditPort = mockk<InventoryAuditPort>()
-    private val useCase = DeleteMaterialUseCase(materialPort, movementPort, auditPort)
+    private val useCase = DeleteMaterialUseCase(materialPort, requirementPort, auditPort)
 
     private fun actor(vararg roles: String) = AuthenticatedInventoryActor(
         userId = UUID.randomUUID(), login = "test", displayName = "Test", roleCodes = roles.toSet(),
@@ -56,6 +56,8 @@ class DeleteMaterialUseCaseTests {
         val cmd = DeleteMaterialCommand(id, actor("WAREHOUSE"))
         every { materialPort.findById(id) } returns material(id)
         every { materialPort.hasMovements(id) } returns false
+        every { requirementPort.existsInActiveOrder(id) } returns false
+        every { requirementPort.deleteByMaterialIdInShippedOrders(id) } returns 0
         every { materialPort.deleteById(id) } returns Unit
         every { auditPort.record(any()) } answers { firstArg() }
 

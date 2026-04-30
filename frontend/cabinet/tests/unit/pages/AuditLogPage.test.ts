@@ -68,4 +68,9 @@ describe('AuditLogPage', () => {
   it('exposes a refresh button', () => {
     expect(SOURCE).toContain('refetch')
   })
+
+  it('supports translated inventory event labels for BOM and consumption', () => {
+    expect(SOURCE).toContain('audit.event.')
+    expect(SOURCE).toContain('eventTypeLabel')
+  })
 })

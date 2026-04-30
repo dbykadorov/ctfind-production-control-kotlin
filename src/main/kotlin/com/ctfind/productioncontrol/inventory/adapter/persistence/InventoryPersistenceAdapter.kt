@@ -3,10 +3,14 @@ package com.ctfind.productioncontrol.inventory.adapter.persistence
 import com.ctfind.productioncontrol.inventory.application.InventoryAuditPort
 import com.ctfind.productioncontrol.inventory.application.MaterialListQuery
 import com.ctfind.productioncontrol.inventory.application.MaterialPort
+import com.ctfind.productioncontrol.inventory.application.OrderMaterialRequirementPort
 import com.ctfind.productioncontrol.inventory.application.StockMovementPort
 import com.ctfind.productioncontrol.inventory.domain.InventoryAuditEvent
 import com.ctfind.productioncontrol.inventory.domain.Material
+import com.ctfind.productioncontrol.inventory.domain.OrderMaterialRequirement
+import com.ctfind.productioncontrol.inventory.domain.MovementType
 import com.ctfind.productioncontrol.inventory.domain.StockMovement
+import com.ctfind.productioncontrol.orders.domain.OrderStatus
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Component
@@ -18,10 +22,12 @@ class InventoryPersistenceAdapter(
     private val materialRepo: MaterialJpaRepository,
     private val movementRepo: StockMovementJpaRepository,
     private val auditRepo: InventoryAuditEventJpaRepository,
-) : MaterialPort, StockMovementPort, InventoryAuditPort {
+    private val requirementRepo: OrderMaterialRequirementJpaRepository,
+) : MaterialPort, StockMovementPort, InventoryAuditPort, OrderMaterialRequirementPort {
 
     // MaterialPort
     override fun findById(id: UUID): Material? = materialRepo.findById(id).orElse(null)?.toDomain()
+    override fun findByIdForUpdate(id: UUID): Material? = materialRepo.findByIdForUpdate(id)?.toDomain()
 
     override fun findAll(query: MaterialListQuery): List<Material> {
         val pageable = PageRequest.of(query.page, query.size, Sort.by("name"))
@@ -60,9 +66,55 @@ class InventoryPersistenceAdapter(
     override fun sumQuantityByMaterialId(materialId: UUID): BigDecimal =
         movementRepo.sumQuantityByMaterialId(materialId)
 
+    override fun sumQuantityByMaterialIdAndType(materialId: UUID, movementType: MovementType): BigDecimal =
+        movementRepo.sumQuantityByMaterialIdAndType(materialId, movementType)
+
+    override fun hasConsumption(orderId: UUID, materialId: UUID): Boolean =
+        movementRepo.existsByOrderIdAndMaterialIdAndMovementType(orderId, materialId, MovementType.CONSUMPTION)
+
+    override fun sumConsumedQuantity(orderId: UUID, materialId: UUID): BigDecimal =
+        movementRepo.sumQuantityByOrderIdAndMaterialIdAndType(orderId, materialId, MovementType.CONSUMPTION)
+
+    override fun sumConsumedByOrder(orderId: UUID): Map<UUID, BigDecimal> =
+        movementRepo.sumQuantityByOrderIdGroupedByMaterialId(orderId, MovementType.CONSUMPTION)
+            .associate { row ->
+                val materialId = row[0] as UUID
+                val quantity = row[1] as BigDecimal
+                materialId to quantity
+            }
+
     // InventoryAuditPort
     override fun record(event: InventoryAuditEvent): InventoryAuditEvent =
         auditRepo.save(event.toEntity()).toDomain()
+
+    // OrderMaterialRequirementPort
+    override fun save(requirement: OrderMaterialRequirement): OrderMaterialRequirement =
+        requirementRepo.save(requirement.toEntity()).toDomain()
+
+    override fun findByLineId(id: UUID): OrderMaterialRequirement? =
+        requirementRepo.findById(id).orElse(null)?.toDomain()
+
+    override fun findByLineIdAndOrderId(id: UUID, orderId: UUID): OrderMaterialRequirement? =
+        requirementRepo.findById(id).orElse(null)
+            ?.takeIf { it.orderId == orderId }
+            ?.toDomain()
+
+    override fun findByOrderIdOrderByCreatedAtDesc(orderId: UUID): List<OrderMaterialRequirement> =
+        requirementRepo.findByOrderIdOrderByCreatedAtDesc(orderId).map { it.toDomain() }
+
+    override fun findByOrderIdAndMaterialId(orderId: UUID, materialId: UUID): OrderMaterialRequirement? =
+        requirementRepo.findByOrderIdAndMaterialId(orderId, materialId)?.toDomain()
+
+    override fun existsByOrderIdAndMaterialId(orderId: UUID, materialId: UUID): Boolean =
+        requirementRepo.existsByOrderIdAndMaterialId(orderId, materialId)
+
+    override fun existsInActiveOrder(materialId: UUID): Boolean =
+        requirementRepo.existsInActiveOrder(materialId, OrderStatus.SHIPPED)
+
+    override fun deleteByMaterialIdInShippedOrders(materialId: UUID): Int =
+        requirementRepo.deleteByMaterialIdInOrdersWithStatus(materialId, OrderStatus.SHIPPED)
+
+    override fun deleteLineById(id: UUID) = requirementRepo.deleteById(id)
 }
 
 // --- Mapping extensions ---
@@ -89,6 +141,7 @@ private fun StockMovementEntity.toDomain() = StockMovement(
     movementType = movementType,
     quantity = quantity,
     comment = comment,
+    orderId = orderId,
     actorUserId = actorUserId,
     actorDisplayName = actorDisplayName,
     createdAt = createdAt,
@@ -100,9 +153,30 @@ private fun StockMovement.toEntity() = StockMovementEntity(
     movementType = movementType,
     quantity = quantity,
     comment = comment,
+    orderId = orderId,
     actorUserId = actorUserId,
     actorDisplayName = actorDisplayName,
     createdAt = createdAt,
+)
+
+private fun OrderMaterialRequirementEntity.toDomain() = OrderMaterialRequirement(
+    id = id,
+    orderId = orderId,
+    materialId = materialId,
+    quantity = quantity,
+    comment = comment,
+    createdAt = createdAt,
+    updatedAt = updatedAt,
+)
+
+private fun OrderMaterialRequirement.toEntity() = OrderMaterialRequirementEntity(
+    id = id,
+    orderId = orderId,
+    materialId = materialId,
+    quantity = quantity,
+    comment = comment,
+    createdAt = createdAt,
+    updatedAt = updatedAt,
 )
 
 private fun InventoryAuditEventEntity.toDomain() = InventoryAuditEvent(

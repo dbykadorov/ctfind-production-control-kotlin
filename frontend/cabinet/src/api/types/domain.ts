@@ -142,6 +142,12 @@ export interface PermissionFlags {
   canUpdateAnyProductionTaskStatus: boolean
   /** Может ли исполнитель работать со своими назначенными задачами. */
   canWorkAssignedProductionTasks: boolean
+  /** Может ли редактировать BOM заказа. */
+  canEditOrderBom: boolean
+  /** Может ли просматривать BOM/расход заказа. */
+  canViewOrderBom: boolean
+  /** Может ли списывать материалы под заказ. */
+  canConsumeStock: boolean
 }
 
 /**

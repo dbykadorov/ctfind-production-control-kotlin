@@ -20,6 +20,8 @@ import { useOrderTransitions } from '@/api/composables/use-workflow'
 import ConflictDialog from '@/components/domain/ConflictDialog.vue'
 import CustomerPicker from '@/components/domain/CustomerPicker.vue'
 import ProductionTaskCreateForm from '@/components/domain/ProductionTaskCreateForm.vue'
+import BomSection from '@/components/domain/orders/BomSection.vue'
+import MaterialUsageSection from '@/components/domain/orders/MaterialUsageSection.vue'
 import OrderItemsTable from '@/components/domain/OrderItemsTable.vue'
 import OrderStatusBadge from '@/components/domain/OrderStatusBadge.vue'
 import OrderTimeline from '@/components/domain/OrderTimeline.vue'
@@ -83,6 +85,7 @@ const isDirty = computed(() => {
 
 const conflictOpen = ref(false)
 const saving = ref(false)
+const orderMaterialsRevision = ref(0)
 
 const formattedModified = computed(() => {
   if (!order.value?.modified)
@@ -138,6 +141,14 @@ async function onTransitionApplied(): Promise<void> {
 
 function back(): void {
   router.push({ name: 'orders.list' })
+}
+
+function onBomChanged(): void {
+  orderMaterialsRevision.value += 1
+}
+
+function onMaterialConsumed(): void {
+  orderMaterialsRevision.value += 1
 }
 </script>
 
@@ -266,6 +277,21 @@ function back(): void {
             Изменён: {{ formattedModified }}
           </p>
         </Card>
+
+        <template v-if="order && permissions.canViewOrderBom">
+          <BomSection
+            :order-id="order.name"
+            :order-shipped="order.status === 'отгружен'"
+            :refresh-key="orderMaterialsRevision"
+            @changed="onBomChanged"
+          />
+          <MaterialUsageSection
+            :order-id="order.name"
+            :order-shipped="order.status === 'отгружен'"
+            :refresh-key="orderMaterialsRevision"
+            @consumed="onMaterialConsumed"
+          />
+        </template>
 
         <Card class="space-y-3 p-5">
           <div class="flex items-center justify-between">

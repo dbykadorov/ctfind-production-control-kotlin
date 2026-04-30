@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import MaterialCreateDialog from '@/components/domain/warehouse/MaterialCreateDialog.vue'
 import StockReceiptDialog from '@/components/domain/warehouse/StockReceiptDialog.vue'
+import StockConsumeDialog from '@/components/domain/warehouse/StockConsumeDialog.vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -27,6 +28,7 @@ const {
 const showCreateDialog = ref(false)
 const receiptMaterialId = ref<string | null>(null)
 const showReceiptDialog = ref(false)
+const showConsumeDialog = ref(false)
 
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
 watch(search, () => {
@@ -50,6 +52,10 @@ function onCreated() {
 function onReceived() {
   refetch()
 }
+
+function onConsumedFromWarehouse() {
+  refetch()
+}
 </script>
 
 <template>
@@ -58,12 +64,21 @@ function onReceived() {
       <h1 class="text-2xl font-semibold text-ink-strong">
         {{ t('warehouse.title') }}
       </h1>
-      <Button
-        v-if="permissions.isWarehouse || permissions.isAdmin"
-        @click="showCreateDialog = true"
-      >
-        {{ t('warehouse.addMaterial') }}
-      </Button>
+      <div class="flex items-center gap-2">
+        <Button
+          v-if="permissions.canConsumeStock"
+          variant="secondary"
+          @click="showConsumeDialog = true"
+        >
+          {{ t('consume.button') }}
+        </Button>
+        <Button
+          v-if="permissions.isWarehouse || permissions.isAdmin"
+          @click="showCreateDialog = true"
+        >
+          {{ t('warehouse.addMaterial') }}
+        </Button>
+      </div>
     </div>
 
     <Input
@@ -138,6 +153,11 @@ function onReceived() {
       v-model:open="showReceiptDialog"
       :material-id="receiptMaterialId"
       @received="onReceived"
+    />
+
+    <StockConsumeDialog
+      v-model:open="showConsumeDialog"
+      @consumed="onConsumedFromWarehouse"
     />
   </div>
 </template>

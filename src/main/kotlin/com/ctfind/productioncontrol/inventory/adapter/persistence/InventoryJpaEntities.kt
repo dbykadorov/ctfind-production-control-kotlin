@@ -51,6 +51,9 @@ class StockMovementEntity(
     @Column
     var comment: String? = null,
 
+    @Column(name = "order_id")
+    var orderId: UUID? = null,
+
     @Column(name = "actor_user_id", nullable = false)
     var actorUserId: UUID = UUID.randomUUID(),
 
@@ -59,6 +62,31 @@ class StockMovementEntity(
 
     @Column(name = "created_at", nullable = false)
     var createdAt: Instant = Instant.EPOCH,
+)
+
+@Entity
+@Table(name = "order_material_requirement")
+class OrderMaterialRequirementEntity(
+    @Id
+    var id: UUID = UUID.randomUUID(),
+
+    @Column(name = "order_id", nullable = false)
+    var orderId: UUID = UUID.randomUUID(),
+
+    @Column(name = "material_id", nullable = false)
+    var materialId: UUID = UUID.randomUUID(),
+
+    @Column(nullable = false, precision = 19, scale = 4)
+    var quantity: BigDecimal = BigDecimal.ZERO,
+
+    @Column
+    var comment: String? = null,
+
+    @Column(name = "created_at", nullable = false)
+    var createdAt: Instant = Instant.EPOCH,
+
+    @Column(name = "updated_at", nullable = false)
+    var updatedAt: Instant = Instant.EPOCH,
 )
 
 @Entity

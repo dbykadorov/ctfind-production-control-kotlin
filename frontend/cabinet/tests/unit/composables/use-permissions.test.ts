@@ -24,6 +24,8 @@ describe('buildPermissions', () => {
     expect(p.canManageCustomers).toBe(true)
     expect(p.hasOrderCorrection).toBe(false)
     expect(p.canSeeCabinetWorkArea).toBe(true)
+    expect(p.canEditOrderBom).toBe(true)
+    expect(p.canConsumeStock).toBe(false)
   })
 
   it('shop Supervisor — read-only, видит рабочую область, не управляет', () => {
@@ -42,6 +44,8 @@ describe('buildPermissions', () => {
     expect(p.canSeeCabinetWorkArea).toBe(true)
     expect(p.canWorkAssignedProductionTasks).toBe(true)
     expect(p.canViewAllProductionTasks).toBe(false)
+    expect(p.canViewOrderBom).toBe(true)
+    expect(p.canConsumeStock).toBe(true)
   })
 
   it('recognizes backend production role codes', () => {

@@ -41,7 +41,7 @@ const items = computed<NavItem[]>(() => [
     to: '/cabinet/orders',
     icon: ClipboardList,
     key: 'nav.orders',
-    visible: permissions.value.canManageOrders || permissions.value.isShopSupervisor,
+    visible: permissions.value.canViewOrderBom,
   },
   {
     to: '/cabinet/production-tasks',
