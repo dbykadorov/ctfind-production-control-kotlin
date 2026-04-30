@@ -81,5 +81,5 @@ Active feature work lives under `specs/<NNN>-<slug>/` (current: `013-user-admin-
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/013-user-admin-management/plan.md`
+`specs/014-edit-users/plan.md`
 <!-- SPECKIT END -->
