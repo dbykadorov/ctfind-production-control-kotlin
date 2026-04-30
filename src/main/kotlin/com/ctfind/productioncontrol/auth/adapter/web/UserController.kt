@@ -1,5 +1,11 @@
 package com.ctfind.productioncontrol.auth.adapter.web
 
+import com.ctfind.productioncontrol.auth.application.CreateUserCommand
+import com.ctfind.productioncontrol.auth.application.CreateUserResult
+import com.ctfind.productioncontrol.auth.application.CreateUserUseCase
+import com.ctfind.productioncontrol.auth.application.RoleCatalogResult
+import com.ctfind.productioncontrol.auth.application.RoleCatalogUseCase
+import com.ctfind.productioncontrol.auth.application.UserSummary
 import com.ctfind.productioncontrol.auth.application.UserQueryResult
 import com.ctfind.productioncontrol.auth.application.UserQueryUseCase
 import org.springframework.http.HttpStatus
@@ -7,14 +13,19 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import jakarta.validation.Valid
 
 @RestController
 @RequestMapping("/api/users")
 class UserController(
-    private val useCase: UserQueryUseCase,
+    private val queryUseCase: UserQueryUseCase,
+    private val createUserUseCase: CreateUserUseCase,
+    private val roleCatalogUseCase: RoleCatalogUseCase,
 ) {
 
     @GetMapping
@@ -25,13 +36,55 @@ class UserController(
     ): ResponseEntity<*> {
         val roleCodes = jwtRoles(jwt)
         val cappedLimit = limit.coerceIn(1, 100)
-        return when (val result = useCase.search(search, cappedLimit, roleCodes)) {
+        return when (val result = queryUseCase.search(search, cappedLimit, roleCodes)) {
             is UserQueryResult.Success -> ResponseEntity.ok(
-                result.users.map {
-                    UserSummaryResponse(id = it.id, login = it.login, displayName = it.displayName)
-                },
+                result.users.map { it.toResponse() },
             )
             is UserQueryResult.Forbidden -> ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(AuthErrorResponse("forbidden", "Access denied"))
+        }
+    }
+
+    @PostMapping
+    fun create(
+        @Valid @RequestBody request: CreateUserRequest,
+        @AuthenticationPrincipal jwt: Jwt,
+    ): ResponseEntity<*> {
+        val roleCodes = jwtRoles(jwt)
+        val result = createUserUseCase.create(
+            CreateUserCommand(
+                login = request.login,
+                displayName = request.displayName,
+                initialPassword = request.initialPassword,
+                roleCodes = request.roleCodes,
+                actorRoleCodes = roleCodes,
+                actorLogin = jwt.subject,
+                actorUserId = jwtUserId(jwt),
+            ),
+        )
+        return when (result) {
+            is CreateUserResult.Success -> ResponseEntity.status(HttpStatus.CREATED).body(result.user.toResponse())
+            is CreateUserResult.Forbidden -> ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(AuthErrorResponse("forbidden", "Access denied"))
+            is CreateUserResult.DuplicateLogin -> ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(AuthErrorResponse("duplicate_login", "User login already exists"))
+            is CreateUserResult.InvalidRoles -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(AuthErrorResponse("invalid_roles", "Unknown role codes: ${result.roleCodes.sorted().joinToString(",")}"))
+            is CreateUserResult.ValidationError -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(AuthErrorResponse("validation_error", result.message))
+        }
+    }
+
+    @GetMapping("/roles")
+    fun listRoles(
+        @AuthenticationPrincipal jwt: Jwt,
+    ): ResponseEntity<*> {
+        val roleCodes = jwtRoles(jwt)
+        return when (val result = roleCatalogUseCase.list(roleCodes)) {
+            is RoleCatalogResult.Success -> ResponseEntity.ok(
+                result.roles.map { RoleSummaryResponse(code = it.code, name = it.name) },
+            )
+            is RoleCatalogResult.Forbidden -> ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(AuthErrorResponse("forbidden", "Access denied"))
         }
     }
@@ -43,4 +96,17 @@ class UserController(
             else -> emptySet()
         }
     }
+
+    private fun jwtUserId(jwt: Jwt): java.util.UUID? =
+        (jwt.claims["userId"] as? String)?.let {
+            runCatching { java.util.UUID.fromString(it) }.getOrNull()
+        }
+
+    private fun UserSummary.toResponse(): UserSummaryResponse =
+        UserSummaryResponse(
+            id = id,
+            login = login,
+            displayName = displayName,
+            roles = roles.map { RoleSummaryResponse(code = it.code, name = it.name) },
+        )
 }

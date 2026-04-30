@@ -41,6 +41,7 @@ private fun unusedAuthenticateUserUseCase(): AuthenticateUserUseCase =
 		userAccounts = object : UserAccountPort {
 			override fun findByLogin(login: String): UserAccount? = null
 			override fun save(user: UserAccount): UserAccount = user
+			override fun existsEnabledWithRole(roleCode: String): Boolean = false
 		},
 		passwordEncoder = BCryptPasswordEncoder(),
 		tokenIssuer = object : TokenIssuer {

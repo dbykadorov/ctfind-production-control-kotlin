@@ -38,6 +38,7 @@ class AuthControllerLoginTests {
 			userAccounts = object : UserAccountPort {
 				override fun findByLogin(login: String): UserAccount? = user.takeIf { login == "admin" }
 				override fun save(user: UserAccount): UserAccount = user
+				override fun existsEnabledWithRole(roleCode: String): Boolean = false
 			},
 			passwordEncoder = passwordEncoder,
 			tokenIssuer = object : TokenIssuer {

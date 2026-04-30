@@ -1,0 +1,24 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { describe, expect, it } from 'vitest'
+
+const SOURCE = readFileSync(
+  join(process.cwd(), 'src/router/index.ts'),
+  'utf8',
+)
+
+describe('router users route', () => {
+  it('defines /cabinet/users route', () => {
+    expect(SOURCE).toContain("path: 'users'")
+    expect(SOURCE).toContain("name: 'users.list'")
+  })
+
+  it('loads UsersPage component', () => {
+    expect(SOURCE).toContain("import('@/pages/admin/UsersPage.vue')")
+  })
+
+  it('protects users route with ADMIN role', () => {
+    expect(SOURCE).toContain("roles: ['ADMIN']")
+    expect(SOURCE).toContain("title: 'meta.title.users.list'")
+  })
+})

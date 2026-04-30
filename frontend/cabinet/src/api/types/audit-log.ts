@@ -34,4 +34,5 @@ export interface UserSummaryResponse {
   id: string
   login: string
   displayName: string
+  roles?: Array<{ code: string, name: string }>
 }

@@ -23,10 +23,10 @@ class LocalAdminSeedUseCaseTests {
 
 	@Test
 	fun `seed creates local admin once and does not overwrite existing password`() {
-		val users = InMemoryUsers()
-		val roles = InMemoryRoles()
-		val assignments = InMemoryAssignments(users, roles)
-		val audits = InMemoryAudit()
+		val users = LocalSeedInMemoryUsers()
+		val roles = LocalSeedInMemoryRoles()
+		val assignments = LocalSeedInMemoryAssignments(users, roles)
+		val audits = LocalSeedInMemoryAudit()
 		val useCase = LocalAdminSeedUseCase(users, roles, assignments, audits, passwordEncoder, clock)
 
 		val first = useCase.seedLocalAdmin()
@@ -53,7 +53,7 @@ class LocalAdminSeedUseCaseTests {
 	}
 }
 
-private class InMemoryUsers : UserAccountPort {
+private class LocalSeedInMemoryUsers : UserAccountPort {
 	private val users = linkedMapOf<String, UserAccount>()
 	var savedCount = 0
 
@@ -64,9 +64,12 @@ private class InMemoryUsers : UserAccountPort {
 		users[user.normalizedLogin] = user
 		return user
 	}
+
+	override fun existsEnabledWithRole(roleCode: String): Boolean =
+		users.values.any { it.enabled && roleCode.uppercase() in it.roleCodes }
 }
 
-private class InMemoryRoles : RolePort {
+private class LocalSeedInMemoryRoles : RolePort {
 	private val roles = linkedMapOf<String, Role>()
 
 	override fun findByCode(code: String): Role? = roles[code.uppercase()]
@@ -75,11 +78,14 @@ private class InMemoryRoles : RolePort {
 		roles[role.code] = role
 		return role
 	}
+
+	override fun findAllByCodes(codes: Set<String>): List<Role> =
+		codes.mapNotNull { roles[it.uppercase()] }
 }
 
-private class InMemoryAssignments(
-	private val users: InMemoryUsers,
-	private val roles: InMemoryRoles,
+private class LocalSeedInMemoryAssignments(
+	private val users: LocalSeedInMemoryUsers,
+	private val roles: LocalSeedInMemoryRoles,
 ) : UserRolePort {
 	override fun assignRole(login: String, roleCode: String) {
 		val user = users.findByLogin(login) ?: return
@@ -89,7 +95,7 @@ private class InMemoryAssignments(
 	}
 }
 
-private class InMemoryAudit : AuthenticationAuditPort {
+private class LocalSeedInMemoryAudit : AuthenticationAuditPort {
 	val events = mutableListOf<AuthenticationAuditEvent>()
 
 	override fun record(event: AuthenticationAuditEvent): AuthenticationAuditEvent {

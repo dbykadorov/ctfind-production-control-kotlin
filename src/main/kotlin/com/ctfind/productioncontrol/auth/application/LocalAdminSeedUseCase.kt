@@ -27,6 +27,8 @@ class LocalAdminSeedUseCase(
 	private val passwordEncoder: PasswordEncoder,
 	private val clock: Clock,
 ) {
+	// Local-only fallback bootstrap. Production-like environments use EnsureSuperadminUseCase
+	// through SuperadminSeedRunner(!local) and do not rely on hardcoded credentials.
 
 	@Transactional
 	fun seedLocalAdmin(): LocalAdminSeedResult {

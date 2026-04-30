@@ -14,6 +14,7 @@ export interface Messages {
     productionTasks: string
     productionTasksBoard: string
     customers: string
+    users: string
     warehouse: string
     audit: string
     notifications: string
@@ -142,6 +143,33 @@ export interface Messages {
     create: { title: string, submit: string }
     fields: { name: string, contact_person: string, phone: string, email: string, status: string }
   }
+  users: {
+    title: string
+    subtitle: string
+    search: string
+    create: string
+    empty: string
+    forbidden: string
+    fields: {
+      login: string
+      displayName: string
+      initialPassword: string
+      roles: string
+    }
+    actions: {
+      submit: string
+      cancel: string
+      refresh: string
+    }
+    messages: {
+      created: string
+      duplicate: string
+      validation: string
+      invalidRoles: string
+      forbidden: string
+      generic: string
+    }
+  }
   auth: {
     login: { title: string, submit: string, username: string, password: string, failed: string }
     logout: { confirm: string }
@@ -210,6 +238,9 @@ export interface Messages {
         detail: string
       }
       customers: {
+        list: string
+      }
+      users: {
         list: string
       }
       productionTasks: {

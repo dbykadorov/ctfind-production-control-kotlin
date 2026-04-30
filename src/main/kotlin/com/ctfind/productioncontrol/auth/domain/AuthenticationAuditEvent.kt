@@ -8,6 +8,8 @@ enum class AuthenticationAuditEventType {
 	LOGIN_FAILURE,
 	LOGOUT,
 	LOCAL_SEED,
+	SUPERADMIN_BOOTSTRAP,
+	USER_CREATED,
 }
 
 enum class AuthenticationAuditOutcome {

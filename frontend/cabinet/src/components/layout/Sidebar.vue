@@ -62,6 +62,12 @@ const items = computed<NavItem[]>(() => [
     visible: permissions.value.canManageCustomers,
   },
   {
+    to: '/cabinet/users',
+    icon: Users,
+    key: 'nav.users',
+    visible: permissions.value.isAdmin,
+  },
+  {
     to: '/cabinet/notifications',
     icon: Bell,
     key: 'nav.notifications',

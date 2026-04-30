@@ -50,6 +50,9 @@ export const en = {
       customers: {
         list: 'Customers',
       },
+      users: {
+        list: 'Users',
+      },
       productionTasks: {
         list: 'Production tasks',
         detail: 'Production task',
@@ -74,6 +77,34 @@ export const en = {
   },
   nav: {
     audit: 'Audit Log',
+    users: 'Users',
+  },
+  users: {
+    title: 'Users',
+    subtitle: 'Manage users and access roles',
+    search: 'Search by login or name…',
+    create: 'Create user',
+    empty: 'No users found',
+    forbidden: 'No access to users section',
+    fields: {
+      login: 'Login',
+      displayName: 'Display name',
+      initialPassword: 'Initial password',
+      roles: 'Roles',
+    },
+    actions: {
+      submit: 'Create',
+      cancel: 'Cancel',
+      refresh: 'Refresh',
+    },
+    messages: {
+      created: 'User created',
+      duplicate: 'User login already exists',
+      validation: 'Please check form fields',
+      invalidRoles: 'Selected roles are not allowed',
+      forbidden: 'You do not have permission',
+      generic: 'Operation failed',
+    },
   },
   layout: {
     back: 'Back',

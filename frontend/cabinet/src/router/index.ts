@@ -92,6 +92,15 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'users',
+        name: 'users.list',
+        component: () => import('@/pages/admin/UsersPage.vue'),
+        meta: {
+          roles: ['ADMIN'],
+          title: 'meta.title.users.list',
+        },
+      },
+      {
         path: 'production-tasks',
         name: 'production-tasks.list',
         component: () => import('@/pages/production/ProductionTasksListPage.vue'),

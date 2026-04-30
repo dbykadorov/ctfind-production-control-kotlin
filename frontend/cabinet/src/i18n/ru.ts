@@ -11,6 +11,7 @@ export const ru: Messages = {
     productionTasks: 'Производство',
     productionTasksBoard: 'Доска',
     customers: 'Клиенты',
+    users: 'Пользователи',
     warehouse: 'Склад',
     logout: 'Выйти',
     audit: 'Журнал действий',
@@ -98,6 +99,33 @@ export const ru: Messages = {
     list: { title: 'Клиенты', empty: 'Клиенты не найдены', new: 'Новый клиент', search: 'Поиск по названию или контакту…' },
     create: { title: 'Новый клиент', submit: 'Создать клиента' },
     fields: { name: 'Наименование', contact_person: 'Контакт', phone: 'Телефон', email: 'Email', status: 'Статус' },
+  },
+  users: {
+    title: 'Пользователи',
+    subtitle: 'Управление пользователями и ролями доступа',
+    search: 'Поиск по логину или имени…',
+    create: 'Создать пользователя',
+    empty: 'Пользователи не найдены',
+    forbidden: 'Нет доступа к разделу пользователей',
+    fields: {
+      login: 'Логин',
+      displayName: 'Отображаемое имя',
+      initialPassword: 'Начальный пароль',
+      roles: 'Роли',
+    },
+    actions: {
+      submit: 'Создать',
+      cancel: 'Отмена',
+      refresh: 'Обновить',
+    },
+    messages: {
+      created: 'Пользователь создан',
+      duplicate: 'Пользователь с таким логином уже существует',
+      validation: 'Проверьте заполнение полей формы',
+      invalidRoles: 'Выбраны недопустимые роли',
+      forbidden: 'Недостаточно прав для выполнения операции',
+      generic: 'Не удалось выполнить операцию',
+    },
   },
   ui: {
     appearance: 'Внешний вид',
@@ -221,6 +249,9 @@ export const ru: Messages = {
       },
       customers: {
         list: 'Клиенты',
+      },
+      users: {
+        list: 'Пользователи',
       },
       productionTasks: {
         list: 'Производственные задачи',

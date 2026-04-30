@@ -12,12 +12,14 @@ class UserQueryUseCaseTests {
 		id = UUID.fromString("10000000-0000-0000-0000-000000000001"),
 		login = "ivanov",
 		displayName = "Иванов Иван",
+		roles = listOf(RoleSummary(code = "ORDER_MANAGER", name = "Order Manager")),
 	)
 
 	private val sampleUser2 = UserSummary(
 		id = UUID.fromString("10000000-0000-0000-0000-000000000002"),
 		login = "petrov",
 		displayName = "Петров Пётр",
+		roles = emptyList(),
 	)
 
 	@Test
@@ -29,6 +31,7 @@ class UserQueryUseCaseTests {
 		assertEquals(2, success.users.size)
 		assertEquals(sampleUser1.id, success.users[0].id)
 		assertEquals(sampleUser2.id, success.users[1].id)
+		assertEquals("ORDER_MANAGER", success.users[0].roles.first().code)
 	}
 
 	@Test
