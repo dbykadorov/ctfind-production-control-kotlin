@@ -46,6 +46,10 @@ out/
 .env.*
 !.env.example
 docker-data/
+.gradle-cache/
+.gradle-user/
+.kotlin-user/
+.build-user/
 *.log
 *.log.*
 tmp/

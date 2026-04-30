@@ -23,3 +23,15 @@ export interface CreateUserFormState {
   initialPassword: string
   roleCodes: string[]
 }
+
+export interface UpdateUserRequest {
+  displayName: string
+  roleCodes: string[]
+}
+
+export interface UpdateUserFormState {
+  id: string
+  login: string
+  displayName: string
+  roleCodes: string[]
+}

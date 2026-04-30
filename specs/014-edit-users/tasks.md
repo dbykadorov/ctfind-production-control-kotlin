@@ -17,10 +17,10 @@
 
 **Purpose**: Prepare shared frontend contract and localization scaffolding for user editing.
 
-- [ ] T001 Add edit-user request/form TypeScript contracts in `frontend/cabinet/src/api/types/user-management.ts`
-- [ ] T002 [P] Add edit-flow localization keys in `frontend/cabinet/src/i18n/keys.ts`
-- [ ] T003 [P] Add Russian edit-flow localization messages in `frontend/cabinet/src/i18n/ru.ts`
-- [ ] T004 [P] Add English edit-flow localization messages in `frontend/cabinet/src/i18n/en.ts`
+- [X] T001 Add edit-user request/form TypeScript contracts in `frontend/cabinet/src/api/types/user-management.ts`
+- [X] T002 [P] Add edit-flow localization keys in `frontend/cabinet/src/i18n/keys.ts`
+- [X] T003 [P] Add Russian edit-flow localization messages in `frontend/cabinet/src/i18n/ru.ts`
+- [X] T004 [P] Add English edit-flow localization messages in `frontend/cabinet/src/i18n/en.ts`
 
 ---
 
@@ -30,12 +30,12 @@
 
 **CRITICAL**: No user story work should begin until this phase is complete.
 
-- [ ] T005 Add `USER_UPDATED` audit event type in `src/main/kotlin/com/ctfind/productioncontrol/auth/domain/AuthenticationAuditEvent.kt`
-- [ ] T006 Extend update-related application ports/models in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticationPorts.kt`
-- [ ] T007 Add JPA repository methods for target-user lookup and active-admin counting in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/AuthJpaRepositories.kt`
-- [ ] T008 Implement persistence adapter support for update flow and role-set replacement in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/AuthPersistenceAdapters.kt`
-- [ ] T009 Add update-user request/response DTOs and web mapping helpers in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthDtos.kt`
-- [ ] T010 Add `updateUser(userId, payload)` API client and typed error parsing in `frontend/cabinet/src/api/composables/use-users.ts`
+- [X] T005 Add `USER_UPDATED` audit event type in `src/main/kotlin/com/ctfind/productioncontrol/auth/domain/AuthenticationAuditEvent.kt`
+- [X] T006 Extend update-related application ports/models in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/AuthenticationPorts.kt`
+- [X] T007 Add JPA repository methods for target-user lookup and active-admin counting in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/AuthJpaRepositories.kt`
+- [X] T008 Implement persistence adapter support for update flow and role-set replacement in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/persistence/AuthPersistenceAdapters.kt`
+- [X] T009 Add update-user request/response DTOs and web mapping helpers in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/AuthDtos.kt`
+- [X] T010 Add `updateUser(userId, payload)` API client and typed error parsing in `frontend/cabinet/src/api/composables/use-users.ts`
 
 **Checkpoint**: Foundation ready - user stories can now proceed.
 
@@ -49,16 +49,16 @@
 
 ### Tests for User Story 1
 
-- [ ] T011 [P] [US1] Add `UpdateUserUseCase` happy-path tests for display-name and role updates in `src/test/kotlin/com/ctfind/productioncontrol/auth/application/UpdateUserUseCaseTests.kt`
-- [ ] T012 [P] [US1] Add `PUT /api/users/{userId}` success contract tests in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/web/UserControllerTests.kt`
-- [ ] T013 [P] [US1] Add users-page edit-success UI test coverage in `frontend/cabinet/tests/unit/pages/UsersPage.test.ts`
+- [X] T011 [P] [US1] Add `UpdateUserUseCase` happy-path tests for display-name and role updates in `src/test/kotlin/com/ctfind/productioncontrol/auth/application/UpdateUserUseCaseTests.kt`
+- [X] T012 [P] [US1] Add `PUT /api/users/{userId}` success contract tests in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/web/UserControllerTests.kt`
+- [X] T013 [P] [US1] Add users-page edit-success UI test coverage in `frontend/cabinet/tests/unit/pages/UsersPage.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T014 [US1] Implement `UpdateUserUseCase` success path and role normalization in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/UpdateUserUseCase.kt`
-- [ ] T015 [US1] Add `PUT /api/users/{userId}` success handler in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/UserController.kt`
-- [ ] T016 [US1] Add edit action and prefilled edit form state in `frontend/cabinet/src/pages/admin/UsersPage.vue`
-- [ ] T017 [US1] Wire edit submit to `updateUser` API and list refresh in `frontend/cabinet/src/pages/admin/UsersPage.vue`
+- [X] T014 [US1] Implement `UpdateUserUseCase` success path and role normalization in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/UpdateUserUseCase.kt`
+- [X] T015 [US1] Add `PUT /api/users/{userId}` success handler in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/UserController.kt`
+- [X] T016 [US1] Add edit action and prefilled edit form state in `frontend/cabinet/src/pages/admin/UsersPage.vue`
+- [X] T017 [US1] Wire edit submit to `updateUser` API and list refresh in `frontend/cabinet/src/pages/admin/UsersPage.vue`
 
 **Checkpoint**: US1 is independently functional and demo-ready.
 
@@ -72,15 +72,15 @@
 
 ### Tests for User Story 2
 
-- [ ] T018 [P] [US2] Add unauthorized and non-admin `PUT /api/users/{userId}` tests in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/web/UserControllerSecurityTests.kt`
-- [ ] T019 [P] [US2] Add `UpdateUserUseCase` guard tests for forbidden actor and last-admin protection in `src/test/kotlin/com/ctfind/productioncontrol/auth/application/UpdateUserUseCaseTests.kt`
-- [ ] T020 [P] [US2] Add non-admin route/edit-visibility regression tests in `frontend/cabinet/tests/unit/router/router-users.test.ts`
+- [X] T018 [P] [US2] Add unauthorized and non-admin `PUT /api/users/{userId}` tests in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/web/UserControllerSecurityTests.kt`
+- [X] T019 [P] [US2] Add `UpdateUserUseCase` guard tests for forbidden actor and last-admin protection in `src/test/kotlin/com/ctfind/productioncontrol/auth/application/UpdateUserUseCaseTests.kt`
+- [X] T020 [P] [US2] Add non-admin route/edit-visibility regression tests in `frontend/cabinet/tests/unit/router/router-users.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T021 [US2] Enforce admin authorization and last-active-admin guard in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/UpdateUserUseCase.kt`
-- [ ] T022 [US2] Map forbidden and last-admin conflict outcomes in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/UserController.kt`
-- [ ] T023 [US2] Hide edit controls for non-admin sessions in `frontend/cabinet/src/pages/admin/UsersPage.vue`
+- [X] T021 [US2] Enforce admin authorization and last-active-admin guard in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/UpdateUserUseCase.kt`
+- [X] T022 [US2] Map forbidden and last-admin conflict outcomes in `src/main/kotlin/com/ctfind/productioncontrol/auth/adapter/web/UserController.kt`
+- [X] T023 [US2] Hide edit controls for non-admin sessions in `frontend/cabinet/src/pages/admin/UsersPage.vue`
 
 **Checkpoint**: US2 is independently verifiable through backend security checks and non-admin UI access behavior.
 
@@ -94,16 +94,16 @@
 
 ### Tests for User Story 3
 
-- [ ] T024 [P] [US3] Add update-audit and validation/not-found outcome tests in `src/test/kotlin/com/ctfind/productioncontrol/auth/application/UpdateUserUseCaseTests.kt`
-- [ ] T025 [P] [US3] Add `PUT /api/users/{userId}` error mapping tests (`400/404/409`) in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/web/UserControllerTests.kt`
-- [ ] T026 [P] [US3] Add users-page edit error/success feedback tests in `frontend/cabinet/tests/unit/pages/UsersPage.test.ts`
+- [X] T024 [P] [US3] Add update-audit and validation/not-found outcome tests in `src/test/kotlin/com/ctfind/productioncontrol/auth/application/UpdateUserUseCaseTests.kt`
+- [X] T025 [P] [US3] Add `PUT /api/users/{userId}` error mapping tests (`400/404/409`) in `src/test/kotlin/com/ctfind/productioncontrol/auth/adapter/web/UserControllerTests.kt`
+- [X] T026 [P] [US3] Add users-page edit error/success feedback tests in `frontend/cabinet/tests/unit/pages/UsersPage.test.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T027 [US3] Record `USER_UPDATED` audit details with role delta and actor/target metadata in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/UpdateUserUseCase.kt`
-- [ ] T028 [US3] Implement update error-code parsing for form feedback in `frontend/cabinet/src/api/composables/use-users.ts`
-- [ ] T029 [US3] Add localized success/error banners for edit outcomes in `frontend/cabinet/src/pages/admin/UsersPage.vue`
-- [ ] T030 [US3] Handle `user_not_found` refresh-and-retry UX in `frontend/cabinet/src/pages/admin/UsersPage.vue`
+- [X] T027 [US3] Record `USER_UPDATED` audit details with role delta and actor/target metadata in `src/main/kotlin/com/ctfind/productioncontrol/auth/application/UpdateUserUseCase.kt`
+- [X] T028 [US3] Implement update error-code parsing for form feedback in `frontend/cabinet/src/api/composables/use-users.ts`
+- [X] T029 [US3] Add localized success/error banners for edit outcomes in `frontend/cabinet/src/pages/admin/UsersPage.vue`
+- [X] T030 [US3] Handle `user_not_found` refresh-and-retry UX in `frontend/cabinet/src/pages/admin/UsersPage.vue`
 
 **Checkpoint**: US3 is independently testable with both positive and negative edit outcomes.
 
@@ -113,13 +113,13 @@
 
 **Purpose**: Final documentation and verification across all user stories.
 
-- [ ] T031 [P] Update administrator edit-user guidance in `docs/PHASE_01_MANUAL.md`
-- [ ] T032 [P] Align Phase 01 scope notes with edit capability in `docs/PHASE_01.md`
-- [ ] T033 Run backend verification for auth changes in `src/test/kotlin/com/ctfind/productioncontrol/auth` with `make backend-test`
-- [ ] T034 Run frontend verification for users-page changes in `frontend/cabinet/tests/unit` with `make frontend-test && make frontend-build`
-- [ ] T035 Run full integration verification for repository roots `src` and `frontend/cabinet` with `make test && make build`
-- [ ] T036 Execute smoke scenarios from `specs/014-edit-users/quickstart.md` against `/cabinet/users` and `PUT /api/users/{userId}`
-- [ ] T037 Review changed update flow files in `src/main/kotlin/com/ctfind/productioncontrol/auth` and `frontend/cabinet/src/pages/admin/UsersPage.vue` for sensitive-data leakage
+- [X] T031 [P] Update administrator edit-user guidance in `docs/PHASE_01_MANUAL.md`
+- [X] T032 [P] Align Phase 01 scope notes with edit capability in `docs/PHASE_01.md`
+- [X] T033 Run backend verification for auth changes in `src/test/kotlin/com/ctfind/productioncontrol/auth` with `make backend-test`
+- [X] T034 Run frontend verification for users-page changes in `frontend/cabinet/tests/unit` with `make frontend-test && make frontend-build`
+- [X] T035 Run full integration verification for repository roots `src` and `frontend/cabinet` with `make test && make build`
+- [X] T036 Execute smoke scenarios from `specs/014-edit-users/quickstart.md` against `/cabinet/users` and `PUT /api/users/{userId}`
+- [X] T037 Review changed update flow files in `src/main/kotlin/com/ctfind/productioncontrol/auth` and `frontend/cabinet/src/pages/admin/UsersPage.vue` for sensitive-data leakage
 
 ---
 

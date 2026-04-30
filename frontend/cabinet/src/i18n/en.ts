@@ -96,6 +96,16 @@ export const en = {
       submit: 'Create',
       cancel: 'Cancel',
       refresh: 'Refresh',
+      edit: 'Edit',
+    },
+    edit: {
+      title: 'Edit user',
+      subtitle: 'Update display name and assigned roles',
+      success: 'User updated',
+      errors: {
+        userNotFound: 'User was not found. Refresh the list and try again.',
+        lastAdminGuard: 'Cannot remove ADMIN role from the last active administrator',
+      },
     },
     messages: {
       created: 'User created',

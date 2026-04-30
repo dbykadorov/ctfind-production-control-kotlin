@@ -160,6 +160,16 @@ export interface Messages {
       submit: string
       cancel: string
       refresh: string
+      edit: string
+    }
+    edit: {
+      title: string
+      subtitle: string
+      success: string
+      errors: {
+        userNotFound: string
+        lastAdminGuard: string
+      }
     }
     messages: {
       created: string

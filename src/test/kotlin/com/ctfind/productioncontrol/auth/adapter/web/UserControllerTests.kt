@@ -10,6 +10,9 @@ import com.ctfind.productioncontrol.auth.application.RoleCatalogUseCase
 import com.ctfind.productioncontrol.auth.application.RolePort
 import com.ctfind.productioncontrol.auth.application.UserAccountPort
 import com.ctfind.productioncontrol.auth.application.RoleSummary
+import com.ctfind.productioncontrol.auth.application.UpdateUserCommand
+import com.ctfind.productioncontrol.auth.application.UpdateUserResult
+import com.ctfind.productioncontrol.auth.application.UpdateUserUseCase
 import com.ctfind.productioncontrol.auth.application.UserQueryPort
 import com.ctfind.productioncontrol.auth.application.UserQueryResult
 import com.ctfind.productioncontrol.auth.application.UserQueryUseCase
@@ -54,6 +57,7 @@ class UserControllerTests {
 			},
 			createUserUseCase = stubCreateUserUseCase { _ -> CreateUserResult.Forbidden },
 			roleCatalogUseCase = stubRoleCatalogUseCase { RoleCatalogResult.Forbidden },
+			updateUserUseCase = stubUpdateUserUseCase { UpdateUserResult.Forbidden },
 		)
 
 		val response = controller.list(
@@ -82,6 +86,7 @@ class UserControllerTests {
 			},
 			createUserUseCase = stubCreateUserUseCase { _ -> CreateUserResult.Forbidden },
 			roleCatalogUseCase = stubRoleCatalogUseCase { RoleCatalogResult.Forbidden },
+			updateUserUseCase = stubUpdateUserUseCase { UpdateUserResult.Forbidden },
 		)
 
 		val response = controller.list(
@@ -106,6 +111,7 @@ class UserControllerTests {
 			},
 			createUserUseCase = stubCreateUserUseCase { _ -> CreateUserResult.Forbidden },
 			roleCatalogUseCase = stubRoleCatalogUseCase { RoleCatalogResult.Forbidden },
+			updateUserUseCase = stubUpdateUserUseCase { UpdateUserResult.Forbidden },
 		)
 
 		controller.list(
@@ -128,6 +134,7 @@ class UserControllerTests {
 			},
 			createUserUseCase = stubCreateUserUseCase { _ -> CreateUserResult.Forbidden },
 			roleCatalogUseCase = stubRoleCatalogUseCase { RoleCatalogResult.Forbidden },
+			updateUserUseCase = stubUpdateUserUseCase { UpdateUserResult.Forbidden },
 		)
 
 		// Default limit
@@ -163,6 +170,7 @@ class UserControllerTests {
 			},
 			createUserUseCase = stubCreateUserUseCase { _ -> CreateUserResult.Forbidden },
 			roleCatalogUseCase = stubRoleCatalogUseCase { RoleCatalogResult.Forbidden },
+			updateUserUseCase = stubUpdateUserUseCase { UpdateUserResult.Forbidden },
 		)
 
 		val response = controller.list(
@@ -200,6 +208,7 @@ class UserControllerTests {
 				CreateUserResult.Success(created)
 			},
 			roleCatalogUseCase = stubRoleCatalogUseCase { RoleCatalogResult.Forbidden },
+			updateUserUseCase = stubUpdateUserUseCase { UpdateUserResult.Forbidden },
 		)
 
 		val response = controller.create(
@@ -225,6 +234,7 @@ class UserControllerTests {
 			queryUseCase = stubUserQueryUseCase { _, _, _ -> UserQueryResult.Success(emptyList()) },
 			createUserUseCase = stubCreateUserUseCase { _ -> CreateUserResult.DuplicateLogin("warehouse.demo") },
 			roleCatalogUseCase = stubRoleCatalogUseCase { RoleCatalogResult.Forbidden },
+			updateUserUseCase = stubUpdateUserUseCase { UpdateUserResult.Forbidden },
 		)
 
 		val response = controller.create(
@@ -255,6 +265,7 @@ class UserControllerTests {
 					),
 				)
 			},
+			updateUserUseCase = stubUpdateUserUseCase { UpdateUserResult.Forbidden },
 		)
 
 		val response = controller.listRoles(jwtFor(actorId, setOf(ADMIN_ROLE_CODE)))
@@ -264,6 +275,122 @@ class UserControllerTests {
 		assertEquals(2, body.size)
 		assertEquals("ADMIN", body[0].code)
 		assertEquals("WAREHOUSE", body[1].code)
+	}
+
+	@Test
+	fun `PUT users returns 200 when update succeeds`() {
+		var capturedCommand: UpdateUserCommand? = null
+		val updated = UserSummary(
+			id = sampleUser1.id,
+			login = sampleUser1.login,
+			displayName = "Иванов Иван Обновлён",
+			roles = listOf(RoleSummary(code = "WAREHOUSE", name = "Warehouse")),
+		)
+		val controller = UserController(
+			queryUseCase = stubUserQueryUseCase { _, _, _ -> UserQueryResult.Success(emptyList()) },
+			createUserUseCase = stubCreateUserUseCase { _ -> CreateUserResult.Forbidden },
+			roleCatalogUseCase = stubRoleCatalogUseCase { RoleCatalogResult.Forbidden },
+			updateUserUseCase = stubUpdateUserUseCase { cmd ->
+				capturedCommand = cmd
+				UpdateUserResult.Success(updated)
+			},
+		)
+
+		val response = controller.update(
+			userId = sampleUser1.id,
+			request = UpdateUserRequest(
+				displayName = "Иванов Иван Обновлён",
+				roleCodes = setOf("WAREHOUSE"),
+			),
+			jwt = jwtFor(actorId, setOf(ADMIN_ROLE_CODE)),
+		)
+
+		assertEquals(HttpStatus.OK, response.statusCode)
+		val body = assertIs<UserSummaryResponse>(response.body)
+		assertEquals("Иванов Иван Обновлён", body.displayName)
+		assertEquals("WAREHOUSE", body.roles.single().code)
+		assertEquals(sampleUser1.id, capturedCommand?.userId)
+		assertEquals("Иванов Иван Обновлён", capturedCommand?.displayName)
+	}
+
+	@Test
+	fun `PUT users returns 404 when target user is missing`() {
+		val controller = UserController(
+			queryUseCase = stubUserQueryUseCase { _, _, _ -> UserQueryResult.Success(emptyList()) },
+			createUserUseCase = stubCreateUserUseCase { _ -> CreateUserResult.Forbidden },
+			roleCatalogUseCase = stubRoleCatalogUseCase { RoleCatalogResult.Forbidden },
+			updateUserUseCase = stubUpdateUserUseCase { UpdateUserResult.NotFound },
+		)
+
+		val response = controller.update(
+			userId = sampleUser1.id,
+			request = UpdateUserRequest(
+				displayName = "Updated",
+				roleCodes = setOf("WAREHOUSE"),
+			),
+			jwt = jwtFor(actorId, setOf(ADMIN_ROLE_CODE)),
+		)
+
+		assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+		assertEquals("user_not_found", assertIs<AuthErrorResponse>(response.body).code)
+	}
+
+	@Test
+	fun `PUT users maps validation invalid_roles and last_admin_guard errors`() {
+		val roleErrorController = UserController(
+			queryUseCase = stubUserQueryUseCase { _, _, _ -> UserQueryResult.Success(emptyList()) },
+			createUserUseCase = stubCreateUserUseCase { _ -> CreateUserResult.Forbidden },
+			roleCatalogUseCase = stubRoleCatalogUseCase { RoleCatalogResult.Forbidden },
+			updateUserUseCase = stubUpdateUserUseCase { UpdateUserResult.InvalidRoles(setOf("UNKNOWN")) },
+		)
+
+		val invalidRolesResponse = roleErrorController.update(
+			userId = sampleUser1.id,
+			request = UpdateUserRequest(
+				displayName = "Updated",
+				roleCodes = setOf("UNKNOWN"),
+			),
+			jwt = jwtFor(actorId, setOf(ADMIN_ROLE_CODE)),
+		)
+		assertEquals(HttpStatus.BAD_REQUEST, invalidRolesResponse.statusCode)
+		assertEquals("invalid_roles", assertIs<AuthErrorResponse>(invalidRolesResponse.body).code)
+
+		val guardController = UserController(
+			queryUseCase = stubUserQueryUseCase { _, _, _ -> UserQueryResult.Success(emptyList()) },
+			createUserUseCase = stubCreateUserUseCase { _ -> CreateUserResult.Forbidden },
+			roleCatalogUseCase = stubRoleCatalogUseCase { RoleCatalogResult.Forbidden },
+			updateUserUseCase = stubUpdateUserUseCase { UpdateUserResult.LastAdminRoleRemovalForbidden },
+		)
+
+		val guardResponse = guardController.update(
+			userId = sampleUser1.id,
+			request = UpdateUserRequest(
+				displayName = "Updated",
+				roleCodes = setOf("WAREHOUSE"),
+			),
+			jwt = jwtFor(actorId, setOf(ADMIN_ROLE_CODE)),
+		)
+		assertEquals(HttpStatus.CONFLICT, guardResponse.statusCode)
+		assertEquals("last_admin_role_removal_forbidden", assertIs<AuthErrorResponse>(guardResponse.body).code)
+
+		val validationController = UserController(
+			queryUseCase = stubUserQueryUseCase { _, _, _ -> UserQueryResult.Success(emptyList()) },
+			createUserUseCase = stubCreateUserUseCase { _ -> CreateUserResult.Forbidden },
+			roleCatalogUseCase = stubRoleCatalogUseCase { RoleCatalogResult.Forbidden },
+			updateUserUseCase = stubUpdateUserUseCase {
+				UpdateUserResult.ValidationError("displayName is required", "displayName")
+			},
+		)
+		val validationResponse = validationController.update(
+			userId = sampleUser1.id,
+			request = UpdateUserRequest(
+				displayName = "",
+				roleCodes = setOf("WAREHOUSE"),
+			),
+			jwt = jwtFor(actorId, setOf(ADMIN_ROLE_CODE)),
+		)
+		assertEquals(HttpStatus.BAD_REQUEST, validationResponse.statusCode)
+		assertEquals("validation_error", assertIs<AuthErrorResponse>(validationResponse.body).code)
 	}
 
 	// ---- Test support ----
@@ -308,6 +435,17 @@ class UserControllerTests {
 		catalog = dummyRoleCatalog(),
 	) {
 		override fun list(roleCodes: Set<String>): RoleCatalogResult = exec()
+	}
+
+	private fun stubUpdateUserUseCase(
+		exec: (UpdateUserCommand) -> UpdateUserResult,
+	): UpdateUserUseCase = object : UpdateUserUseCase(
+		users = dummyUsers(),
+		roles = dummyRoles(),
+		audit = dummyAudit(),
+		clock = Clock.systemUTC(),
+	) {
+		override fun update(command: UpdateUserCommand): UpdateUserResult = exec(command)
 	}
 
 	private fun dummyUsers(): UserAccountPort = object : UserAccountPort {

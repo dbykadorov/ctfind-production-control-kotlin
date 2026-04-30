@@ -23,6 +23,12 @@ describe('UsersPage', () => {
     expect(SOURCE).toContain('submitCreate')
   })
 
+  it('updates user through API composable', () => {
+    expect(SOURCE).toContain('updateUser')
+    expect(SOURCE).toContain('submitEdit')
+    expect(SOURCE).toContain('parseUpdateUserError')
+  })
+
   it('renders required create fields: login, displayName, initialPassword, roles', () => {
     expect(SOURCE).toContain('users.fields.login')
     expect(SOURCE).toContain('users.fields.displayName')
@@ -39,5 +45,14 @@ describe('UsersPage', () => {
     expect(SOURCE).toContain('users.messages.duplicate')
     expect(SOURCE).toContain('users.messages.validation')
     expect(SOURCE).toContain('users.messages.forbidden')
+  })
+
+  it('renders edit action and edit modal messages', () => {
+    expect(SOURCE).toContain('users.actions.edit')
+    expect(SOURCE).toContain('users.edit.title')
+    expect(SOURCE).toContain('users.edit.subtitle')
+    expect(SOURCE).toContain('users.edit.success')
+    expect(SOURCE).toContain('users.edit.errors.userNotFound')
+    expect(SOURCE).toContain('users.edit.errors.lastAdminGuard')
   })
 })

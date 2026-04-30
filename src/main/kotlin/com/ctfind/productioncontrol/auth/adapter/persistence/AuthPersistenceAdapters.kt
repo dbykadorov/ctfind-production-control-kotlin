@@ -27,8 +27,13 @@ class JpaUserAccountAdapter(
 	override fun findByLogin(login: String): UserAccount? =
 		userRepository.findByLogin(normalizeLogin(login))?.toDomain()
 
+	override fun findById(id: java.util.UUID): UserAccount? =
+		userRepository.findById(id).orElse(null)?.toDomain()
+
 	override fun save(user: UserAccount): UserAccount {
-		val entity = userRepository.findByLogin(user.normalizedLogin) ?: UserAccountEntity(id = user.id)
+		val entity = userRepository.findById(user.id).orElse(null)
+			?: userRepository.findByLogin(user.normalizedLogin)
+			?: UserAccountEntity(id = user.id)
 		entity.login = user.normalizedLogin
 		entity.displayName = user.displayName
 		entity.passwordHash = user.passwordHash
@@ -43,6 +48,9 @@ class JpaUserAccountAdapter(
 
 	override fun existsEnabledWithRole(roleCode: String): Boolean =
 		userRepository.existsByEnabledTrueAndRoles_Code(roleCode.uppercase())
+
+	override fun countEnabledWithRole(roleCode: String): Long =
+		userRepository.countByEnabledTrueAndRoles_Code(roleCode.uppercase())
 
 	@Transactional
 	override fun assignRole(login: String, roleCode: String) {

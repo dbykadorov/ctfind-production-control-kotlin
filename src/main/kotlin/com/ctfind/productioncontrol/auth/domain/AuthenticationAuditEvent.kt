@@ -10,6 +10,7 @@ enum class AuthenticationAuditEventType {
 	LOCAL_SEED,
 	SUPERADMIN_BOOTSTRAP,
 	USER_CREATED,
+	USER_UPDATED,
 }
 
 enum class AuthenticationAuditOutcome {

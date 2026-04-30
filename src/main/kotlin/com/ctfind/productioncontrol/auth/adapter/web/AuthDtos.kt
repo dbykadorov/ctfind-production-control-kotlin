@@ -55,6 +55,13 @@ data class CreateUserRequest(
 	val roleCodes: Set<String>,
 )
 
+data class UpdateUserRequest(
+	@field:NotBlank
+	val displayName: String,
+	@field:NotEmpty
+	val roleCodes: Set<String>,
+)
+
 fun AuthenticationSuccess.toLoginResponse(): LoginResponse =
 	LoginResponse(
 		tokenType = token.tokenType,

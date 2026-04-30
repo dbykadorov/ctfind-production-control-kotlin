@@ -9,6 +9,9 @@ import com.ctfind.productioncontrol.auth.application.RoleCatalogResult
 import com.ctfind.productioncontrol.auth.application.RoleCatalogUseCase
 import com.ctfind.productioncontrol.auth.application.RolePort
 import com.ctfind.productioncontrol.auth.application.RoleSummary
+import com.ctfind.productioncontrol.auth.application.UpdateUserCommand
+import com.ctfind.productioncontrol.auth.application.UpdateUserResult
+import com.ctfind.productioncontrol.auth.application.UpdateUserUseCase
 import com.ctfind.productioncontrol.auth.application.UserAccountPort
 import com.ctfind.productioncontrol.auth.application.UserQueryPort
 import com.ctfind.productioncontrol.auth.application.UserQueryResult
@@ -36,6 +39,7 @@ class UserControllerSecurityTests {
 			query = UserQueryResult.Forbidden,
 			create = CreateUserResult.Forbidden,
 			roles = RoleCatalogResult.Forbidden,
+			update = UpdateUserResult.Forbidden,
 		)
 
 		val response = controller.list(
@@ -54,6 +58,7 @@ class UserControllerSecurityTests {
 			query = UserQueryResult.Forbidden,
 			create = CreateUserResult.Forbidden,
 			roles = RoleCatalogResult.Forbidden,
+			update = UpdateUserResult.Forbidden,
 		)
 
 		val response = controller.create(
@@ -76,9 +81,32 @@ class UserControllerSecurityTests {
 			query = UserQueryResult.Forbidden,
 			create = CreateUserResult.Forbidden,
 			roles = RoleCatalogResult.Forbidden,
+			update = UpdateUserResult.Forbidden,
 		)
 
 		val response = controller.listRoles(jwtFor(actorId, setOf("PRODUCTION_EXECUTOR")))
+
+		assertEquals(HttpStatus.FORBIDDEN, response.statusCode)
+		assertEquals("forbidden", assertIs<AuthErrorResponse>(response.body).code)
+	}
+
+	@Test
+	fun `PUT users returns forbidden payload for non-admin roles`() {
+		val controller = controller(
+			query = UserQueryResult.Forbidden,
+			create = CreateUserResult.Forbidden,
+			roles = RoleCatalogResult.Forbidden,
+			update = UpdateUserResult.Forbidden,
+		)
+
+		val response = controller.update(
+			userId = UUID.fromString("10000000-0000-0000-0000-000000000001"),
+			request = UpdateUserRequest(
+				displayName = "Updated",
+				roleCodes = setOf("WAREHOUSE"),
+			),
+			jwt = jwtFor(actorId, setOf("PRODUCTION_EXECUTOR")),
+		)
 
 		assertEquals(HttpStatus.FORBIDDEN, response.statusCode)
 		assertEquals("forbidden", assertIs<AuthErrorResponse>(response.body).code)
@@ -88,6 +116,7 @@ class UserControllerSecurityTests {
 		query: UserQueryResult,
 		create: CreateUserResult,
 		roles: RoleCatalogResult,
+		update: UpdateUserResult,
 	): UserController = UserController(
 		queryUseCase = object : UserQueryUseCase(
 			port = object : UserQueryPort {
@@ -109,6 +138,14 @@ class UserControllerSecurityTests {
 			catalog = dummyRoleCatalog(),
 		) {
 			override fun list(roleCodes: Set<String>): RoleCatalogResult = roles
+		},
+		updateUserUseCase = object : UpdateUserUseCase(
+			users = dummyUsers(),
+			roles = dummyRoles(),
+			audit = dummyAudit(),
+			clock = Clock.systemUTC(),
+		) {
+			override fun update(command: UpdateUserCommand): UpdateUserResult = update
 		},
 	)
 

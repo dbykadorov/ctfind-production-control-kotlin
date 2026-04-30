@@ -21,4 +21,9 @@ describe('router users route', () => {
     expect(SOURCE).toContain("roles: ['ADMIN']")
     expect(SOURCE).toContain("title: 'meta.title.users.list'")
   })
+
+  it('keeps forbidden route available for unauthorized redirects', () => {
+    expect(SOURCE).toContain("name: 'forbidden'")
+    expect(SOURCE).toContain("path: '403'")
+  })
 })

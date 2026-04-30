@@ -6,6 +6,7 @@ import java.util.UUID
 interface UserAccountJpaRepository : JpaRepository<UserAccountEntity, UUID> {
 	fun findByLogin(login: String): UserAccountEntity?
 	fun existsByEnabledTrueAndRoles_Code(code: String): Boolean
+	fun countByEnabledTrueAndRoles_Code(code: String): Long
 }
 
 interface RoleJpaRepository : JpaRepository<RoleEntity, UUID> {

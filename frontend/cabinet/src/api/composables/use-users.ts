@@ -1,5 +1,11 @@
 import type { ApiError } from '@/api/types/domain'
-import type { AdminUserSummaryResponse, CreateUserRequest, RoleSummaryResponse } from '@/api/types/user-management'
+import type { AxiosError } from 'axios'
+import type {
+  AdminUserSummaryResponse,
+  CreateUserRequest,
+  RoleSummaryResponse,
+  UpdateUserRequest,
+} from '@/api/types/user-management'
 import { httpClient } from '@/api/api-client'
 import { toApiError } from '@/utils/errors'
 import { onScopeDispose, ref, type Ref } from 'vue'
@@ -35,6 +41,62 @@ export async function fetchRoleCatalog(): Promise<RoleSummaryResponse[]> {
 export async function createUser(payload: CreateUserRequest): Promise<AdminUserSummaryResponse> {
   const response = await httpClient.post<AdminUserSummaryResponse>('/api/users', payload)
   return response.data
+}
+
+export async function updateUser(userId: string, payload: UpdateUserRequest): Promise<AdminUserSummaryResponse> {
+  const response = await httpClient.put<AdminUserSummaryResponse>(`/api/users/${userId}`, payload)
+  return response.data
+}
+
+export type UpdateUserErrorCode =
+  | 'validation_error'
+  | 'invalid_roles'
+  | 'user_not_found'
+  | 'last_admin_role_removal_forbidden'
+  | 'forbidden'
+  | 'unauthorized'
+  | 'unknown'
+
+export interface UpdateUserApiError extends ApiError {
+  code: UpdateUserErrorCode
+}
+
+interface BackendErrorBody {
+  code?: string
+}
+
+export function parseUpdateUserError(error: unknown): UpdateUserApiError {
+  const apiError = toApiError(error)
+  const backendCode = ((error as AxiosError<BackendErrorBody>)?.response?.data?.code ?? '').toLowerCase()
+
+  const code: UpdateUserErrorCode = (() => {
+    switch (backendCode) {
+      case 'validation_error':
+        return 'validation_error'
+      case 'invalid_roles':
+        return 'invalid_roles'
+      case 'user_not_found':
+        return 'user_not_found'
+      case 'last_admin_role_removal_forbidden':
+        return 'last_admin_role_removal_forbidden'
+      case 'forbidden':
+        return 'forbidden'
+      case 'unauthorized':
+        return 'unauthorized'
+      default:
+        break
+    }
+    if (apiError.status === 403 || apiError.kind === 'permission')
+      return 'forbidden'
+    if (apiError.status === 401 || apiError.kind === 'session-expired')
+      return 'unauthorized'
+    return 'unknown'
+  })()
+
+  return {
+    ...apiError,
+    code,
+  }
 }
 
 export function useUsersList(): UseUsersListResult {

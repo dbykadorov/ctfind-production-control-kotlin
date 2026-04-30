@@ -6,8 +6,11 @@ import com.ctfind.productioncontrol.auth.domain.UserAccount
 
 interface UserAccountPort {
 	fun findByLogin(login: String): UserAccount?
+	fun findById(id: java.util.UUID): UserAccount? = null
 	fun save(user: UserAccount): UserAccount
 	fun existsEnabledWithRole(roleCode: String): Boolean
+	fun countEnabledWithRole(roleCode: String): Long =
+		if (existsEnabledWithRole(roleCode)) 1 else 0
 }
 
 interface RolePort {
