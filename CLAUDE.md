@@ -76,10 +76,10 @@ Frontend changes for production-task UI must stay inside `frontend/cabinet`; the
 
 ## Spec-driven workflow
 
-Active feature work lives under `specs/<NNN>-<slug>/` (current: `013-user-admin-management`). When behavior or contracts change, update the relevant `specs/.../{spec,plan,tasks}.md` alongside code — `AGENTS.md` requires this.
+Active feature work lives under `specs/<NNN>-<slug>/` (current: `015-pam-dark-theme-sync`). When behavior or contracts change, update the relevant `specs/.../{spec,plan,tasks}.md` alongside code — `AGENTS.md` requires this.
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/014-edit-users/plan.md`
+`specs/015-pam-dark-theme-sync/plan.md`
 <!-- SPECKIT END -->
