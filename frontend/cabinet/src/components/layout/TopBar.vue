@@ -15,8 +15,8 @@ import { ChevronDown, LogOut } from 'lucide-vue-next'
 import { computed, onBeforeUnmount, onMounted, ref, useSlots } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import BackButton from '@/components/layout/BackButton.vue'
 import NotificationBell from '@/components/domain/notifications/NotificationBell.vue'
+import BackButton from '@/components/layout/BackButton.vue'
 import SidebarPresetPicker from '@/components/ui/SidebarPresetPicker.vue'
 import ThemeSwitcher from '@/components/ui/ThemeSwitcher.vue'
 import { useAuthStore } from '@/stores/auth'
@@ -100,7 +100,10 @@ async function logout(): Promise<void> {
       <slot name="brand" />
       <BackButton v-if="showBackButton" />
       <slot name="title">
-        <h1 v-if="titleText" class="cabinet-topbar__title truncate text-lg font-semibold text-ink-strong">
+        <h1
+          v-if="titleText"
+          class="cabinet-topbar__title truncate text-lg font-semibold text-ink-strong"
+        >
           {{ titleText }}
         </h1>
       </slot>
@@ -116,10 +119,12 @@ async function logout(): Promise<void> {
         :aria-haspopup="true"
         @click="toggleMenu"
       >
-        <span class="flex size-8 items-center justify-center rounded-full bg-brand-500 text-xs font-medium text-white">
-          {{ (auth.user || '?').slice(0, 1).toUpperCase() }}
+        <span
+          class="flex size-8 items-center justify-center rounded-full bg-brand-500 text-xs font-medium text-ink-inverse"
+        >
+          {{ (auth.user || "?").slice(0, 1).toUpperCase() }}
         </span>
-        <span class="hidden sm:inline">{{ auth.user || '—' }}</span>
+        <span class="hidden sm:inline">{{ auth.user || "—" }}</span>
         <ChevronDown class="size-4 text-ink-muted" />
       </button>
 
@@ -129,8 +134,10 @@ async function logout(): Promise<void> {
         role="menu"
       >
         <section class="mb-3 flex flex-col gap-3 border-b border-border pb-3">
-          <p class="text-xs font-medium uppercase tracking-wider text-ink-muted">
-            {{ t('ui.appearance') }}
+          <p
+            class="text-xs font-medium uppercase tracking-wider text-ink-muted"
+          >
+            {{ t("ui.appearance") }}
           </p>
           <ThemeSwitcher />
           <SidebarPresetPicker />
@@ -143,7 +150,7 @@ async function logout(): Promise<void> {
           @click="logout"
         >
           <LogOut class="size-4 text-ink-muted" />
-          {{ t('nav.logout') }}
+          {{ t("nav.logout") }}
         </button>
       </div>
     </div>

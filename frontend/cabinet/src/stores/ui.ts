@@ -16,6 +16,7 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 
 const STORAGE_KEY = 'ctfind.cabinet.ui.v1'
+const THEME_SWITCHING_CLASS = 'theme-switching'
 /**
  * v2 (010-cabinet-layout-rework, post-MVP): меняем дефолтный sidebar preset с
  * 'ocean' на 'none' (solid var(--bg-app), сливается с body — соответствует PAM-эталону).
@@ -37,10 +38,23 @@ export type CabinetTheme = 'dark' | 'light'
  * Sidebar по умолчанию сливался с body (FR-002). Существующие пользователи с
  * сохранённым значением 'ocean'/'sunset'/etc. сохраняют свой выбор (override).
  */
-export type CabinetSidebarPreset = 'none' | 'ocean' | 'sunset' | 'forest' | 'twilight' | 'graphite'
+export type CabinetSidebarPreset =
+  | 'none'
+  | 'ocean'
+  | 'sunset'
+  | 'forest'
+  | 'twilight'
+  | 'graphite'
 
 const VALID_THEMES: readonly CabinetTheme[] = ['dark', 'light'] as const
-const VALID_PRESETS: readonly CabinetSidebarPreset[] = ['none', 'ocean', 'sunset', 'forest', 'twilight', 'graphite'] as const
+const VALID_PRESETS: readonly CabinetSidebarPreset[] = [
+  'none',
+  'ocean',
+  'sunset',
+  'forest',
+  'twilight',
+  'graphite',
+] as const
 
 interface PersistedThemeState {
   theme: CabinetTheme
@@ -58,8 +72,12 @@ function parseTheme(raw: string | null): PersistedThemeState | null {
   try {
     const parsed = JSON.parse(raw) as Partial<PersistedThemeState>
     return {
-      theme: VALID_THEMES.includes(parsed.theme as CabinetTheme) ? (parsed.theme as CabinetTheme) : 'dark',
-      sidebarPreset: VALID_PRESETS.includes(parsed.sidebarPreset as CabinetSidebarPreset)
+      theme: VALID_THEMES.includes(parsed.theme as CabinetTheme)
+        ? (parsed.theme as CabinetTheme)
+        : 'dark',
+      sidebarPreset: VALID_PRESETS.includes(
+        parsed.sidebarPreset as CabinetSidebarPreset,
+      )
         ? (parsed.sidebarPreset as CabinetSidebarPreset)
         : 'none',
     }
@@ -85,14 +103,17 @@ function migrateLegacyV1(): PersistedThemeState | null {
   try {
     window.localStorage.removeItem(LEGACY_THEME_STORAGE_KEY_V1)
   }
-  catch { /* storage недоступен — переживём */ }
+  catch {
+    /* storage недоступен — переживём */
+  }
   if (!legacy)
     return null
   // ocean был старым дефолтом → перебиваем на новый дефолт 'none'.
   // Остальные пресеты — осознанный выбор пользователя, сохраняем.
   const migrated: PersistedThemeState = {
     theme: legacy.theme,
-    sidebarPreset: legacy.sidebarPreset === 'ocean' ? 'none' : legacy.sidebarPreset,
+    sidebarPreset:
+      legacy.sidebarPreset === 'ocean' ? 'none' : legacy.sidebarPreset,
   }
   return migrated
 }
@@ -100,7 +121,10 @@ function migrateLegacyV1(): PersistedThemeState | null {
 function loadThemeFromStorage(): PersistedThemeState {
   // 010 §R-008 (post-MVP): default = { dark, none } — sidebar сливается с body
   // (PAM-style единый блок).
-  const defaults: PersistedThemeState = { theme: 'dark', sidebarPreset: 'none' }
+  const defaults: PersistedThemeState = {
+    theme: 'dark',
+    sidebarPreset: 'none',
+  }
   if (typeof window === 'undefined')
     return defaults
   // 1. Сначала пробуем v2 (актуальный ключ).
@@ -130,6 +154,33 @@ function saveThemeToStorage(state: PersistedThemeState): void {
   }
 }
 
+/**
+ * 015 (dark-theme-sync): во время смены темы временно отключаем цветовые
+ * transition'ы, чтобы избежать "мигания" промежуточных состояний.
+ * CSS-правила класса см. в `styles/globals.css` (`.theme-switching`).
+ */
+function suppressThemeTransitionsForOneTick(): void {
+  if (typeof document === 'undefined')
+    return
+  const root = document.documentElement
+  root.classList.add(THEME_SWITCHING_CLASS)
+  const clear = () => root.classList.remove(THEME_SWITCHING_CLASS)
+
+  if (typeof window === 'undefined') {
+    clear()
+    return
+  }
+
+  if (typeof window.requestAnimationFrame === 'function') {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(clear)
+    })
+    return
+  }
+
+  window.setTimeout(clear, 0)
+}
+
 interface PersistedUiState {
   sidebarCollapsed: boolean
   lastOrdersFilters: OrderFilters | null
@@ -138,12 +189,21 @@ interface PersistedUiState {
 
 function loadFromStorage(): PersistedUiState {
   if (typeof window === 'undefined') {
-    return { sidebarCollapsed: false, lastOrdersFilters: null, unsupportedViewportDismissed: false }
+    return {
+      sidebarCollapsed: false,
+      lastOrdersFilters: null,
+      unsupportedViewportDismissed: false,
+    }
   }
   try {
     const raw = window.sessionStorage.getItem(STORAGE_KEY)
-    if (!raw)
-      return { sidebarCollapsed: false, lastOrdersFilters: null, unsupportedViewportDismissed: false }
+    if (!raw) {
+      return {
+        sidebarCollapsed: false,
+        lastOrdersFilters: null,
+        unsupportedViewportDismissed: false,
+      }
+    }
     const parsed = JSON.parse(raw) as Partial<PersistedUiState>
     return {
       sidebarCollapsed: !!parsed.sidebarCollapsed,
@@ -152,7 +212,11 @@ function loadFromStorage(): PersistedUiState {
     }
   }
   catch {
-    return { sidebarCollapsed: false, lastOrdersFilters: null, unsupportedViewportDismissed: false }
+    return {
+      sidebarCollapsed: false,
+      lastOrdersFilters: null,
+      unsupportedViewportDismissed: false,
+    }
   }
 }
 
@@ -173,7 +237,9 @@ export const useUiStore = defineStore('ui', () => {
 
   const sidebarCollapsed = ref(initial.sidebarCollapsed)
   const lastOrdersFilters = ref<OrderFilters | null>(initial.lastOrdersFilters)
-  const unsupportedViewportDismissed = ref(initial.unsupportedViewportDismissed)
+  const unsupportedViewportDismissed = ref(
+    initial.unsupportedViewportDismissed,
+  )
   const theme = ref<CabinetTheme>(initialTheme.theme)
   const sidebarPreset = ref<CabinetSidebarPreset>(initialTheme.sidebarPreset)
 
@@ -190,12 +256,12 @@ export const useUiStore = defineStore('ui', () => {
   )
 
   // Тема и пресет — отдельный watcher на отдельный storage-ключ (localStorage).
-  watch(
-    [theme, sidebarPreset],
-    () => {
-      saveThemeToStorage({ theme: theme.value, sidebarPreset: sidebarPreset.value })
-    },
-  )
+  watch([theme, sidebarPreset], () => {
+    saveThemeToStorage({
+      theme: theme.value,
+      sidebarPreset: sidebarPreset.value,
+    })
+  })
 
   function toggleSidebar(): void {
     sidebarCollapsed.value = !sidebarCollapsed.value
@@ -212,6 +278,9 @@ export const useUiStore = defineStore('ui', () => {
   function setTheme(next: CabinetTheme): void {
     if (!VALID_THEMES.includes(next))
       return
+    if (theme.value === next)
+      return
+    suppressThemeTransitionsForOneTick()
     theme.value = next
   }
 
@@ -240,6 +309,7 @@ export const uiStoreInternals = {
   THEME_STORAGE_KEY,
   /** v1-ключ — экспортируется для unit-тестов миграции; не использовать в проде. */
   LEGACY_THEME_STORAGE_KEY_V1,
+  THEME_SWITCHING_CLASS,
   VALID_THEMES,
   VALID_PRESETS,
   loadThemeFromStorage,

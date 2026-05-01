@@ -105,7 +105,7 @@ async function submit(): Promise<void> {
 
 <template>
   <form class="space-y-4" @submit.prevent="submit()">
-    <div v-if="items.length === 0" class="text-sm text-slate-500">
+    <div v-if="items.length === 0" class="text-sm text-ink-muted">
       В заказе нет позиций — добавьте состав заказа перед созданием производственных задач.
     </div>
     <template v-else>
@@ -114,7 +114,7 @@ async function submit(): Promise<void> {
         <select
           id="pt-line"
           v-model="orderItemId"
-          class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm"
+          class="flex h-10 w-full rounded-md border border-border bg-surface px-3 text-sm text-ink-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
         >
           <option
             v-for="(it, i) in items"

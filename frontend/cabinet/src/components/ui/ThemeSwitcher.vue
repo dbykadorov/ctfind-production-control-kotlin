@@ -35,7 +35,7 @@ function onChange(value: CabinetTheme): void {
         :class="[
           'flex flex-1 cursor-pointer items-center gap-2 rounded border px-3 py-2 text-sm transition-colors',
           theme === opt.value
-            ? 'border-brand-500 bg-brand-50 text-ink-strong'
+            ? 'border-brand-500 bg-brand-500/15 text-ink-strong'
             : 'border-border bg-surface text-ink-muted hover:border-brand-500/50',
         ]"
       >

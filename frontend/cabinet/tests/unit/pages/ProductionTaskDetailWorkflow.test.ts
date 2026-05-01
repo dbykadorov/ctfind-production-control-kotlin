@@ -14,12 +14,12 @@ const SOURCE = readFileSync(
   'utf8',
 )
 
-describe('ProductionTaskDetailPage workflow buttons (US4 T066)', () => {
+describe('productionTaskDetailPage workflow buttons (US4 T066)', () => {
   it('renders Start, Complete, Block, and Unblock buttons gated by allowedActions', () => {
-    expect(SOURCE).toContain("data.allowedActions.includes('START')")
-    expect(SOURCE).toContain("data.allowedActions.includes('COMPLETE')")
-    expect(SOURCE).toContain("data.allowedActions.includes('BLOCK')")
-    expect(SOURCE).toContain("data.allowedActions.includes('UNBLOCK')")
+    expect(SOURCE).toContain('data.allowedActions.includes(\'START\')')
+    expect(SOURCE).toContain('data.allowedActions.includes(\'COMPLETE\')')
+    expect(SOURCE).toContain('data.allowedActions.includes(\'BLOCK\')')
+    expect(SOURCE).toContain('data.allowedActions.includes(\'UNBLOCK\')')
   })
 
   it('shows an empty-state message when there are no allowed actions', () => {
@@ -35,7 +35,7 @@ describe('ProductionTaskDetailPage workflow buttons (US4 T066)', () => {
 
   it('sends the block reason via postProductionTaskStatus with toStatus BLOCKED', () => {
     expect(SOURCE).toContain('postProductionTaskStatus')
-    expect(SOURCE).toContain("toStatus: 'BLOCKED'")
+    expect(SOURCE).toMatch(/toStatus:\s*(['"])BLOCKED\1/)
     expect(SOURCE).toContain('reason: r')
   })
 
@@ -56,7 +56,7 @@ describe('ProductionTaskDetailPage workflow buttons (US4 T066)', () => {
     )
     expect(listSource).toContain('blockedOnly')
     expect(listSource).toContain('activeOnly')
-    expect(listSource).toContain("'BLOCKED'")
-    expect(listSource).toContain("'COMPLETED'")
+    expect(listSource).toContain('\'BLOCKED\'')
+    expect(listSource).toContain('\'COMPLETED\'')
   })
 })

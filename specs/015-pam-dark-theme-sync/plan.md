@@ -5,7 +5,7 @@
 
 ## Summary
 
-Выровнять тёмную тему Vue 3 кабинета CTfind с семантической моделью эталона PAM User Console: обновить CSS design tokens (`tokens.css`), при необходимости мост Tailwind (`tailwind.config.js`), добиться согласованных поверхностей/текста/бордеров/оверлея и состояний disabled/hover на ключевых паттернах UI, сохранив **amber** акцент и **белую `.cabinet-card`** как elevated island. Зафиксировать матрицу соответствия и отступления в `contracts/`. Добавить при необходимости паттерн кратковременного подавления CSS transitions при смене темы (аналог `.theme-switching` в PAM). Backend и API не затрагиваются.
+Выровнять тёмную тему Vue 3 кабинета CTfind с семантической моделью эталона PAM User Console: обновить CSS design tokens (`tokens.css`), при необходимости мост Tailwind (`tailwind.config.js`), добиться согласованных поверхностей/текста/бордеров/оверлея и состояний disabled/hover на ключевых паттернах UI, сохранив **amber** акцент и модель elevated `.cabinet-card` (theme-aware surface). Зафиксировать матрицу соответствия и отступления в `contracts/`. Добавить при необходимости паттерн кратковременного подавления CSS transitions при смене темы (аналог `.theme-switching` в PAM). Backend и API не затрагиваются.
 
 ## Technical Context
 

@@ -14,12 +14,12 @@ const SOURCE = readFileSync(
   'utf8',
 )
 
-describe('ProductionTaskDetailPage assignment controls (US3 T053)', () => {
+describe('productionTaskDetailPage assignment controls (US3 T053)', () => {
   it('uses canAssignPanel computed to combine permission and allowedActions', () => {
     expect(SOURCE).toContain('const canAssignPanel = computed(')
     expect(SOURCE).toContain('canAssignProductionTasks')
-    expect(SOURCE).toContain("includes('ASSIGN')")
-    expect(SOURCE).toContain("includes('PLAN')")
+    expect(SOURCE).toMatch(/includes\((['"])ASSIGN\1\)/)
+    expect(SOURCE).toMatch(/includes\((['"])PLAN\1\)/)
   })
 
   it('only renders the assignment card when canAssignPanel is true', () => {
@@ -40,7 +40,7 @@ describe('ProductionTaskDetailPage assignment controls (US3 T053)', () => {
   })
 
   it('shows a stale-version toast on 409 instead of silently retrying', () => {
-    expect(SOURCE).toContain("st === 409")
+    expect(SOURCE).toContain('st === 409')
     expect(SOURCE).toContain('Данные устарели. Обновите страницу.')
   })
 

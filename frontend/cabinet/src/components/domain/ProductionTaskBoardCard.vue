@@ -51,8 +51,8 @@ const formattedDueDate = computed<string | null>(() => {
     data-testid="production-task-board-card"
   >
     <div class="flex flex-wrap items-baseline justify-between gap-2">
-      <span class="font-mono text-sm font-semibold text-slate-900">{{ row.taskNumber }}</span>
-      <span class="text-xs text-slate-500">{{ row.statusLabel }}</span>
+      <span class="font-mono text-sm font-semibold text-ink-strong">{{ row.taskNumber }}</span>
+      <span class="text-xs text-ink-muted">{{ row.statusLabel }}</span>
     </div>
 
     <p
@@ -64,29 +64,29 @@ const formattedDueDate = computed<string | null>(() => {
       <span>{{ row.blockedReason }}</span>
     </p>
 
-    <p class="mt-2 line-clamp-2 text-sm text-slate-700">
+    <p class="mt-2 line-clamp-2 text-sm text-ink">
       {{ row.purpose }}
     </p>
-    <p class="mt-1 truncate text-xs text-slate-500">
+    <p class="mt-1 truncate text-xs text-ink-muted">
       {{ row.order.orderNumber }} · {{ row.order.customerDisplayName }}
     </p>
 
     <div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-      <span class="truncate text-slate-700">
+      <span class="truncate text-ink">
         <template v-if="row.executor">{{ row.executor.displayName }}</template>
         <template v-else>не назначен</template>
       </span>
       <span
         v-if="formattedDueDate"
         class="inline-flex items-center gap-1.5"
-        :class="isOverdue ? 'text-danger font-medium' : 'text-slate-500'"
+        :class="isOverdue ? 'text-danger font-medium' : 'text-ink-muted'"
         :title="`Срок: ${formattedDueDate}`"
       >
         <CalendarDays class="size-3.5" aria-hidden="true" />
         <span>{{ formattedDueDate }}</span>
         <span v-if="isOverdue" data-testid="production-task-board-card-overdue">просрочено</span>
       </span>
-      <span v-else class="text-slate-400">срок не указан</span>
+      <span v-else class="text-ink-muted">срок не указан</span>
     </div>
   </Card>
 </template>

@@ -40,5 +40,5 @@
 
 | Role | Name | Date | Notes |
 |------|------|------|-------|
-| Product / Design | | | |
-| QA | | | |
+| Product / Design | Pending manual sign-off | — | Требуется ручной визуальный проход по маршрутам из раздела `Routes (baseline)` перед релизом. |
+| QA | Codex (automation pre-check) | 2026-05-01 | Выполнены `pnpm typecheck`, `pnpm test`, `pnpm build`, `make docker-up-detached && make health`; полный `pnpm lint` падает на исторических ошибках вне фичи, на изменённых файлах новых lint errors нет. |

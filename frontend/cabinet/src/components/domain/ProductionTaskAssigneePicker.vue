@@ -64,13 +64,13 @@ function pick(id: string): void {
       autocomplete="off"
     />
     <ul
-      class="max-h-40 overflow-auto rounded border border-slate-200 text-sm"
+      class="max-h-40 overflow-auto rounded border border-border bg-surface text-sm"
       role="listbox"
     >
-      <li v-if="loading" class="px-3 py-2 text-slate-500">
+      <li v-if="loading" class="px-3 py-2 text-ink-muted">
         Загрузка…
       </li>
-      <li v-else-if="items.length === 0" class="px-3 py-2 text-slate-500">
+      <li v-else-if="items.length === 0" class="px-3 py-2 text-ink-muted">
         Ничего не найдено
       </li>
       <template v-else>
@@ -78,11 +78,11 @@ function pick(id: string): void {
           v-for="u in items"
           :key="u.id"
           role="option"
-          class="cursor-pointer px-3 py-2 hover:bg-slate-50"
-          :class="{ 'bg-slate-100': modelValue === u.id }"
+          class="cursor-pointer px-3 py-2 text-ink hover:bg-bg/70"
+          :class="{ 'bg-bg text-ink-strong': modelValue === u.id }"
           @click="pick(u.id)"
         >
-          {{ u.displayName }} <span class="text-slate-500">({{ u.login }})</span>
+          {{ u.displayName }} <span class="text-ink-muted">({{ u.login }})</span>
         </li>
       </template>
     </ul>

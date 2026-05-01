@@ -4,7 +4,7 @@
 
 **Decision**: Семантическое выравнивание с эталоном PAM (`_vars.scss` для `:root[data-theme="dark"]`), а не пиксельное копирование каждого экрана. Значения переносятся в токены кабинета (`--bg-app`, `--bg-app-grad-*`, `--c-fg*`, `--c-border*`, `--c-overlay`, статусные `--c-status-*`, поверхности внутри/вне `.cabinet-card`) по таблице в `contracts/theme-pam-alignment.contract.md`.
 
-**Rationale**: Спецификация (FR-002, FR-003) требует сохранить amber-бренд и белую floating-card; эталон PAM использует cyan primary и иную композицию экранов — полное визуальное совпадение исключено.
+**Rationale**: Спецификация (FR-002, FR-003) требует сохранить amber-бренд и elevated-card модель; эталон PAM использует cyan primary и иную композицию экранов — полное визуальное совпадение исключено.
 
 **Alternatives considered**:
 
@@ -13,7 +13,7 @@
 
 ## R-002 — Акцент и карточка контента
 
-**Decision**: Primary interactive accent остаётся amber (`--c-brand-*`). Эталонный `--primary-color` (cyan PAM) не заменяет бренд CTfind; допускается только для вторичных декоративных элементов, если матрица это фиксирует как отступление.
+**Decision**: Primary interactive accent остаётся amber (`--c-brand-*`). Эталонный `--primary-color` (cyan PAM) не заменяет бренд CTfind; допускается только для вторичных декоративных элементов, если матрица это фиксирует как отступление. `.cabinet-card` сохраняется как elevated-island по форме/тени, но её surface в dark синхронизируется с тёмной PAM-ступенью.
 
 **Rationale**: FR-002, FR-003 и User Story 2.
 

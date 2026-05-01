@@ -74,7 +74,7 @@ const COLUMNS: BoardColumn[] = [
   <section class="space-y-6">
     <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 class="text-2xl font-semibold text-slate-900">
+        <h1 class="text-2xl font-semibold text-ink-strong">
           {{ t('meta.title.productionTasks.board') }}
         </h1>
       </div>
@@ -91,12 +91,12 @@ const COLUMNS: BoardColumn[] = [
       </Button>
     </div>
 
-    <div class="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <div class="flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 shadow-card">
       <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
         <div class="md:col-span-2">
           <Label for="board-search">{{ t('common.search') }}</Label>
           <div class="relative mt-1">
-            <Search class="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+            <Search class="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-ink-muted" aria-hidden="true" />
             <Input
               id="board-search"
               v-model="searchInput"
@@ -121,7 +121,7 @@ const COLUMNS: BoardColumn[] = [
         </div>
         <div class="flex items-end gap-2 md:col-span-2">
           <label class="flex cursor-pointer items-center gap-2 text-sm">
-            <input v-model="overdueOnly" type="checkbox" class="rounded border-slate-300">
+            <input v-model="overdueOnly" type="checkbox" class="rounded border-border-strong">
             Только просроченные
           </label>
           <Button
@@ -137,7 +137,7 @@ const COLUMNS: BoardColumn[] = [
       </div>
     </div>
 
-    <div v-if="forbidden" class="rounded-lg border border-amber-200 bg-amber-50 p-6 text-amber-900">
+    <div v-if="forbidden" class="rounded-lg border border-warning/30 bg-warning/10 p-6 text-ink-strong">
       <p class="font-medium">
         Нет доступа к доске задач.
       </p>
@@ -146,13 +146,13 @@ const COLUMNS: BoardColumn[] = [
       </Button>
     </div>
 
-    <div v-else-if="error" class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+    <div v-else-if="error" class="rounded-md border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-ink-strong">
       {{ error.message }}
     </div>
 
     <div
       v-else-if="data?.truncated"
-      class="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+      class="rounded-md border border-warning/30 bg-warning/10 px-4 py-3 text-sm text-ink-strong"
       data-testid="production-task-board-truncation-banner"
     >
       Показаны первые 200 задач — уточните фильтры, чтобы увидеть остальные.
@@ -177,17 +177,17 @@ const COLUMNS: BoardColumn[] = [
         class="flex w-[20rem] min-w-[18rem] shrink-0 flex-col gap-3 lg:w-auto lg:flex-1"
         :data-testid="`production-task-board-column-${column.status}`"
       >
-        <header class="flex items-baseline justify-between rounded-md bg-slate-50 px-3 py-2">
-          <h2 class="text-sm font-semibold text-slate-900">
+        <header class="flex items-baseline justify-between rounded-md bg-bg/70 px-3 py-2">
+          <h2 class="text-sm font-semibold text-ink-strong">
             {{ column.label }}
           </h2>
-          <span class="text-xs text-slate-500">
+          <span class="text-xs text-ink-muted">
             {{ data.byStatus[column.status].length }}
           </span>
         </header>
         <div
           v-if="data.byStatus[column.status].length === 0"
-          class="rounded-md border border-dashed border-slate-200 px-3 py-6 text-center text-xs text-slate-500"
+          class="rounded-md border border-dashed border-border px-3 py-6 text-center text-xs text-ink-muted"
           :data-testid="`production-task-board-empty-${column.status}`"
         >
           {{ t('common.empty') }}
@@ -196,7 +196,7 @@ const COLUMNS: BoardColumn[] = [
           v-for="row in data.byStatus[column.status]"
           :key="row.id"
           :to="{ name: 'production-tasks.detail', params: { id: row.id } }"
-          class="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+          class="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
         >
           <ProductionTaskBoardCard :row="row" />
         </RouterLink>

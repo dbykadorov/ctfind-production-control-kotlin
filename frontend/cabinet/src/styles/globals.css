@@ -1,5 +1,5 @@
-@import './tokens.css';
-@import './fonts.css';
+@import "./tokens.css";
+@import "./fonts.css";
 
 @tailwind base;
 @tailwind components;
@@ -14,7 +14,7 @@
     background: var(--bg-app);
     color: var(--c-fg);
     font-family: var(--font-sans);
-    font-feature-settings: 'cv11', 'ss01', 'ss03';
+    font-feature-settings: "cv11", "ss01", "ss03";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -51,6 +51,21 @@
     border-radius: var(--radius-sm);
   }
 
+  /* 015: в dark выравниваем disabled-представление с матрицей PAM/CTfind. */
+  [data-theme="dark"] input:disabled,
+  [data-theme="dark"] textarea:disabled,
+  [data-theme="dark"] select:disabled {
+    background: var(--control-disabled-bg);
+    border-color: var(--control-disabled-border);
+    color: var(--control-disabled-fg);
+    cursor: not-allowed;
+  }
+
+  [data-theme="dark"] button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+
   /* Scrollbar (только non-mobile, не агрессивный) */
   @media (pointer: fine) {
     ::-webkit-scrollbar {
@@ -85,7 +100,11 @@
    * Sidebar сам по себе рендерится `transparent` (см. .cabinet-sidebar ниже),
    * gradient-presets фичи 007 — отдельный override через .cabinet-sidebar-bg. */
   .cabinet-shell {
-    background: linear-gradient(180deg, var(--bg-app-grad-top), var(--bg-app-grad-bottom));
+    background: linear-gradient(
+      180deg,
+      var(--bg-app-grad-top),
+      var(--bg-app-grad-bottom)
+    );
   }
 
   /* 010 (PAM-rework, post-MVP): sidebar по умолчанию прозрачен — фон
@@ -96,12 +115,11 @@
     background: transparent;
   }
 
-  /* 010: Floating-card обёртка для контентной области.
-   * Используется в AppShell.vue. Радиус, маргин и тень из tokens.css §010.
-   * Внутри — scoped-перебивка fg-токенов (см. tokens.css §dark .cabinet-card),
-   * чтобы текст оставался читаемым на белом фоне в обеих темах. */
+  /* Floating-card обёртка для контентной области.
+   * Поверхность и бордер берём только из токенов темы. */
   .cabinet-card {
     background: var(--c-surface);
+    border: 1px solid var(--c-border);
     border-radius: var(--card-radius);
     box-shadow: var(--card-shadow);
     overflow: hidden;
@@ -111,27 +129,31 @@
    * 010 §R-008: применяется только когда preset !== 'none'; default 'none'
    * = transparent (sidebar сливается с .cabinet-shell градиентом). */
   .cabinet-sidebar-bg {
-    background: linear-gradient(195deg, var(--sidebar-grad-top), var(--sidebar-grad-bottom));
+    background: linear-gradient(
+      195deg,
+      var(--sidebar-grad-top),
+      var(--sidebar-grad-bottom)
+    );
     transition: background var(--duration) var(--ease-out);
   }
 
   /* 010 (PAM-rework): активный пункт без amber-полоски — только усиленный
      белый текст + лёгкий полупрозрачный фон. Контраст ≥ AA на всех 5 пресетах. */
   .cabinet-sidebar-item--active {
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
+    background: var(--sidebar-item-active-bg);
+    color: var(--sidebar-fg-strong);
   }
 
   .cabinet-sidebar-item {
-    color: rgba(255, 255, 255, 0.78);
+    color: var(--sidebar-fg-default);
     transition:
       background-color var(--duration) var(--ease-out),
       color var(--duration) var(--ease-out);
   }
 
   .cabinet-sidebar-item:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: #ffffff;
+    background: var(--sidebar-item-hover-bg);
+    color: var(--sidebar-fg-strong);
   }
 
   /* 010 US2: label fade-out при collapse (см. contracts/sidebar-tooltip §6). */
@@ -162,6 +184,15 @@
     pointer-events: none;
     box-shadow: 0 4px 12px rgb(0 0 0 / 0.25);
   }
+}
+
+/* 015: аналог PAM `.theme-switching` — временно гасим color-transitions
+ * во время переключения темы, чтобы убрать визуальные артефакты. */
+.theme-switching,
+.theme-switching * {
+  transition-property:
+    background-color, background, border-color, color, fill, stroke, box-shadow !important;
+  transition-duration: 0s !important;
 }
 
 /* 007: Reduced motion — отключаем все темо-/пресето-переходы и cabinet-fade. */

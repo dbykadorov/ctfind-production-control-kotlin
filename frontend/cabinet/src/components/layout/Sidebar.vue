@@ -18,7 +18,17 @@
  * Активный пункт высчитывается здесь (родитель), передаётся в SidebarItem
  * через :active prop — компонент пункта только рендерит и обрабатывает hover/focus.
  */
-import { Bell, ChevronLeft, ClipboardList, Factory, LayoutDashboard, LayoutGrid, Package, ScrollText, Users } from 'lucide-vue-next'
+import {
+  Bell,
+  ChevronLeft,
+  ClipboardList,
+  Factory,
+  LayoutDashboard,
+  LayoutGrid,
+  Package,
+  ScrollText,
+  Users,
+} from 'lucide-vue-next'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -33,10 +43,20 @@ const ui = useUiStore()
 const permissions = usePermissions()
 const { t } = useI18n()
 
-interface NavItem { to: string, icon: typeof LayoutDashboard, key: string, visible: boolean }
+interface NavItem {
+  to: string
+  icon: typeof LayoutDashboard
+  key: string
+  visible: boolean
+}
 
 const items = computed<NavItem[]>(() => [
-  { to: '/cabinet', icon: LayoutDashboard, key: 'nav.dashboard', visible: true },
+  {
+    to: '/cabinet',
+    icon: LayoutDashboard,
+    key: 'nav.dashboard',
+    visible: true,
+  },
   {
     to: '/cabinet/orders',
     icon: ClipboardList,
@@ -47,13 +67,17 @@ const items = computed<NavItem[]>(() => [
     to: '/cabinet/production-tasks',
     icon: Factory,
     key: 'nav.productionTasks',
-    visible: permissions.value.canViewAllProductionTasks || permissions.value.canWorkAssignedProductionTasks,
+    visible:
+      permissions.value.canViewAllProductionTasks
+      || permissions.value.canWorkAssignedProductionTasks,
   },
   {
     to: '/cabinet/production-tasks/board',
     icon: LayoutGrid,
     key: 'nav.productionTasksBoard',
-    visible: permissions.value.canViewAllProductionTasks || permissions.value.canWorkAssignedProductionTasks,
+    visible:
+      permissions.value.canViewAllProductionTasks
+      || permissions.value.canWorkAssignedProductionTasks,
   },
   {
     to: '/cabinet/customers',
@@ -103,16 +127,20 @@ onMounted(() => {
   }, 300)
 })
 
-const versionText = computed(() => t('sidebar.version', { version: __APP_VERSION__ }))
+const versionText = computed(() =>
+  t('sidebar.version', { version: __APP_VERSION__ }),
+)
 </script>
 
 <template>
   <aside
-    :class="cn(
-      'cabinet-sidebar flex h-full shrink-0 flex-col',
-      ui.sidebarPreset !== 'none' && 'cabinet-sidebar-bg',
-      ui.sidebarCollapsed ? 'w-sidebar-collapsed' : 'w-sidebar-expanded',
-    )"
+    :class="
+      cn(
+        'cabinet-sidebar flex h-full shrink-0 flex-col',
+        ui.sidebarPreset !== 'none' && 'cabinet-sidebar-bg',
+        ui.sidebarCollapsed ? 'w-sidebar-collapsed' : 'w-sidebar-expanded',
+      )
+    "
   >
     <!-- 010 PAM-rework: header — лого-знак + caption-блок (ПАНЕЛЬ / КАБИНЕТА). -->
     <div class="cabinet-sidebar__header flex h-header items-center gap-4 px-5">
@@ -127,17 +155,24 @@ const versionText = computed(() => t('sidebar.version', { version: __APP_VERSION
         class="cabinet-sidebar__caption flex flex-col leading-tight"
         :class="{ 'cabinet-sidebar__caption--hidden': ui.sidebarCollapsed }"
       >
-        <span class="text-[11px] font-normal uppercase tracking-wider text-white/55">
-          {{ t('sidebar.brand.captionTop') }}
+        <span
+          class="cabinet-sidebar__caption-top text-[11px] font-normal uppercase tracking-wider"
+        >
+          {{ t("sidebar.brand.captionTop") }}
         </span>
-        <span class="text-base font-bold uppercase tracking-wide text-white">
-          {{ t('sidebar.brand.captionBottom') }}
+        <span
+          class="cabinet-sidebar__caption-bottom text-base font-bold uppercase tracking-wide"
+        >
+          {{ t("sidebar.brand.captionBottom") }}
         </span>
       </div>
     </div>
 
     <!-- Тонкая разделительная линия под header (как в PAM `sidebar__header-line`). -->
-    <div class="mx-5 h-px shrink-0 bg-white/10" aria-hidden="true" />
+    <div
+      class="cabinet-sidebar__divider mx-5 h-px shrink-0"
+      aria-hidden="true"
+    />
 
     <nav class="flex flex-col gap-0.5 p-2 pt-3">
       <template v-for="item in items" :key="item.to">
@@ -153,19 +188,23 @@ const versionText = computed(() => t('sidebar.version', { version: __APP_VERSION
 
     <!-- 010 PAM-rework: footer — chevron-collapse-кнопка + версия SPA.
          mt-auto прижимает footer к низу, сохраняя scroll-зону под навигацию. -->
-    <div class="cabinet-sidebar__footer mt-auto flex items-center justify-between px-5 py-5">
+    <div
+      class="cabinet-sidebar__footer mt-auto flex items-center justify-between px-5 py-5"
+    >
       <button
         type="button"
         class="cabinet-sidebar__toggle"
         :class="{ 'cabinet-sidebar__toggle--collapsed': ui.sidebarCollapsed }"
-        :aria-label="ui.sidebarCollapsed ? t('sidebar.expand') : t('sidebar.collapse')"
+        :aria-label="
+          ui.sidebarCollapsed ? t('sidebar.expand') : t('sidebar.collapse')
+        "
         @click="ui.toggleSidebar()"
       >
         <ChevronLeft class="size-5" aria-hidden="true" />
       </button>
       <span
         v-if="versionReady"
-        class="cabinet-sidebar__version text-xs font-normal text-white/45"
+        class="cabinet-sidebar__version text-xs font-normal"
         :class="{ 'cabinet-sidebar__version--hidden': ui.sidebarCollapsed }"
         data-testid="sidebar-version"
       >
@@ -200,6 +239,22 @@ const versionText = computed(() => t('sidebar.version', { version: __APP_VERSION
   pointer-events: none;
 }
 
+.cabinet-sidebar__caption-top {
+  color: var(--sidebar-caption-muted);
+}
+
+.cabinet-sidebar__caption-bottom {
+  color: var(--sidebar-fg-strong);
+}
+
+.cabinet-sidebar__divider {
+  background: var(--sidebar-divider);
+}
+
+.cabinet-sidebar__version {
+  color: var(--sidebar-caption-soft);
+}
+
 /* PAM-rework: круглая chevron-кнопка коллапса. По умолчанию (expanded)
    стрелка указывает влево; при collapse — поворот на 180° через transform.
    Postfix-полировка: добавлен subtle-фон в idle-состоянии и тонкая граница,
@@ -211,9 +266,9 @@ const versionText = computed(() => t('sidebar.version', { version: __APP_VERSION
   width: 36px;
   height: 36px;
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--sidebar-toggle-border);
+  background: var(--sidebar-toggle-bg);
+  color: var(--sidebar-toggle-fg);
   cursor: pointer;
   border-radius: 9999px;
   transition:
@@ -224,9 +279,9 @@ const versionText = computed(() => t('sidebar.version', { version: __APP_VERSION
 }
 
 .cabinet-sidebar__toggle:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
+  background: var(--sidebar-toggle-bg-hover);
+  border-color: var(--sidebar-toggle-border-hover);
+  color: var(--sidebar-fg-strong);
 }
 
 .cabinet-sidebar__toggle:focus-visible {

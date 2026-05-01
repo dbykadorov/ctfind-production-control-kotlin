@@ -4,17 +4,16 @@
  *
  * История:
  *   - 007-cabinet-dashboard-theme: dark/light темы, 5 sidebar gradient-пресетов.
- *   - 010-cabinet-layout-rework: floating-card model (navy bg + amber accent +
- *     белая card), новые layout-токены (--card-radius, --sidebar-width-*,
- *     --header-height и т.п.), sidebar-preset 'none' (default), scoped-перебивка
- *     fg-токенов внутри `.cabinet-card` для контраста на белом фоне.
+ *   - 010-cabinet-layout-rework: floating-card model, layout-токены
+ *     (--card-radius, --sidebar-width-*, --header-height и т.п.),
+ *     sidebar-preset 'none' (default).
  *
  * См. specs/010-cabinet-layout-rework/research.md §R-004 / §R-008,
  *     specs/010-cabinet-layout-rework/contracts/design-tokens.contract.md.
  */
 
 :root,
-[data-theme='dark'] {
+[data-theme="dark"] {
   /* === 010: Brand — amber palette =========================================== */
   --c-brand-50: #fff8e1;
   --c-brand-100: #ffecb3;
@@ -23,31 +22,28 @@
   --c-brand-700: #8c6f26;
 
   /* === 010: App background (viewport + sidebar) ============================ */
-  --bg-app: #1a2235;
+  --bg-app: #101014;
   /* Legacy alias для обратной совместимости с фичами 006/007 (Tailwind `bg-bg`). */
-  --c-bg: var(--bg-app);
+  --c-bg: #16161d;
 
-  /* 010 (PAM-rework, post-MVP): viewport-фон рендерится как линейный градиент
-     сверху-вниз (как `--main-bg` в PAM UC: #3e445b → #131723). Сам `--bg-app`
-     остаётся solid-цветом для tooltip/inverse, чтобы не ломать соседние токены.
-     Стопы подобраны под navy-палитру CTfind (а не серый PAM): сверху насыщенный
-     navy, снизу почти чёрный — спад заметный, как на эталоне UC. */
-  --bg-app-grad-top: #313a55;
-  --bg-app-grad-bottom: #0a0d18;
+  /* 015: тёмная тема приближена к PAM dark (`theme100/theme200`), градиент
+     минимальный, чтобы chrome выглядел как единый тёмный слой. */
+  --bg-app-grad-top: #101014;
+  --bg-app-grad-bottom: #19191f;
 
-  /* === 010: Surface — белая card в обеих темах ============================== */
-  --c-surface: #ffffff;
-  --c-elevated: #ffffff;
+  /* === Surface (dark) ======================================================= */
+  --c-surface: #19191f;
+  --c-elevated: #25252d;
   --c-overlay: rgb(0 0 0 / 0.6);
 
-  /* === Foreground — по умолчанию для navy-фона sidebar ====================== */
-  --c-fg-strong: #ffffff;
-  --c-fg: #d2d3da;
-  --c-fg-muted: #9a9aaf;
-  --c-fg-inverse: #1a2235;
+  /* === Foreground ============================================================ */
+  --c-fg-strong: #f5f5f5;
+  --c-fg: #babacf;
+  --c-fg-muted: #8f97b1;
+  --c-fg-inverse: #101014;
 
-  --c-border: #34374d;
-  --c-border-strong: #454868;
+  --c-border: #25252d;
+  --c-border-strong: #3a3a45;
 
   --c-status-new: #1d8cf8;
   --c-status-progress: #ff8d72;
@@ -62,14 +58,18 @@
   --radius: 12px;
   --radius-lg: 16px;
 
-  --font-sans: 'Inter Variable', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-sans:
+    "Inter Variable", "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-mono:
+    "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, "SF Mono", Menlo,
+    monospace;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --duration: 180ms;
 
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 1px 3px rgb(0 0 0 / 0.4);
-  --shadow-elevated: 0 8px 24px rgb(0 0 0 / 0.55), 0 2px 6px rgb(0 0 0 / 0.4);
+  --shadow-card: 0 6px 20px rgb(0 0 0 / 0.35), 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-elevated: 0 12px 28px rgb(0 0 0 / 0.48), 0 2px 8px rgb(0 0 0 / 0.45);
 
   /* === 010: Layout-токены (floating-card model, contracts/design-tokens) === */
   --card-radius: 24px;
@@ -89,15 +89,74 @@
   --sidebar-label-fade: 200ms cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Tooltip — floating подсказка справа от иконки в свёрнутом sidebar (US2). */
-  --tooltip-bg: #1a2235;
-  --tooltip-fg: #ffffff;
+  --tooltip-bg: #101014;
+  --tooltip-fg: #f5f5f5;
+
+  /* Sidebar chrome tokens (015): убираем хардкод white/rgba из layout-компонентов. */
+  --sidebar-fg-default: color-mix(in srgb, var(--c-fg-strong) 78%, transparent);
+  --sidebar-fg-strong: var(--c-fg-strong);
+  --sidebar-caption-muted: color-mix(
+    in srgb,
+    var(--c-fg-strong) 55%,
+    transparent
+  );
+  --sidebar-caption-soft: color-mix(
+    in srgb,
+    var(--c-fg-strong) 45%,
+    transparent
+  );
+  --sidebar-divider: color-mix(in srgb, var(--c-fg-strong) 12%, transparent);
+  --sidebar-item-active-bg: color-mix(
+    in srgb,
+    var(--c-fg-strong) 10%,
+    transparent
+  );
+  --sidebar-item-hover-bg: color-mix(
+    in srgb,
+    var(--c-fg-strong) 6%,
+    transparent
+  );
+  --sidebar-toggle-border: color-mix(
+    in srgb,
+    var(--c-fg-strong) 16%,
+    transparent
+  );
+  --sidebar-toggle-bg: color-mix(in srgb, var(--c-fg-strong) 6%, transparent);
+  --sidebar-toggle-fg: color-mix(in srgb, var(--c-fg-strong) 72%, transparent);
+  --sidebar-toggle-bg-hover: color-mix(
+    in srgb,
+    var(--c-fg-strong) 12%,
+    transparent
+  );
+  --sidebar-toggle-border-hover: color-mix(
+    in srgb,
+    var(--c-fg-strong) 28%,
+    transparent
+  );
+
+  /* Dark disabled controls baseline (015, parity with PAM dark intent). */
+  --control-disabled-bg: color-mix(
+    in srgb,
+    var(--c-surface) 90%,
+    var(--c-bg) 10%
+  );
+  --control-disabled-border: color-mix(
+    in srgb,
+    var(--c-border) 80%,
+    var(--c-fg-muted) 20%
+  );
+  --control-disabled-fg: color-mix(
+    in srgb,
+    var(--c-fg-muted) 85%,
+    var(--c-fg-strong) 15%
+  );
 
   /* Sidebar gradient — defaults для пресета 'ocean' (легаси 007). */
   --sidebar-grad-top: #1d8cf8;
   --sidebar-grad-bottom: #3358f4;
 }
 
-[data-theme='light'] {
+[data-theme="light"] {
   /* === 010: Brand — amber palette (та же, что в dark) ====================== */
   --c-brand-50: #fff8e1;
   --c-brand-100: #ffecb3;
@@ -106,17 +165,12 @@
   --c-brand-700: #8c6f26;
 
   /* === 010: App background (light) ========================================= */
-  --bg-app: #f1f2f8;
-  --c-bg: var(--bg-app);
+  --bg-app: #f8f9fc;
+  --c-bg: #f1f3f8;
 
-  /* 010 (PAM-rework, post-MVP): light-тема визуально уравнена с dark на уровне
-     layout — viewport-фон AppShell остаётся тёмным navy-градиентом, чтобы белая
-     card читалась как elevated-поверхность одинаково в обеих темах. Тёмная
-     тема как самостоятельная визуальная схема — следующий шаг (см. backlog).
-     `--bg-app` (solid) оставлен светлым: используется в body/login, но AppShell
-     перекрывает его `.cabinet-shell` градиентом. */
-  --bg-app-grad-top: #313a55;
-  --bg-app-grad-bottom: #0a0d18;
+  /* Светлая тема контрастно отличается от dark и остаётся нейтральной. */
+  --bg-app-grad-top: #f8f9fc;
+  --bg-app-grad-bottom: #ebeef6;
 
   --c-surface: #ffffff;
   --c-elevated: #ffffff;
@@ -143,25 +197,57 @@
   --c-success: #16a34a;
 
   --shadow-card: 0 1px 2px rgb(15 19 36 / 0.04), 0 1px 3px rgb(15 19 36 / 0.06);
-  --shadow-elevated: 0 8px 24px rgb(15 19 36 / 0.08), 0 2px 6px rgb(15 19 36 / 0.04);
+  --shadow-elevated:
+    0 8px 24px rgb(15 19 36 / 0.08), 0 2px 6px rgb(15 19 36 / 0.04);
 
   /* Tooltip в light theme: остаётся тёмным (контраст на любом фоне). */
-  --tooltip-bg: #1a2235;
+  --tooltip-bg: #161d2f;
   --tooltip-fg: #ffffff;
-}
 
-/* === 010 §R-004: Scoped-перебивка fg внутри белой card в dark theme ======= */
-/* В dark theme дефолтные fg-токены оптимизированы для navy-фона sidebar.    */
-/* Внутри .cabinet-card (белый фон) перебиваем их на тёмные значения, чтобы  */
-/* контент (KPI, заголовки, тексты) оставался читаемым. WCAG AA контраст.   */
-[data-theme='dark'] .cabinet-card {
-  --c-fg-strong: #1a1f36;
-  --c-fg: #3d4257;
-  --c-fg-muted: #707388;
-  --c-fg-inverse: #ffffff;
-  --c-border: #e6e8ed;
-  --c-border-strong: #c8ccd6;
-  color: var(--c-fg);
+  --sidebar-fg-default: color-mix(in srgb, var(--c-fg-strong) 78%, transparent);
+  --sidebar-fg-strong: var(--c-fg-strong);
+  --sidebar-caption-muted: color-mix(
+    in srgb,
+    var(--c-fg-strong) 55%,
+    transparent
+  );
+  --sidebar-caption-soft: color-mix(
+    in srgb,
+    var(--c-fg-strong) 45%,
+    transparent
+  );
+  --sidebar-divider: color-mix(in srgb, var(--c-fg-strong) 12%, transparent);
+  --sidebar-item-active-bg: color-mix(
+    in srgb,
+    var(--c-fg-strong) 10%,
+    transparent
+  );
+  --sidebar-item-hover-bg: color-mix(
+    in srgb,
+    var(--c-fg-strong) 6%,
+    transparent
+  );
+  --sidebar-toggle-border: color-mix(
+    in srgb,
+    var(--c-fg-strong) 16%,
+    transparent
+  );
+  --sidebar-toggle-bg: color-mix(in srgb, var(--c-fg-strong) 6%, transparent);
+  --sidebar-toggle-fg: color-mix(in srgb, var(--c-fg-strong) 72%, transparent);
+  --sidebar-toggle-bg-hover: color-mix(
+    in srgb,
+    var(--c-fg-strong) 12%,
+    transparent
+  );
+  --sidebar-toggle-border-hover: color-mix(
+    in srgb,
+    var(--c-fg-strong) 28%,
+    transparent
+  );
+
+  --control-disabled-bg: #f3f4f8;
+  --control-disabled-border: #d3d7e1;
+  --control-disabled-fg: #8a8ea0;
 }
 
 /* === Sidebar gradient presets (007) ====================================== */
@@ -169,33 +255,54 @@
 /* 010 §R-008: пресет 'none' = solid var(--bg-app) (sidebar сливается с body); */
 /* остальные пресеты сохранены как user-override поверх solid фона.           */
 
-[data-sidebar-preset='none'] {
+[data-sidebar-preset="none"] {
   /* Без gradient — Sidebar.vue не применит .cabinet-sidebar-bg класс при 'none'. */
   --sidebar-grad-top: var(--bg-app);
   --sidebar-grad-bottom: var(--bg-app);
 }
 
-[data-sidebar-preset='ocean'] {
+[data-sidebar-preset="ocean"] {
   --sidebar-grad-top: #1d8cf8;
   --sidebar-grad-bottom: #3358f4;
 }
 
-[data-sidebar-preset='sunset'] {
+[data-sidebar-preset="sunset"] {
   --sidebar-grad-top: #ff8d72;
   --sidebar-grad-bottom: #ff6491;
 }
 
-[data-sidebar-preset='forest'] {
+[data-sidebar-preset="forest"] {
   --sidebar-grad-top: #00f2c3;
   --sidebar-grad-bottom: #0098f0;
 }
 
-[data-sidebar-preset='twilight'] {
+[data-sidebar-preset="twilight"] {
   --sidebar-grad-top: #ba54f5;
   --sidebar-grad-bottom: #3358f4;
 }
 
-[data-sidebar-preset='graphite'] {
+[data-sidebar-preset="graphite"] {
   --sidebar-grad-top: #344675;
   --sidebar-grad-bottom: #263148;
+}
+
+/* Светлая тема + насыщенный градиентный пресет sidebar:
+   сохраняем светлый foreground для контраста поверх цветного фона. */
+[data-theme="light"][data-sidebar-preset="ocean"],
+[data-theme="light"][data-sidebar-preset="sunset"],
+[data-theme="light"][data-sidebar-preset="forest"],
+[data-theme="light"][data-sidebar-preset="twilight"],
+[data-theme="light"][data-sidebar-preset="graphite"] {
+  --sidebar-fg-default: rgb(255 255 255 / 0.78);
+  --sidebar-fg-strong: #ffffff;
+  --sidebar-caption-muted: rgb(255 255 255 / 0.55);
+  --sidebar-caption-soft: rgb(255 255 255 / 0.45);
+  --sidebar-divider: rgb(255 255 255 / 0.1);
+  --sidebar-item-active-bg: rgb(255 255 255 / 0.08);
+  --sidebar-item-hover-bg: rgb(255 255 255 / 0.06);
+  --sidebar-toggle-border: rgb(255 255 255 / 0.12);
+  --sidebar-toggle-bg: rgb(255 255 255 / 0.05);
+  --sidebar-toggle-fg: rgb(255 255 255 / 0.7);
+  --sidebar-toggle-bg-hover: rgb(255 255 255 / 0.12);
+  --sidebar-toggle-border-hover: rgb(255 255 255 / 0.25);
 }

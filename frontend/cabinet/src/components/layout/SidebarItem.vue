@@ -104,7 +104,7 @@ const tooltipStyle = computed<Record<string, string>>(() => ({
   <RouterLink
     ref="linkRef"
     :to="to"
-    class="cabinet-sidebar-item flex h-10 items-center gap-3 rounded px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+    class="cabinet-sidebar-item flex h-10 items-center gap-3 rounded px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
     :class="{ 'cabinet-sidebar-item--active font-semibold': active }"
     :aria-current="active ? 'page' : undefined"
     :aria-labelledby="collapsed ? tooltipId : undefined"

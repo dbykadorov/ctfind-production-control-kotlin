@@ -63,7 +63,7 @@ async function markAllRead() {
       <Skeleton v-for="i in 5" :key="i" class="h-14 w-full rounded" />
     </div>
 
-    <div v-else-if="error" class="rounded border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
+    <div v-else-if="error" class="rounded border border-danger/30 bg-danger/10 p-4 text-sm text-ink-strong">
       <p>{{ error.message || t('common.retry') }}</p>
       <Button variant="secondary" size="sm" class="mt-2" @click="loadPage">
         {{ t('common.refresh') }}

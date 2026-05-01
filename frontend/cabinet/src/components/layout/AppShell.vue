@@ -6,7 +6,7 @@
  *
  *   .cabinet-shell  (navy/light viewport-фон var(--bg-app))
  *   ├── <Sidebar>  (сливается с фоном при preset='none', либо gradient-override)
- *   └── .cabinet-card  (белая card с радиусом и тенью)
+ *   └── .cabinet-card  (theme-aware card с радиусом и тенью)
  *       ├── <TopBar>  (header-height var)
  *       └── <main>  (overflow-y-auto, RouterView с Transition)
  *

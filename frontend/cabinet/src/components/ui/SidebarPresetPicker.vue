@@ -38,14 +38,18 @@ const PRESETS: PresetSwatch[] = [
     <legend class="text-xs font-medium uppercase tracking-wider text-ink-muted">
       {{ t('ui.sidebarPreset') }}
     </legend>
-    <div class="flex gap-2" role="radiogroup" :aria-label="t('ui.sidebarPreset')">
+    <div
+      class="grid w-full grid-cols-6 gap-1.5 p-0.5"
+      role="radiogroup"
+      :aria-label="t('ui.sidebarPreset')"
+    >
       <button
         v-for="p in PRESETS"
         :key="p.id"
         type="button"
         :class="cn(
-          'relative flex h-10 w-10 items-center justify-center rounded transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
-          sidebarPreset === p.id ? 'ring-2 ring-brand-500 ring-offset-2 ring-offset-surface' : 'opacity-80 hover:opacity-100',
+          'relative flex aspect-square w-full min-w-0 items-center justify-center rounded transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
+          sidebarPreset === p.id ? 'ring-2 ring-brand-500 ring-offset-1 ring-offset-surface' : 'opacity-80 hover:opacity-100',
         )"
         :style="{ background: p.gradient }"
         :aria-label="t(`ui.sidebarPresets.${p.id}`)"

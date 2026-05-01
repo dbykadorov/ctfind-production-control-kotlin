@@ -34,12 +34,12 @@ onBeforeUnmount(() => {
 <template>
   <div
     v-if="tooNarrow && !ui.unsupportedViewportDismissed"
-    class="fixed inset-x-0 bottom-0 z-30 border-t border-amber-200 bg-amber-50 px-6 py-4 shadow-elevated"
+    class="fixed inset-x-0 bottom-0 z-30 border-t border-warning/30 bg-warning/10 px-6 py-4 shadow-elevated"
     role="status"
     aria-live="polite"
   >
     <div class="mx-auto flex max-w-3xl items-center justify-between gap-4">
-      <p class="text-sm text-amber-900">
+      <p class="text-sm text-ink-strong">
         {{ t('common.minViewport') }}
       </p>
       <Button variant="ghost" size="sm" @click="ui.dismissUnsupportedViewport()">

@@ -1,236 +1,255 @@
 <script setup lang="ts">
-import type { ApiError } from "@/api/types/domain";
+import type { ApiError } from '@/api/types/domain'
 import type {
   AdminUserSummaryResponse,
   CreateUserFormState,
   RoleSummaryResponse,
   UpdateUserFormState,
-} from "@/api/types/user-management";
-import { Pencil, Plus, RotateCw, Search } from "lucide-vue-next";
-import { computed, onMounted, onUnmounted, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
-import { usePermissions } from "@/api/composables/use-permissions";
+} from '@/api/types/user-management'
+import { Pencil, Plus, RotateCw, Search } from 'lucide-vue-next'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { usePermissions } from '@/api/composables/use-permissions'
 import {
   createUser,
   fetchRoleCatalog,
   parseUpdateUserError,
   updateUser,
   useUsersList,
-} from "@/api/composables/use-users";
+} from '@/api/composables/use-users'
 
-const { t } = useI18n();
-const permissions = usePermissions();
-const { data: users, loading, error, refetch } = useUsersList();
+const { t } = useI18n()
+const permissions = usePermissions()
+const { data: users, loading, error, refetch } = useUsersList()
 
-const search = ref("");
-const showCreate = ref(false);
-const showEdit = ref(false);
-const creating = ref(false);
-const updating = ref(false);
-const roleLoading = ref(false);
-const roles = ref<RoleSummaryResponse[]>([]);
-const formError = ref<string | null>(null);
-const editError = ref<string | null>(null);
-const formSuccess = ref<string | null>(null);
+const search = ref('')
+const showCreate = ref(false)
+const showEdit = ref(false)
+const creating = ref(false)
+const updating = ref(false)
+const roleLoading = ref(false)
+const roles = ref<RoleSummaryResponse[]>([])
+const formError = ref<string | null>(null)
+const editError = ref<string | null>(null)
+const formSuccess = ref<string | null>(null)
 
 const form = ref<CreateUserFormState>({
-  login: "",
-  displayName: "",
-  initialPassword: "",
+  login: '',
+  displayName: '',
+  initialPassword: '',
   roleCodes: [],
-});
-const editForm = ref<UpdateUserFormState | null>(null);
+})
+const editForm = ref<UpdateUserFormState | null>(null)
 
-const hasAdminAccess = computed(() => permissions.value.isAdmin);
+const hasAdminAccess = computed(() => permissions.value.isAdmin)
 const isForbidden = computed(
   () => error.value?.status === 403 || !hasAdminAccess.value,
-);
-const tableColspan = computed(() => (hasAdminAccess.value ? 4 : 3));
+)
+const tableColspan = computed(() => (hasAdminAccess.value ? 4 : 3))
 
-let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
 watch(search, () => {
-  if (debounceTimer) clearTimeout(debounceTimer);
+  if (debounceTimer)
+    clearTimeout(debounceTimer)
   debounceTimer = setTimeout(() => {
-    void refetch(search.value, 50);
-  }, 300);
-});
+    void refetch(search.value, 50)
+  }, 300)
+})
 
 onMounted(() => {
-  void refetch(undefined, 50);
-});
+  void refetch(undefined, 50)
+})
 
 onUnmounted(() => {
-  if (debounceTimer) clearTimeout(debounceTimer);
-});
+  if (debounceTimer)
+    clearTimeout(debounceTimer)
+})
 
 function resetForm() {
   form.value = {
-    login: "",
-    displayName: "",
-    initialPassword: "",
+    login: '',
+    displayName: '',
+    initialPassword: '',
     roleCodes: [],
-  };
+  }
 }
 
 function toggleCreateRole(code: string) {
   if (form.value.roleCodes.includes(code)) {
-    form.value.roleCodes = form.value.roleCodes.filter((v) => v !== code);
-  } else {
-    form.value.roleCodes = [...form.value.roleCodes, code];
+    form.value.roleCodes = form.value.roleCodes.filter(v => v !== code)
+  }
+  else {
+    form.value.roleCodes = [...form.value.roleCodes, code]
   }
 }
 
 function toggleEditRole(code: string) {
-  if (!editForm.value) return;
+  if (!editForm.value)
+    return
   if (editForm.value.roleCodes.includes(code)) {
     editForm.value.roleCodes = editForm.value.roleCodes.filter(
-      (v) => v !== code,
-    );
-  } else {
-    editForm.value.roleCodes = [...editForm.value.roleCodes, code];
+      v => v !== code,
+    )
+  }
+  else {
+    editForm.value.roleCodes = [...editForm.value.roleCodes, code]
   }
 }
 
 async function ensureRoleCatalogLoaded(): Promise<boolean> {
-  if (roles.value.length > 0) return true;
-  roleLoading.value = true;
+  if (roles.value.length > 0)
+    return true
+  roleLoading.value = true
   try {
-    roles.value = await fetchRoleCatalog();
-    return true;
-  } catch (e) {
-    const message = mapCreateError(e as ApiError);
-    formError.value = message;
-    editError.value = message;
-    return false;
-  } finally {
-    roleLoading.value = false;
+    roles.value = await fetchRoleCatalog()
+    return true
+  }
+  catch (e) {
+    const message = mapCreateError(e as ApiError)
+    formError.value = message
+    editError.value = message
+    return false
+  }
+  finally {
+    roleLoading.value = false
   }
 }
 
 async function openCreate() {
-  showEdit.value = false;
-  editForm.value = null;
-  showCreate.value = true;
-  formError.value = null;
-  formSuccess.value = null;
-  await ensureRoleCatalogLoaded();
+  showEdit.value = false
+  editForm.value = null
+  showCreate.value = true
+  formError.value = null
+  formSuccess.value = null
+  await ensureRoleCatalogLoaded()
 }
 
 function closeCreate() {
-  showCreate.value = false;
-  formError.value = null;
-  resetForm();
+  showCreate.value = false
+  formError.value = null
+  resetForm()
 }
 
 async function openEdit(user: AdminUserSummaryResponse) {
-  if (!hasAdminAccess.value) return;
-  showCreate.value = false;
-  formError.value = null;
-  editError.value = null;
-  formSuccess.value = null;
-  const loaded = await ensureRoleCatalogLoaded();
-  if (!loaded) return;
+  if (!hasAdminAccess.value)
+    return
+  showCreate.value = false
+  formError.value = null
+  editError.value = null
+  formSuccess.value = null
+  const loaded = await ensureRoleCatalogLoaded()
+  if (!loaded)
+    return
   editForm.value = {
     id: user.id,
     login: user.login,
     displayName: user.displayName,
-    roleCodes: user.roles.map((role) => role.code),
-  };
-  showEdit.value = true;
+    roleCodes: user.roles.map(role => role.code),
+  }
+  showEdit.value = true
 }
 
 function closeEdit() {
-  showEdit.value = false;
-  editError.value = null;
-  editForm.value = null;
+  showEdit.value = false
+  editError.value = null
+  editForm.value = null
 }
 
 function mapCreateError(error: ApiError): string {
-  if (error.status === 409 || error.kind === "conflict")
-    return t("users.messages.duplicate");
-  if (error.status === 403 || error.kind === "permission")
-    return t("users.messages.forbidden");
-  if (error.status === 400 && error.message.toLowerCase().includes("role"))
-    return t("users.messages.invalidRoles");
-  if (error.status === 400 || error.kind === "validation")
-    return t("users.messages.validation");
-  return error.message || t("users.messages.generic");
+  if (error.status === 409 || error.kind === 'conflict')
+    return t('users.messages.duplicate')
+  if (error.status === 403 || error.kind === 'permission')
+    return t('users.messages.forbidden')
+  if (error.status === 400 && error.message.toLowerCase().includes('role'))
+    return t('users.messages.invalidRoles')
+  if (error.status === 400 || error.kind === 'validation')
+    return t('users.messages.validation')
+  return error.message || t('users.messages.generic')
 }
 
 function mapUpdateError(error: unknown): string {
-  const parsed = parseUpdateUserError(error);
-  if (parsed.code === "user_not_found")
-    return t("users.edit.errors.userNotFound");
-  if (parsed.code === "last_admin_role_removal_forbidden")
-    return t("users.edit.errors.lastAdminGuard");
-  if (parsed.code === "invalid_roles") return t("users.messages.invalidRoles");
-  if (parsed.code === "validation_error") return t("users.messages.validation");
-  if (parsed.code === "forbidden") return t("users.messages.forbidden");
-  return parsed.message || t("users.messages.generic");
+  const parsed = parseUpdateUserError(error)
+  if (parsed.code === 'user_not_found')
+    return t('users.edit.errors.userNotFound')
+  if (parsed.code === 'last_admin_role_removal_forbidden')
+    return t('users.edit.errors.lastAdminGuard')
+  if (parsed.code === 'invalid_roles')
+    return t('users.messages.invalidRoles')
+  if (parsed.code === 'validation_error')
+    return t('users.messages.validation')
+  if (parsed.code === 'forbidden')
+    return t('users.messages.forbidden')
+  return parsed.message || t('users.messages.generic')
 }
 
 async function submitCreate() {
-  formError.value = null;
-  formSuccess.value = null;
+  formError.value = null
+  formSuccess.value = null
 
   if (
-    !form.value.login.trim() ||
-    !form.value.displayName.trim() ||
-    !form.value.initialPassword ||
-    form.value.roleCodes.length === 0
+    !form.value.login.trim()
+    || !form.value.displayName.trim()
+    || !form.value.initialPassword
+    || form.value.roleCodes.length === 0
   ) {
-    formError.value = t("users.messages.validation");
-    return;
+    formError.value = t('users.messages.validation')
+    return
   }
 
-  creating.value = true;
+  creating.value = true
   try {
     await createUser({
       login: form.value.login.trim(),
       displayName: form.value.displayName.trim(),
       initialPassword: form.value.initialPassword,
       roleCodes: form.value.roleCodes,
-    });
-    resetForm();
-    showCreate.value = false;
-    formSuccess.value = t("users.messages.created");
-    await refetch(search.value, 50);
-  } catch (e) {
-    formError.value = mapCreateError(e as ApiError);
-  } finally {
-    creating.value = false;
+    })
+    resetForm()
+    showCreate.value = false
+    formSuccess.value = t('users.messages.created')
+    await refetch(search.value, 50)
+  }
+  catch (e) {
+    formError.value = mapCreateError(e as ApiError)
+  }
+  finally {
+    creating.value = false
   }
 }
 
 async function submitEdit() {
-  editError.value = null;
-  formSuccess.value = null;
-  if (!editForm.value) return;
+  editError.value = null
+  formSuccess.value = null
+  if (!editForm.value)
+    return
 
   if (
-    !editForm.value.displayName.trim() ||
-    editForm.value.roleCodes.length === 0
+    !editForm.value.displayName.trim()
+    || editForm.value.roleCodes.length === 0
   ) {
-    editError.value = t("users.messages.validation");
-    return;
+    editError.value = t('users.messages.validation')
+    return
   }
 
-  updating.value = true;
+  updating.value = true
   try {
     await updateUser(editForm.value.id, {
       displayName: editForm.value.displayName.trim(),
       roleCodes: editForm.value.roleCodes,
-    });
-    formSuccess.value = t("users.edit.success");
-    closeEdit();
-    await refetch(search.value, 50);
-  } catch (e) {
-    editError.value = mapUpdateError(e);
-    const parsed = parseUpdateUserError(e);
-    if (parsed.code === "user_not_found") await refetch(search.value, 50);
-  } finally {
-    updating.value = false;
+    })
+    formSuccess.value = t('users.edit.success')
+    closeEdit()
+    await refetch(search.value, 50)
+  }
+  catch (e) {
+    editError.value = mapUpdateError(e)
+    const parsed = parseUpdateUserError(e)
+    if (parsed.code === 'user_not_found')
+      await refetch(search.value, 50)
+  }
+  finally {
+    updating.value = false
   }
 }
 </script>
@@ -286,7 +305,7 @@ async function submitEdit() {
         type="search"
         :placeholder="t('users.search')"
         class="w-full rounded border border-border bg-bg py-1.5 pl-8 pr-3 text-sm"
-      />
+      >
     </div>
 
     <div
@@ -303,9 +322,15 @@ async function submitEdit() {
           class="bg-bg/60 text-left text-xs uppercase tracking-wide text-ink-muted"
         >
           <tr>
-            <th class="px-3 py-2">{{ t("users.fields.login") }}</th>
-            <th class="px-3 py-2">{{ t("users.fields.displayName") }}</th>
-            <th class="px-3 py-2">{{ t("users.fields.roles") }}</th>
+            <th class="px-3 py-2">
+              {{ t("users.fields.login") }}
+            </th>
+            <th class="px-3 py-2">
+              {{ t("users.fields.displayName") }}
+            </th>
+            <th class="px-3 py-2">
+              {{ t("users.fields.roles") }}
+            </th>
             <th v-if="hasAdminAccess" class="px-3 py-2 text-right">
               {{ t("common.actions") }}
             </th>
@@ -362,7 +387,7 @@ async function submitEdit() {
     <Teleport to="body">
       <div
         v-if="showCreate"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-4"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-overlay px-4"
         @click.self="closeCreate"
       >
         <div
@@ -380,7 +405,7 @@ async function submitEdit() {
                 v-model="form.login"
                 type="text"
                 class="w-full rounded border border-border bg-bg px-3 py-2 text-sm"
-              />
+              >
             </label>
             <label class="block space-y-1">
               <span class="text-xs font-medium text-ink-muted">{{
@@ -390,7 +415,7 @@ async function submitEdit() {
                 v-model="form.displayName"
                 type="text"
                 class="w-full rounded border border-border bg-bg px-3 py-2 text-sm"
-              />
+              >
             </label>
             <label class="block space-y-1">
               <span class="text-xs font-medium text-ink-muted">{{
@@ -401,7 +426,7 @@ async function submitEdit() {
                 type="password"
                 autocomplete="new-password"
                 class="w-full rounded border border-border bg-bg px-3 py-2 text-sm"
-              />
+              >
             </label>
             <fieldset class="space-y-2">
               <legend class="text-xs font-medium text-ink-muted">
@@ -420,7 +445,7 @@ async function submitEdit() {
                     type="checkbox"
                     :checked="form.roleCodes.includes(role.code)"
                     @change="toggleCreateRole(role.code)"
-                  />
+                  >
                   <span>{{ role.name }}</span>
                 </label>
               </div>
@@ -460,7 +485,7 @@ async function submitEdit() {
     <Teleport to="body">
       <div
         v-if="showEdit && editForm"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-4"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-overlay px-4"
         @click.self="closeEdit"
       >
         <div
@@ -483,7 +508,7 @@ async function submitEdit() {
                 readonly
                 disabled
                 class="w-full rounded border border-border bg-bg px-3 py-2 text-sm text-ink-muted"
-              />
+              >
             </label>
             <label class="block space-y-1">
               <span class="text-xs font-medium text-ink-muted">{{
@@ -493,7 +518,7 @@ async function submitEdit() {
                 v-model="editForm.displayName"
                 type="text"
                 class="w-full rounded border border-border bg-bg px-3 py-2 text-sm"
-              />
+              >
             </label>
             <fieldset class="space-y-2">
               <legend class="text-xs font-medium text-ink-muted">
@@ -512,7 +537,7 @@ async function submitEdit() {
                     type="checkbox"
                     :checked="editForm.roleCodes.includes(role.code)"
                     @change="toggleEditRole(role.code)"
-                  />
+                  >
                   <span>{{ role.name }}</span>
                 </label>
               </div>

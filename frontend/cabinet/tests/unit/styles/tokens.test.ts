@@ -70,16 +70,17 @@ describe('design tokens / brand amber palette (010)', () => {
 })
 
 describe('design tokens / app background (010 §R-004)', () => {
-  it('dark: --bg-app = #1a2235 (navy)', () => {
-    expect(tokens).toMatch(/--bg-app:\s*#1a2235/i)
+  it('dark: --bg-app = #101014 (PAM-like neutral dark)', () => {
+    expect(tokens).toMatch(/--bg-app:\s*#101014/i)
   })
 
-  it('light: --bg-app = #f1f2f8', () => {
-    expect(tokens).toMatch(/--bg-app:\s*#f1f2f8/i)
+  it('light: --bg-app = #f8f9fc', () => {
+    expect(tokens).toMatch(/--bg-app:\s*#f8f9fc/i)
   })
 
-  it('--c-bg алиасит --bg-app для backward-compat (фичи 006/007)', () => {
-    expect(tokens).toMatch(/--c-bg:\s*var\(--bg-app\)/)
+  it('--c-bg определён отдельно для dark и light', () => {
+    expect(tokens).toMatch(/--c-bg:\s*#16161d/i)
+    expect(tokens).toMatch(/--c-bg:\s*#f1f3f8/i)
   })
 })
 
@@ -98,15 +99,16 @@ describe('design tokens / sidebar preset \'none\' (010 §R-008)', () => {
   })
 })
 
-describe('design tokens / scoped fg-перебивка внутри .cabinet-card (010 §R-004)', () => {
-  it('правило [data-theme=\'dark\'] .cabinet-card существует', () => {
-    expect(tokens).toMatch(/\[data-theme=['"]dark['"]\]\s+\.cabinet-card\s*\{/)
+describe('design tokens / surfaces sync with PAM dark (015)', () => {
+  it('dark: --c-surface и --c-elevated используют тёмные нейтральные значения', () => {
+    expect(tokens).toMatch(/--c-surface:\s*#19191f/i)
+    expect(tokens).toMatch(/--c-elevated:\s*#25252d/i)
   })
 
-  it('перебивает --c-fg на тёмное значение (#3d4257)', () => {
-    const block = tokens.match(/\[data-theme=['"]dark['"]\]\s+\.cabinet-card\s*\{([^}]+)\}/)
-    expect(block).not.toBeNull()
-    expect(block![1]).toMatch(/--c-fg:\s*#3d4257/i)
-    expect(block![1]).toMatch(/--c-fg-strong:\s*#1a1f36/i)
+  it('light: surface/elevated остаются светлыми', () => {
+    const surfaceMatches = [...tokens.matchAll(/--c-surface:\s*#ffffff/gi)]
+    const elevatedMatches = [...tokens.matchAll(/--c-elevated:\s*#ffffff/gi)]
+    expect(surfaceMatches.length).toBeGreaterThanOrEqual(1)
+    expect(elevatedMatches.length).toBeGreaterThanOrEqual(1)
   })
 })
