@@ -7,20 +7,8 @@
 
 import type { PermissionFlags } from '@/api/types/domain'
 import { computed, type ComputedRef } from 'vue'
+import { ADMIN_USER_LOGIN, BACKEND_ROLE_CODES, LEGACY_ROLE_LABELS } from '@/api/roles'
 import { useAuthStore } from '@/stores/auth'
-
-const ROLE_ORDER_MANAGER = 'Order Manager'
-const ROLE_SHOP_SUPERVISOR = 'Shop Supervisor'
-const ROLE_EXECUTOR = 'Executor'
-const ROLE_WAREHOUSE = 'Warehouse'
-const ROLE_ORDER_CORRECTOR = 'Order Corrector'
-const ROLE_SYSTEM_MANAGER = 'System Manager'
-const ROLE_ADMINISTRATOR = 'Administrator'
-const ROLE_BACKEND_ADMIN = 'ADMIN'
-const ROLE_BACKEND_ORDER_MANAGER = 'ORDER_MANAGER'
-const ROLE_BACKEND_PRODUCTION_SUPERVISOR = 'PRODUCTION_SUPERVISOR'
-const ROLE_BACKEND_PRODUCTION_EXECUTOR = 'PRODUCTION_EXECUTOR'
-const ADMIN_USER = 'Administrator'
 
 export function usePermissions(): ComputedRef<PermissionFlags> {
   const auth = useAuthStore()
@@ -29,15 +17,13 @@ export function usePermissions(): ComputedRef<PermissionFlags> {
 
 export function buildPermissions(user: string | null, roles: readonly string[]): PermissionFlags {
   const set = new Set(roles)
-  const isAdmin = user === ADMIN_USER
-    || set.has(ROLE_SYSTEM_MANAGER)
-    || set.has(ROLE_ADMINISTRATOR)
-    || set.has(ROLE_BACKEND_ADMIN)
-  const isOrderManager = set.has(ROLE_ORDER_MANAGER) || set.has(ROLE_BACKEND_ORDER_MANAGER)
-  const isShopSupervisor = set.has(ROLE_SHOP_SUPERVISOR) || set.has(ROLE_BACKEND_PRODUCTION_SUPERVISOR)
-  const isExecutor = set.has(ROLE_EXECUTOR) || set.has(ROLE_BACKEND_PRODUCTION_EXECUTOR)
-  const isWarehouse = set.has(ROLE_WAREHOUSE)
-  const isOrderCorrector = set.has(ROLE_ORDER_CORRECTOR) || isAdmin
+  const isAdmin = user === ADMIN_USER_LOGIN
+    || hasRole(set, LEGACY_ROLE_LABELS.systemManager, LEGACY_ROLE_LABELS.administrator, BACKEND_ROLE_CODES.admin)
+  const isOrderManager = hasRole(set, LEGACY_ROLE_LABELS.orderManager, BACKEND_ROLE_CODES.orderManager)
+  const isShopSupervisor = hasRole(set, LEGACY_ROLE_LABELS.shopSupervisor, BACKEND_ROLE_CODES.productionSupervisor)
+  const isExecutor = hasRole(set, LEGACY_ROLE_LABELS.executor, BACKEND_ROLE_CODES.productionExecutor)
+  const isWarehouse = hasRole(set, LEGACY_ROLE_LABELS.warehouse, BACKEND_ROLE_CODES.warehouse)
+  const isOrderCorrector = set.has(LEGACY_ROLE_LABELS.orderCorrector) || isAdmin
 
   // На MVP «admin correction» доступна только Administrator/System Manager (R-019, FR-022).
   const hasOrderCorrection = isAdmin
@@ -80,4 +66,8 @@ export function hasAnyRole(roles: readonly string[], allowed: readonly string[])
     return true
   const set = new Set(roles)
   return allowed.some(r => set.has(r))
+}
+
+function hasRole(roleSet: ReadonlySet<string>, ...allowed: string[]): boolean {
+  return allowed.some(role => roleSet.has(role))
 }

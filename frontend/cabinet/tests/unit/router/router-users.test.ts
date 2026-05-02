@@ -6,6 +6,10 @@ const SOURCE = readFileSync(
   join(process.cwd(), 'src/router/index.ts'),
   'utf8',
 )
+const ROLE_SOURCE = readFileSync(
+  join(process.cwd(), 'src/api/roles.ts'),
+  'utf8',
+)
 
 describe('router users route', () => {
   it('defines /cabinet/users route', () => {
@@ -18,7 +22,9 @@ describe('router users route', () => {
   })
 
   it('protects users route with ADMIN role', () => {
-    expect(SOURCE).toContain("roles: ['ADMIN']")
+    expect(SOURCE).toContain('roles: ROUTE_ROLE_GROUPS.adminOnly')
+    expect(ROLE_SOURCE).toContain("admin: 'ADMIN'")
+    expect(ROLE_SOURCE).toContain('adminOnly:')
     expect(SOURCE).toContain("title: 'meta.title.users.list'")
   })
 

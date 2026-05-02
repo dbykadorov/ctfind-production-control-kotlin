@@ -7,6 +7,7 @@
 
 import { createRouter, createWebHistory, type NavigationGuardWithThis, type RouteRecordRaw } from 'vue-router'
 import { i18n } from '@/i18n'
+import { BACKEND_ROLE_CODES, LEGACY_ROLE_LABELS, ROUTE_ROLE_GROUPS } from '@/api/roles'
 import { useAuthStore } from '@/stores/auth'
 import { useNavigationStore } from '@/stores/navigation'
 import { sanitizeFrom } from '@/utils/url'
@@ -54,7 +55,7 @@ const routes: RouteRecordRaw[] = [
         name: 'orders.list',
         component: () => import('@/pages/office/OrdersListPage.vue'),
         meta: {
-          roles: ['Order Manager', 'Shop Supervisor', 'Order Corrector', 'Warehouse', 'ORDER_MANAGER', 'PRODUCTION_SUPERVISOR', 'WAREHOUSE'],
+          roles: ROUTE_ROLE_GROUPS.orderRead,
           title: 'meta.title.orders.list',
         },
       },
@@ -63,7 +64,7 @@ const routes: RouteRecordRaw[] = [
         name: 'orders.new',
         component: () => import('@/pages/office/OrderNewPage.vue'),
         meta: {
-          roles: ['Order Manager'],
+          roles: ROUTE_ROLE_GROUPS.orderManagerOnly,
           title: 'meta.title.orders.new',
           // 010 US3: страница глубже dashboard → показываем BackButton.
           showBackButton: true,
@@ -76,7 +77,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/office/OrderDetailPage.vue'),
         props: true,
         meta: {
-          roles: ['Order Manager', 'Shop Supervisor', 'Order Corrector', 'Warehouse', 'ORDER_MANAGER', 'PRODUCTION_SUPERVISOR', 'WAREHOUSE'],
+          roles: ROUTE_ROLE_GROUPS.orderRead,
           title: 'meta.title.orders.detail',
           showBackButton: true,
           backPath: '/cabinet/orders',
@@ -87,7 +88,7 @@ const routes: RouteRecordRaw[] = [
         name: 'customers.list',
         component: () => import('@/pages/office/CustomersListPage.vue'),
         meta: {
-          roles: ['Order Manager'],
+          roles: ROUTE_ROLE_GROUPS.orderManagerOnly,
           title: 'meta.title.customers.list',
         },
       },
@@ -96,7 +97,7 @@ const routes: RouteRecordRaw[] = [
         name: 'users.list',
         component: () => import('@/pages/admin/UsersPage.vue'),
         meta: {
-          roles: ['ADMIN'],
+          roles: ROUTE_ROLE_GROUPS.adminOnly,
           title: 'meta.title.users.list',
         },
       },
@@ -105,7 +106,7 @@ const routes: RouteRecordRaw[] = [
         name: 'production-tasks.list',
         component: () => import('@/pages/production/ProductionTasksListPage.vue'),
         meta: {
-          roles: ['Order Manager', 'Shop Supervisor', 'Executor', 'ORDER_MANAGER', 'PRODUCTION_SUPERVISOR', 'PRODUCTION_EXECUTOR'],
+          roles: ROUTE_ROLE_GROUPS.productionWork,
           title: 'meta.title.productionTasks.list',
         },
       },
@@ -114,7 +115,7 @@ const routes: RouteRecordRaw[] = [
         name: 'production-tasks.board',
         component: () => import('@/pages/production/ProductionTasksBoardPage.vue'),
         meta: {
-          roles: ['Order Manager', 'Shop Supervisor', 'Executor', 'ORDER_MANAGER', 'PRODUCTION_SUPERVISOR', 'PRODUCTION_EXECUTOR'],
+          roles: ROUTE_ROLE_GROUPS.productionWork,
           title: 'meta.title.productionTasks.board',
         },
       },
@@ -124,7 +125,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/production/ProductionTaskDetailPage.vue'),
         props: true,
         meta: {
-          roles: ['Order Manager', 'Shop Supervisor', 'Executor', 'ORDER_MANAGER', 'PRODUCTION_SUPERVISOR', 'PRODUCTION_EXECUTOR'],
+          roles: ROUTE_ROLE_GROUPS.productionWork,
           title: 'meta.title.productionTasks.detail',
           showBackButton: true,
           backPath: '/cabinet/production-tasks',
@@ -141,7 +142,7 @@ const routes: RouteRecordRaw[] = [
         name: 'warehouse.list',
         component: () => import('@/pages/warehouse/WarehouseListPage.vue'),
         meta: {
-          roles: ['ADMIN', 'WAREHOUSE'],
+          roles: ROUTE_ROLE_GROUPS.warehouseOnly,
           title: 'meta.title.warehouse',
         },
       },
@@ -151,7 +152,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/warehouse/MaterialDetailPage.vue'),
         props: true,
         meta: {
-          roles: ['ADMIN', 'WAREHOUSE'],
+          roles: ROUTE_ROLE_GROUPS.warehouseOnly,
           title: 'meta.title.warehouseMaterial',
         },
       },
@@ -160,7 +161,7 @@ const routes: RouteRecordRaw[] = [
         name: 'audit.list',
         component: () => import('@/pages/audit/AuditLogPage.vue'),
         meta: {
-          roles: ['ADMIN'],
+          roles: ROUTE_ROLE_GROUPS.adminOnly,
           title: 'meta.title.audit',
         },
       },
@@ -240,7 +241,12 @@ const guard: NavigationGuardWithThis<undefined> = (to) => {
 
   const required = to.meta.roles
   if (required && required.length > 0) {
-    const allowed = [...required, 'Administrator', 'System Manager', 'ADMIN']
+    const allowed = [
+      ...required,
+      LEGACY_ROLE_LABELS.administrator,
+      LEGACY_ROLE_LABELS.systemManager,
+      BACKEND_ROLE_CODES.admin,
+    ]
     const hasAccess = auth.permissions.isAdmin
       || allowed.some(role => auth.roles.includes(role))
     if (!hasAccess)

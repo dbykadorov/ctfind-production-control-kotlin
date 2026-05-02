@@ -60,6 +60,15 @@ describe('buildPermissions', () => {
     expect(executor.canUpdateAnyProductionTaskStatus).toBe(false)
   })
 
+  it('recognizes backend warehouse role code', () => {
+    const p = buildPermissions('user@x', ['WAREHOUSE'])
+
+    expect(p.isWarehouse).toBe(true)
+    expect(p.canSeeCabinetWorkArea).toBe(true)
+    expect(p.canViewOrderBom).toBe(true)
+    expect(p.canConsumeStock).toBe(true)
+  })
+
   it('order Corrector наследует право admin-correction только если совмещён с Admin', () => {
     const corrector = buildPermissions('user@x', ['Order Corrector'])
     expect(corrector.isOrderCorrector).toBe(true)
