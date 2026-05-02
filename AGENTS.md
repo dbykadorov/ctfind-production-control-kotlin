@@ -84,3 +84,8 @@ Run checks relevant to changed areas before claiming done:
 
 - If behavior/contract changes, update feature docs under `specs/005-production-tasks/` when relevant.
 - Keep README and Make targets aligned when introducing new standard workflows.
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+<!-- SPECKIT END -->
