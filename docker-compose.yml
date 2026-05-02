@@ -25,7 +25,7 @@ services:
     image: ctfind-production-control-contlin:local
     container_name: ctfind-contlin-app
     build:
-      context: .
+      context: ./production-control-api
       dockerfile: Dockerfile
       network: host
     depends_on:
@@ -51,7 +51,7 @@ services:
     image: ctfind-production-control-cabinet:local
     container_name: ctfind-contlin-frontend
     build:
-      context: ./frontend/cabinet
+      context: ./production-control-frontend
       dockerfile: Dockerfile
       network: host
     depends_on:

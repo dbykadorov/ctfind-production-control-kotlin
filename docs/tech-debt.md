@@ -5,7 +5,7 @@
 ## TD-001 — `JpaProductionTaskAdapter.search` делает in-memory фильтрацию
 
 **Источник:** Feature 005 (production tasks), 2026-04-28.
-**Где:** `src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt` — `JpaProductionTaskAdapter.search(...)`. Делает `taskRepository.findAll()`, фильтрует список через `filterProductionTaskEntitiesForQuery`, потом пагинирует подсписок.
+**Где:** `production-control-api/src/main/kotlin/com/ctfind/productioncontrol/production/adapter/persistence/ProductionTaskPersistenceAdapters.kt` — `JpaProductionTaskAdapter.search(...)`. Делает `taskRepository.findAll()`, фильтрует список через `filterProductionTaskEntitiesForQuery`, потом пагинирует подсписок.
 
 **Почему сейчас ОК:** Phase 1 — до 50 пользователей и сотни задач. На таком масштабе разница между `findAll()` и предикатным запросом не заметна.
 
@@ -16,7 +16,7 @@
 ## TD-002 — N+1 при резолве `displayName` в истории задачи
 
 **Источник:** Feature 005, 2026-04-28.
-**Где:** `src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskHistoryUseCase.kt`. Каждый ивент в таймлайне резолвит `actorUserId` + `previousExecutorUserId` + `newExecutorUserId` через `ProductionActorLookupPort.displayName(userId)`. Реализация `JpaProductionActorLookupAdapter` дёргает `userRepository.findById(...)` per-call.
+**Где:** `production-control-api/src/main/kotlin/com/ctfind/productioncontrol/production/application/ProductionTaskHistoryUseCase.kt`. Каждый ивент в таймлайне резолвит `actorUserId` + `previousExecutorUserId` + `newExecutorUserId` через `ProductionActorLookupPort.displayName(userId)`. Реализация `JpaProductionActorLookupAdapter` дёргает `userRepository.findById(...)` per-call.
 
 **Почему сейчас ОК:** типичная задача накапливает <20 событий, лента читается редко (страница detail), пользователей в системе <50. Разница между 20 SQL-запросами и одним JOIN на десятках мс не заметна.
 
@@ -27,7 +27,7 @@
 ## TD-003 — Web-тесты production-task контроллеров не проходят через Spring/MockMvc
 
 **Источник:** Feature 005, 2026-04-28.
-**Где:** `src/test/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskCreateControllerTests.kt`, `ProductionTaskAssignmentControllerTests.kt`, `ProductionTaskStatusControllerTests.kt`. Тесты создают `ProductionTaskController` руками со стабами use-case’ов и зовут методы напрямую.
+**Где:** `production-control-api/src/test/kotlin/com/ctfind/productioncontrol/production/adapter/web/ProductionTaskCreateControllerTests.kt`, `ProductionTaskAssignmentControllerTests.kt`, `ProductionTaskStatusControllerTests.kt`. Тесты создают `ProductionTaskController` руками со стабами use-case’ов и зовут методы напрямую.
 
 **Почему сейчас ОК:** проверяют ветки маппинга `MutationResult → ResponseEntity` и команда-из-jwt — это и есть зона ответственности контроллера. Быстрые, без Spring-context overhead.
 

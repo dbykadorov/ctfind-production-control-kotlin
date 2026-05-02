@@ -3,7 +3,7 @@ HELP.md
 build/
 *.class
 *.jar
-!gradle/wrapper/gradle-wrapper.jar
+!production-control-api/gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
@@ -59,8 +59,8 @@ tmp/
 Thumbs.db
 
 ### Frontend ###
-frontend/**/node_modules/
-frontend/**/dist/
-frontend/**/.vite/
-frontend/**/coverage/
-frontend/**/*.tsbuildinfo
+production-control-frontend/node_modules/
+production-control-frontend/dist/
+production-control-frontend/.vite/
+production-control-frontend/coverage/
+production-control-frontend/**/*.tsbuildinfo

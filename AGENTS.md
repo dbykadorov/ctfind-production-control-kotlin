@@ -8,7 +8,8 @@ Follow these instructions to keep changes consistent with project architecture a
 ## Project Snapshot
 
 - Backend: Kotlin + Spring Boot, Gradle Kotlin DSL, Java 21
-- Frontend: Vue 3 + Vite + TypeScript (`frontend/cabinet`)
+- Backend: Kotlin + Spring Boot under `production-control-api`
+- Frontend: Vue 3 + Vite + TypeScript (`production-control-frontend`)
 - DB: PostgreSQL, Flyway migrations
 - Runtime: Docker Compose (`app`, `postgres`, `frontend`)
 
@@ -48,17 +49,17 @@ Prefer root `make` targets over ad-hoc command variants:
 ## Backend Guidelines
 
 - Add/adjust tests for behavior changes in:
-  - `src/test/kotlin/.../domain`
-  - `src/test/kotlin/.../application`
-  - `src/test/kotlin/.../adapter`
-- For new persistence features, update Flyway migrations under `src/main/resources/db/migration`.
+  - `production-control-api/src/test/kotlin/.../domain`
+  - `production-control-api/src/test/kotlin/.../application`
+  - `production-control-api/src/test/kotlin/.../adapter`
+- For new persistence features, update Flyway migrations under `production-control-api/src/main/resources/db/migration`.
 - Prefer explicit domain models and use-case ports over framework-heavy coupling.
 - Enforce permission checks in application-layer policy/use-case boundaries.
 
 ## Frontend Guidelines
 
-- Keep production-task UI changes inside `frontend/cabinet`.
-- Use existing API composable patterns in `frontend/cabinet/src/api/composables`.
+- Keep production-task UI changes inside `production-control-frontend`.
+- Use existing API composable patterns in `production-control-frontend/src/api/composables`.
 - Validate with:
   - `make frontend-test`
   - `make frontend-build`

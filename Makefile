@@ -1,7 +1,9 @@
 SHELL := /bin/bash
 
+BACKEND_DIR := production-control-api
+FRONTEND_DIR := production-control-frontend
 GRADLEW := ./gradlew
-FRONTEND_DIR := frontend/cabinet
+GRADLE_USER_HOME ?= $(CURDIR)/.gradle-user-home
 COMPOSE := docker compose
 HEALTH_URL := http://localhost:8080/actuator/health
 
@@ -21,21 +23,21 @@ help: ## Show available commands
 	@awk 'BEGIN {FS = ":.*##"} /^[a-zA-Z0-9_-]+:.*##/ {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 backend-test: ## Run backend tests
-	$(GRADLEW) test
+	cd $(BACKEND_DIR) && GRADLE_USER_HOME=$(GRADLE_USER_HOME) $(GRADLEW) test
 
 backend-test-docker: ## Run backend tests inside gradle:9.4.1-jdk21 (no wrapper download)
 	docker run --rm \
 		-e GRADLE_USER_HOME=/tmp/gradle-home \
-		-v "$(CURDIR)":/workspace \
+		-v "$(CURDIR)/$(BACKEND_DIR)":/workspace \
 		-w /workspace \
 		gradle:9.4.1-jdk21 \
 		gradle --project-cache-dir /tmp/gradle-project-cache test
 
 backend-build: ## Build backend artifacts
-	$(GRADLEW) build
+	cd $(BACKEND_DIR) && GRADLE_USER_HOME=$(GRADLE_USER_HOME) $(GRADLEW) build
 
 backend-run: ## Run backend app locally
-	$(GRADLEW) bootRun
+	cd $(BACKEND_DIR) && GRADLE_USER_HOME=$(GRADLE_USER_HOME) $(GRADLEW) bootRun
 
 frontend-install: ## Install frontend dependencies
 	cd $(FRONTEND_DIR) && pnpm install

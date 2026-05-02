@@ -16,18 +16,26 @@ New Spring Boot + Kotlin attempt for CTfind Production Control.
 - Actuator
 - Vue 3 / Vite / TypeScript frontend cabinet
 
+## Repository Layout
+
+- `production-control-api/` - Kotlin/Spring Boot backend project
+- `production-control-frontend/` - Vue 3 cabinet frontend project
+- `specs/` and `docs/` - product specifications and project documentation
+- root `Makefile` and `docker-compose.yml` - local orchestration entrypoints
+
 ## Local Checks
 
 Requires JDK 21 available on `PATH` or via `JAVA_HOME`.
 
 ```bash
+cd production-control-api
 ./gradlew test
 ```
 
 Frontend checks live in the migrated cabinet app:
 
 ```bash
-cd frontend/cabinet
+cd production-control-frontend
 pnpm test
 pnpm build
 ```
