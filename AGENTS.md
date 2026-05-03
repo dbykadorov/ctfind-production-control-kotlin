@@ -87,6 +87,6 @@ Run checks relevant to changed areas before claiming done:
 - Keep README and Make targets aligned when introducing new standard workflows.
 
 <!-- SPECKIT START -->
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
+For additional context about the current Spec Kit feature, read
+`specs/016-phase1-alignment/plan.md`.
 <!-- SPECKIT END -->
