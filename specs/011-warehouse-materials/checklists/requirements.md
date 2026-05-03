@@ -33,4 +33,4 @@
 
 - Единицы измерения зафиксированы как enum (шт, кг, м, л, м², м³) — решено в брифе, не требует NEEDS CLARIFICATION
 - Удаление материала — запрет при наличии движений (не soft delete) — решено в брифе
-- Роль WAREHOUSE_MANAGER уже существует в frontend permissions (isWarehouse) — верифицировано
+- Роль `WAREHOUSE` уже существует в frontend permissions (isWarehouse) — верифицировано

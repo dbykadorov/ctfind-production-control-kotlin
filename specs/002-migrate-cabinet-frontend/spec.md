@@ -2,7 +2,7 @@
 
 **Feature Branch**: `002-migrate-cabinet-frontend`  
 **Created**: 2026-04-26  
-**Status**: Draft  
+**Status**: Accepted  
 **Input**: User description: "ок, теперь нам надо перенести фронтэнд из frappe версии /home/dbykadorov/Work/projects/ctfind-production-control/frappe-bench/apps/ctfind_production_control/cabinet_app переносим все, пусть запускается (докер), открывает логин но пока не авторизует"
 
 ## User Scenarios & Testing *(mandatory)*

@@ -40,5 +40,5 @@
 
 | Role | Name | Date | Notes |
 |------|------|------|-------|
-| Product / Design | Pending manual sign-off | — | Требуется ручной визуальный проход по маршрутам из раздела `Routes (baseline)` перед релизом. |
+| Product / Design | Deferred manual sign-off | 2026-05-03 | Owner: Product / Design. Target: next release-candidate visual QA pass. Sign-off impact: dark-theme visual approval remains required before release-candidate sign-off; documentation alignment may proceed. |
 | QA | Codex (automation pre-check) | 2026-05-01 | Выполнены `pnpm typecheck`, `pnpm test`, `pnpm build`, `make docker-up-detached && make health`; полный `pnpm lint` падает на исторических ошибках вне фичи, на изменённых файлах новых lint errors нет. |

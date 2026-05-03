@@ -2,7 +2,7 @@
 
 **Feature Branch**: `014-edit-users`  
 **Created**: 2026-04-30  
-**Status**: Draft  
+**Status**: Accepted  
 **Input**: User description: "Редактирование существующих пользователей в кабинете для роли ADMIN"
 
 ## User Scenarios & Testing *(mandatory)*

@@ -2,7 +2,7 @@
 
 **Feature Branch**: `008-notifications-infrastructure`
 **Created**: 2026-04-28
-**Status**: Draft
+**Status**: Pending verification
 **Input**: User description:  "Инфраструктура и модель внутренних уведомлений (M7, Phase 1). Спека 1 из 3: домен Notification, Flyway миграция, порт NotificationCreatePort для записи из других модулей, REST API для чтения/управления уведомлениями. Все аутентифицированные роли видят только свои уведомления. Только in-app, без Telegram/email."
 
 ## Clarifications

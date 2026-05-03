@@ -146,11 +146,11 @@ Expected: only the existing test guard definitions in `tests/unit/no-frappe-runt
 
 After all checks above pass, append the results to this section:
 
-- Backend tests — DEFERRED (`.gradle` lock file owned by root; run `make backend-test-docker`)
+- Backend tests — DEFERRED on 2026-05-03. Owner: Manual QA. Reason: original Docker-specific `make backend-test-docker` was blocked by a root-owned Gradle lock. Evidence available: root `make backend-test` passed during Phase 1 closeout. Sign-off impact: Docker-specific backend-test evidence remains a follow-up before release-candidate sign-off.
 - Frontend tests + build — PASS (387 tests / 51 files; typecheck clean; vite build 15.56s)
-- Docker startup — DEFERRED (requires `make docker-up-detached`)
-- API smoke (admin 200, executor 403) — DEFERRED (requires running stack)
-- Manual frontend smoke (admin) — DEFERRED
-- Manual frontend smoke (executor / supervisor) — DEFERRED
-- Tablet smoke — DEFERRED
+- Docker startup — PASS on 2026-05-03. Evidence: root `make docker-up-detached` completed and `make health` returned UP during Phase 1 closeout.
+- API smoke (admin 200, executor 403) — DEFERRED on 2026-05-03. Owner: Manual QA. Reason: audit-specific role smoke was not rerun during documentation alignment. Sign-off impact: role-smoke evidence remains a follow-up before release-candidate sign-off.
+- Manual frontend smoke (admin) — DEFERRED on 2026-05-03. Owner: Manual QA. Target: next cabinet manual QA session. Sign-off impact: admin audit-page UX smoke remains a release-candidate follow-up.
+- Manual frontend smoke (executor / supervisor) — DEFERRED on 2026-05-03. Owner: Manual QA. Target: next cabinet manual QA session. Sign-off impact: non-admin audit exclusion smoke remains a release-candidate follow-up.
+- Tablet smoke — DEFERRED on 2026-05-03. Owner: Manual QA. Target: next tablet/responsive QA pass. Sign-off impact: tablet layout smoke remains a release-candidate follow-up.
 - Legacy runtime guard — PASS (only `tests/unit/no-frappe-runtime.test.ts` matches)

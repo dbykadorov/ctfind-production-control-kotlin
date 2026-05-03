@@ -2,7 +2,7 @@
 
 **Feature Branch**: `013-user-admin-management`  
 **Created**: 2026-04-30  
-**Status**: Draft  
+**Status**: Accepted  
 **Input**: User description: "Close the Phase 01 gap by ensuring a primary superadmin exists and giving ADMIN users a cabinet section for listing, searching, creating users, and assigning roles."
 
 ## Clarifications

@@ -2,7 +2,7 @@
 
 **Feature Branch**: `004-orders-api-wiring`  
 **Created**: 2026-04-26  
-**Status**: Draft  
+**Status**: Accepted  
 **Input**: User description: "Feature 004: Orders API + Frontend Wiring. Минимальный состав: Backend domain: Customer, CustomerOrder, CustomerOrderItem, OrderStatusChange. Flyway migration для таблиц клиентов, заказов, позиций, истории статусов. REST API: GET /api/orders POST /api/orders GET /api/orders/{id} PUT /api/orders/{id} POST /api/orders/{id}/status GET /api/customers. RBAC: ADMIN и менеджер заказов могут создавать/редактировать остальные пока read-only или forbidden. Audit: создание заказа, изменение заказа, изменение статуса. Frontend: заменить текущие пустые placeholders в use-orders, use-customers, dashboard widgets на Spring endpoints."
 
 ## Clarifications

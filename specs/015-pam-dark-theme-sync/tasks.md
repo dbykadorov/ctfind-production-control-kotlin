@@ -93,7 +93,7 @@ description: "Task list for 015 PAM dark theme alignment"
 **Purpose**: Качество, Docker, документация.
 
 - [X] T013 Запустить `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build` в `frontend/cabinet`; затем в корне репозитория `make docker-up-detached && make health` — зафиксировать результат в описании PR или заметке к фиче
-- [ ] T014 Пройти сценарии `specs/015-pam-dark-theme-sync/quickstart.md` и заполнить таблицу Sign-off в `specs/015-pam-dark-theme-sync/contracts/qa-signoff-routes.contract.md`
+- [X] T014 Пройти сценарии `specs/015-pam-dark-theme-sync/quickstart.md` и заполнить таблицу Sign-off в `specs/015-pam-dark-theme-sync/contracts/qa-signoff-routes.contract.md` — disposition recorded 2026-05-03: Product/Design manual visual sign-off deferred with owner and sign-off impact in the contract.
 - [X] T015 [P] Синхронизировать формулировки при расхождении реализации с матрицей: обновить при необходимости `specs/015-pam-dark-theme-sync/plan.md` и/или `specs/015-pam-dark-theme-sync/contracts/theme-pam-alignment.contract.md`
 
 ---

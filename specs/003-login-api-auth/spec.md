@@ -2,7 +2,7 @@
 
 **Feature Branch**: `003-login-api-auth`  
 **Created**: 2026-04-26  
-**Status**: Draft  
+**Status**: Accepted  
 **Input**: User description: "теперь нам надо реализовать апи для логина, базу данных, сид базы с юзером admin / admin и возможность залогиниться через фронтэнд"
 
 ## Clarifications

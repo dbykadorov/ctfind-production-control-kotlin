@@ -2,7 +2,7 @@
 
 **Feature Branch**: `015-pam-dark-theme-sync`  
 **Created**: 2026-04-30  
-**Status**: Draft  
+**Status**: Pending verification  
 **Input**: User description: синхронизация тёмной темы Production Control Cabinet с визуальной и семантической моделью PAM User Console (палитра, оверлей, состояния UI); сохранение amber-бренда и floating-card layout; отступления от эталона документируются.
 
 ## User Scenarios & Testing *(mandatory)*

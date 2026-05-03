@@ -2,7 +2,7 @@
 
 **Feature Branch**: `005-production-tasks`  
 **Created**: 2026-04-27  
-**Status**: Ready for implementation  
+**Status**: Accepted  
 **Input**: User description: "Feature 005: Production Tasks. Production tasks from customer orders and order items with statuses, assignment, planning, workflow buttons, RBAC, audit and history."
 
 ## Clarifications

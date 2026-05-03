@@ -71,6 +71,18 @@
 - `PRODUCTION_SUPERVISOR`
 - `PRODUCTION_EXECUTOR`
 
+### Соответствие ролей и отображаемых названий
+
+Для правил доступа используются только backend role-коды:
+
+- `ADMIN` — Administrator / Администратор
+- `ORDER_MANAGER` — Order Manager / Менеджер заказов
+- `WAREHOUSE` — Warehouse / Склад
+- `PRODUCTION_SUPERVISOR` — Production Supervisor / Мастер / начальник цеха
+- `PRODUCTION_EXECUTOR` — Production Executor / Исполнитель
+
+Человеческие названия ролей в интерфейсе и документах являются label-ами. Они не вводят дополнительные role-коды и не должны использоваться как источник правил доступа.
+
 ### Ограничения и валидация
 
 - Логин должен быть непустым и уникальным.

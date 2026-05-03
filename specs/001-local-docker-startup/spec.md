@@ -2,7 +2,7 @@
 
 **Feature Branch**: `001-local-docker-startup`  
 **Created**: 2026-04-25  
-**Status**: Draft  
+**Status**: Accepted  
 **Input**: User description: "давай в первую очередь докеризируем приложение и обеспечим его запуск локально"
 
 ## User Scenarios & Testing *(mandatory)*

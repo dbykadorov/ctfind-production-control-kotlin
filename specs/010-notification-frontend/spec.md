@@ -2,7 +2,7 @@
 
 **Feature Branch**: `010-notification-frontend`
 **Created**: 2026-04-29
-**Status**: Draft
+**Status**: Accepted
 **Input**: M7 Спека 3 из 3 — Frontend UI для внутренних уведомлений: badge с count непрочитанных в TopBar, dropdown со списком, страница /cabinet/notifications с пагинацией, навигация по клику.
 
 ## User Scenarios & Testing

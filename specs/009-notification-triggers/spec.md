@@ -2,7 +2,7 @@
 
 **Feature Branch**: `009-notification-triggers`  
 **Created**: 2026-04-29  
-**Status**: Draft  
+**Status**: Accepted  
 **Dependency**: 008-notifications-infrastructure (domain, persistence, REST API)
 
 ## User Scenarios & Testing *(mandatory)*

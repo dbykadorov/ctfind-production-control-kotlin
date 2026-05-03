@@ -2,7 +2,7 @@
 
 **Feature Branch**: `016-phase1-alignment`  
 **Created**: 2026-05-03  
-**Status**: Draft  
+**Status**: Accepted  
 **Input**: User description: "Выравнивание Phase 1: 1. Нормализовать role vocabulary в specs/contracts: WAREHOUSE, ADMIN, ORDER_MANAGER, PRODUCTION_SUPERVISOR, PRODUCTION_EXECUTOR. 2. Закрыть или явно перенести open verification items в 007 и 015. 3. Обновить docs/PHASE_01.md completion criteria под фактический scope фазы. 4. Проставить финальные статусы specs и привести 008/tasks.md к checkbox-формату."
 
 ## User Scenarios & Testing *(mandatory)*

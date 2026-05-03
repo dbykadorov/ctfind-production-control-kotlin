@@ -2,7 +2,7 @@
 
 **Feature Branch**: `006-production-tasks-board-m4`
 **Created**: 2026-04-28
-**Status**: Draft
+**Status**: Accepted
 **Input**: User brief covering M4 «доска задач мастера» from `docs/PHASE_01.md` — a board view of production tasks grouped by status, complementing the existing flat list (`ProductionTasksListPage.vue` from feature 005).
 
 ## Clarifications

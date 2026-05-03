@@ -2,7 +2,7 @@
 
 **Feature Branch**: `007-audit-log-viewer`
 **Created**: 2026-04-28
-**Status**: Draft
+**Status**: Pending verification
 **Input**: User description: "Brief: Журнал действий администратора (Phase 1 §8 #10) — единая страница для администратора, показывающая cross-entity ленту аудита (auth + orders + production tasks) с фильтрами по дате/категории/исполнителю/поиску, пагинацией и переходом на карточку объекта; читает существующие три аудит-таблицы, не вводит новых аудит-источников."
 
 ## User Scenarios & Testing *(mandatory)*
