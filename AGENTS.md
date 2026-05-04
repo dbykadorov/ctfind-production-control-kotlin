@@ -88,5 +88,5 @@ Run checks relevant to changed areas before claiming done:
 
 <!-- SPECKIT START -->
 For additional context about the current Spec Kit feature, read
-`specs/016-phase1-alignment/plan.md`.
+`specs/017-spring-integration-tests/plan.md`.
 <!-- SPECKIT END -->

@@ -72,6 +72,7 @@ class JpaOrderNumberAdapter(
 class JpaCustomerOrderAdapter(
 	private val orderRepository: CustomerOrderJpaRepository,
 	private val customerRepository: CustomerJpaRepository,
+	private val entityManager: EntityManager,
 ) : CustomerOrderPort {
 	override fun findById(id: UUID): CustomerOrder? =
 		orderRepository.findById(id).orElse(null)?.toDomain()
@@ -90,7 +91,10 @@ class JpaCustomerOrderAdapter(
 		entity.createdAt = order.createdAt
 		entity.updatedAt = order.updatedAt
 		entity.version = order.version
-		entity.items.clear()
+		if (entity.items.isNotEmpty()) {
+			entity.items.clear()
+			entityManager.flush()
+		}
 		order.items.forEach { item ->
 			entity.items.add(item.toEntity(entity, order.createdAt, order.updatedAt))
 		}

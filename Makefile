@@ -10,7 +10,7 @@ HEALTH_URL := http://localhost:8080/actuator/health
 .DEFAULT_GOAL := help
 
 .PHONY: help \
-	backend-test backend-test-docker backend-build backend-run \
+	backend-test backend-integration-test backend-check backend-test-docker backend-build backend-run \
 	frontend-install frontend-test frontend-build \
 	test build check \
 	docker-up docker-up-detached docker-down docker-reset docker-ps \
@@ -24,6 +24,11 @@ help: ## Show available commands
 
 backend-test: ## Run backend tests
 	cd $(BACKEND_DIR) && GRADLE_USER_HOME=$(GRADLE_USER_HOME) $(GRADLEW) test
+
+backend-integration-test: ## Run backend Spring integration scenario tests
+	cd $(BACKEND_DIR) && GRADLE_USER_HOME=$(GRADLE_USER_HOME) $(GRADLEW) springIntegrationTest
+
+backend-check: backend-test backend-integration-test ## Run backend fast tests and integration scenarios
 
 backend-test-docker: ## Run backend tests inside gradle:9.4.1-jdk21 (no wrapper download)
 	docker run --rm \
